@@ -9,6 +9,7 @@ namespace ProjectJS.Manager
 	public class SceneManagerEx
 	{
 		public SceneBase CurrentScene { get { return GameObject.FindFirstObjectByType<SceneBase>(); } }
+		public Scene CurrentSceneObject { get { return SceneManager.GetSceneByName(CurrentScene.SceneEnum.ToString() + "Scene"); } }
 
 		public void Init()
 		{
@@ -32,6 +33,10 @@ namespace ProjectJS.Manager
 			await SceneManager.UnloadSceneAsync(CurrentScene.SceneEnum.ToString() + "Scene");
 		}
 
-		
+		public void MoveGameObjectToCurrentScene(GameObject go)
+		{
+			SceneManager.MoveGameObjectToScene(go, CurrentSceneObject);
+		}
+
 	}
 }

@@ -29,8 +29,10 @@ namespace ProjectJS.Manager
 
 		private static  ResourceManager _resource = new ResourceManager();
 		private static  SceneManagerEx _scene = new SceneManagerEx();
+		private static SpawnManager _spawn = new SpawnManager();
 
 		public static ResourceManager Resource { get => _resource; }
 		public static SceneManagerEx Scene { get => _scene; }
+		private static SpawnManager Spawn { get => _spawn; }
 	}
 }
