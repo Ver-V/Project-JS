@@ -1,51 +1,60 @@
-using System;
 using System.Collections;
-using System.Linq;
-using Unity.Netcode;
 using UnityEngine;
+using Unity.Netcode;
 
 namespace ProjectJS.Controller
 {
-	public interface IBossPattern
-	{
-		public IEnumerator DoPattern(BossController boss, float attack);
-		// 체력 상태, 플레이어 위치 등을 탐지하여 사용 가능한 패턴인지 판단
-		public bool Predict();	
-	}
-
 	public class BossController : NetworkBehaviour
-    {
-		private bool isPatterning = false;
-		private Coroutine patternCoroutine = null;
+	{
+		enum State { Init, Roam, Detect, Pattern }
+
+		private StateMachine<State> stateMachine;
 
 		private void Awake()
 		{
-			isPatterning = false;
+
+			Debug.Log("STATE MACHINE");
+			stateMachine = new(this);
+
+			stateMachine.AddState(State.Init, OnStartInit);
+			stateMachine.AddState(State.Roam, OnStartRoam);
+			stateMachine.AddState(State.Detect, OnStartDetect);
+			stateMachine.AddState(State.Pattern, OnStartPattern, OnEndPattern);
+			stateMachine.ChangeState(State.Init);
 		}
 
-		private void Update()
+		private IEnumerator OnStartInit()
 		{
-			if (!isPatterning)
-			{
-				try
-				{
-					var patternQuery = from pattern in GetComponents<IBossPattern>() where pattern.Predict() orderby Guid.NewGuid() select pattern;
-					patternCoroutine = StartCoroutine(RunAttack(patternQuery.First(), 0f /** TODO - Boss attack power needed **/));
-				} 
-				catch { }
-			}
+			Debug.Log("Init");
+			yield return null;
+			stateMachine.ChangeState(State.Roam);
+		}
+	
+		private IEnumerator OnStartRoam()
+		{
+			Debug.Log("Roaming...");
+			yield return new WaitForSeconds(1.0f);
+			stateMachine.ChangeState(State.Detect);
+		}
+		
+		private IEnumerator OnStartDetect()
+		{
+			Debug.Log("Detecting...");
+			yield return new WaitForSeconds(1.0f);
+			stateMachine.ChangeState(State.Pattern);
 		}
 
-		public void StopAttack()
+		private IEnumerator OnStartPattern()
 		{
-			if (isPatterning) StopCoroutine(patternCoroutine);
+			Debug.Log("StartPattern");
+			yield return new WaitForSeconds(1.0f);
+			stateMachine.ChangeState(State.Roam);
 		}
 
-		private IEnumerator RunAttack(IBossPattern pattern, float attackPower)
+		private IEnumerator OnEndPattern()
 		{
-			isPatterning = true;
-			yield return pattern.DoPattern(this, attackPower);
-			isPatterning = false;
+			Debug.Log("EndPattern");
+			yield return null;
 		}
 	}
 }
