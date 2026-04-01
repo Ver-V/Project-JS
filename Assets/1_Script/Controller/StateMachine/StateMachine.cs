@@ -5,6 +5,13 @@ using UnityEngine;
 
 namespace ProjectJS.Controller
 {
+	/// <summary>
+	/// 
+	/// Enum타입으로 상태를 정의하는 StateMachine
+	/// 상태 변경 전/후에 코루틴을 사용할 수 있도록 했습니다.
+	/// Controller 말고도 이벤트/게임흐름 제어할 때에도 사용 가능합니다.
+	/// 
+	/// </summary>
 	public class StateMachine<T> where T : Enum
 	{
 		public class StateCoroutine

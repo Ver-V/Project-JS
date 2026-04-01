@@ -1,11 +1,9 @@
 using ProjectJS.Controller;
-using ProjectJS.Manager;
-using Steamworks.Data;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Garage.Manager
+namespace ProjectJS.Manager
 {
 	public class NetworkTransmission : NetworkBehaviour
 	{

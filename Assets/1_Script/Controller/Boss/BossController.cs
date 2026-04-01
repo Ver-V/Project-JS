@@ -4,18 +4,14 @@ using Unity.Netcode;
 
 namespace ProjectJS.Controller
 {
-	public class BossController : NetworkBehaviour
+	public partial class BossController : NetworkBehaviour
 	{
-		enum State { Init, Roam, Detect, Pattern }
-
+		private enum State { Init, Roam, Detect, Pattern }
 		private StateMachine<State> stateMachine;
 
 		private void Awake()
 		{
-
-			Debug.Log("STATE MACHINE");
 			stateMachine = new(this);
-
 			stateMachine.AddState(State.Init, OnStartInit);
 			stateMachine.AddState(State.Roam, OnStartRoam);
 			stateMachine.AddState(State.Detect, OnStartDetect);
