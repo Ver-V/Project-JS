@@ -2,7 +2,7 @@ using ProjectJS.Event;
 using UnityEngine;
 using Unity.Netcode;
 
-namespace Garage.Manager
+namespace ProjectJS.Manager
 {
 	public class NetworkDispatcher : NetworkBehaviour
 	{

@@ -1,4 +1,4 @@
-using System;
+using ProjectJS.Utils;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -14,12 +14,18 @@ namespace ProjectJS.Controller
 
 	public class BossAttack : MonoBehaviour
     {
+		[SerializeField] private int enablePatternCount;
+
 		private bool isPatterning = false;
 		private Coroutine patternCoroutine = null;
-
+		private IBossPattern[] enablePattern = null;
+		
 		private void Awake()
 		{
 			isPatterning = false;
+			enablePattern = GetComponents<IBossPattern>();
+			enablePattern.Shuffle();
+			enablePattern = enablePattern.Take(enablePatternCount).ToArray();
 		}
 
 		public void StartAttack()
@@ -32,8 +38,8 @@ namespace ProjectJS.Controller
 
 			try
 			{
-				var patternQuery = from pattern in GetComponents<IBossPattern>() where pattern.Predict() orderby Guid.NewGuid() select pattern;
-				patternCoroutine = StartCoroutine(AttackCoroutine(patternQuery.First(), 0f /** TODO - Boss attack power needed **/));
+				enablePattern.Shuffle();
+				patternCoroutine = StartCoroutine(AttackCoroutine(enablePattern.First(), 0f /** TODO - Boss attack power needed **/));
 			}
 			catch { }
 		}
