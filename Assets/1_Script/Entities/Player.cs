@@ -4,8 +4,6 @@ using Unity.Netcode;
 using UnityEditor.Toolbars;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static ProjectJS.PStats.PlayerWeaponData;
-using static ProjectJS.PStats.PlayerWeaponSelection;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : NetworkBehaviour
