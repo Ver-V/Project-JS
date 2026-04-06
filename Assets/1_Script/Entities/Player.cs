@@ -1,6 +1,4 @@
-using UnityEditor.Toolbars;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : MonoBehaviour
