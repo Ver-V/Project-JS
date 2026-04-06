@@ -8,8 +8,8 @@ namespace ProjectJS.UI.MainScene
     {
         [SerializeField] private Button hostButton;
         [SerializeField] private Button clientButton;
-
 		[SerializeField] private Button settingsButton;
+		[SerializeField] private Button exitGameButton;
 		[SerializeField] private GameObject settingsPopupPanel;
 
 		private void Start()
@@ -34,6 +34,16 @@ namespace ProjectJS.UI.MainScene
                 settingsPopupPanel?.SetActive(true);
             });
 
+            exitGameButton.onClick.AddListener(() =>
+            {
+				
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#else
+				Application.Quit();
+#endif
+            });
+            
         }
 
 		private void OnDestroy()
