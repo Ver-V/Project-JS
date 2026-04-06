@@ -19,7 +19,6 @@ namespace ProjectJS.UI.LobbyScene
         [SerializeField] private Button readyButton;
         [SerializeField] private Button notreadyButton;
         [SerializeField] private Button startButton;
-		[SerializeField] private Button chatEnterButton;
 
         [Tooltip("초대 버튼")] [SerializeField] private Button inviteButton;
 
