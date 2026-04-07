@@ -1,4 +1,3 @@
-using Garage.Manager;
 using ProjectJS.Manager;
 using ProjectJS.Structs;
 using ProjectJS.UI.LobbyScene.Items;
@@ -12,7 +11,7 @@ using UnityEngine.UI;
 
 namespace ProjectJS.UI.LobbyScene
 {
-    public class LobbySceneUI : MonoBehaviour
+	public class LobbySceneUI : MonoBehaviour
     {
         [Header("Buttons")]
         [SerializeField] private Button disconnectButton;
