@@ -9,7 +9,7 @@ namespace ProjectJS.Manager
 	{
 		private Transform poolRoot = null;
 		private Dictionary<PoolingType, PoolingEntry> entryDict = new();
-		private Dictionary<PoolingType, Queue<GameObject>> poolDict = new();
+		private Dictionary<PoolingType, Stack<GameObject>> poolDict = new();
 
 		private const string PATH_POOLDATA = "Datas/PoolData/";
 
@@ -31,14 +31,14 @@ namespace ProjectJS.Manager
 					}
 
 					entryDict.Add(entry.Type, entry);
-					Queue<GameObject> queue = new Queue<GameObject>();
-					poolDict.Add(entry.Type, queue);
+					Stack<GameObject> stack = new Stack<GameObject>();
+					poolDict.Add(entry.Type, stack);
 
 					for (int i = 0; i < entry.InitCount; i++)
 					{
 						GameObject obj = CreateNewObject(entry);
 						obj.SetActive(false);
-						queue.Enqueue(obj);
+						stack.Push(obj);
 					}
 				}
 			}
@@ -65,13 +65,15 @@ namespace ProjectJS.Manager
 
 			if (queue.Count > 0)
 			{
-				obj = queue.Dequeue();
+				obj = queue.Pop();
 			}
 			else
 			{
 				obj = CreateNewObject(entry);
 			}
 
+			obj.transform.position = position;
+			obj.transform.rotation = rotation;
 			obj.GetComponent<Poolable>().OnSpawn();
 			return obj;
 		}
@@ -88,7 +90,7 @@ namespace ProjectJS.Manager
 			obj.GetComponent<Poolable>().OnDespawn();
 			obj.transform.SetParent(poolRoot);
 
-			poolDict[type].Enqueue(obj);
+			poolDict[type].Push(obj);
 		}
 		
 		private GameObject CreateNewObject(PoolingEntry entry)

@@ -6,7 +6,7 @@ namespace ProjectJS.Entities {
         [SerializeField] private float speed;
         public Vector2 Evaluate(Vector2 startPos, Vector2 startDir, float time)
         {
-            return startPos + startDir * speed * time / 1000f;
+            return startPos + startDir * speed * time;
         }
     }
 }

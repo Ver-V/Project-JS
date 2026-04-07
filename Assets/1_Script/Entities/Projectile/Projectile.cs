@@ -23,6 +23,7 @@ namespace ProjectJS.Entities
 			this.id = id;
 			startPos = transform.position;
 			startTime = Time.time;
+			startDir = dir;
 
 			transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
 		}
