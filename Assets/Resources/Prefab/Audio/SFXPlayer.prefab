@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5770412667756358948}
   - component: {fileID: 6565618751571707879}
+  - component: {fileID: 8604798970860469055}
   m_Layer: 0
   m_Name: SFXPlayer
   m_TagString: Untagged
@@ -129,3 +130,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8604798970860469055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053337118273517651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7800448d30322c344868c406a57aed1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Entities.SFXPoolable

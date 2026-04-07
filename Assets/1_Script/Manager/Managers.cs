@@ -26,17 +26,20 @@ namespace ProjectJS.Manager
 
 			_scene.Init();
 			_input.Init();
+			_pool.Init();
 		}
 
 		private static  ResourceManager _resource = new ResourceManager();
 		private static  SceneManagerEx _scene = new SceneManagerEx();
 		private static SpawnManager _spawn = new SpawnManager();
 		private static InputManager _input = new InputManager();
+		private static PoolingManager _pool = new PoolingManager();
 
 		public static ResourceManager Resource { get => _resource; }
 		public static SceneManagerEx Scene { get => _scene; }
 		public static SpawnManager Spawn { get => _spawn; }
 		public static InputManager Input { get => _input; }
 		public static PlayerInput PlayerInput => _input.PlayerInput;
+		public static PoolingManager Pool { get => _pool; }
 	}
 }

@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa92fc09179a0d344b87930e6236c649, type: 3}
   m_Name: 1_VFXPool
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.ScriptableObjects.PoolingData
-  poolingList: []
+  poolingList:
+  - type: 51
+    prefab: {fileID: 9153812318743987127, guid: bc9f0f3831e7686479da7e71d2003cdb, type: 3}
+    initCount: 10

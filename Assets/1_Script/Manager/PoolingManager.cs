@@ -1,6 +1,7 @@
 using ProjectJS.ScriptableObjects;
 using System.Collections.Generic;
 using UnityEngine;
+using ProjectJS.Entities;
 
 namespace ProjectJS.Manager
 {
@@ -45,6 +46,14 @@ namespace ProjectJS.Manager
 
 		public GameObject Get(PoolingType type)
 		{
+			return Get(type, Vector3.zero, Quaternion.identity);
+		}
+		public GameObject Get(PoolingType type, Vector3 position)
+		{
+			return Get(type, position, Quaternion.identity);
+		}
+		public GameObject Get(PoolingType type, Vector3 position, Quaternion rotation)
+		{
 			if (!entryDict.TryGetValue(type, out var entry))
 			{
 				Debug.LogError($"[PoolingManager] No entry for type: {type}");
@@ -63,7 +72,7 @@ namespace ProjectJS.Manager
 				obj = CreateNewObject(entry);
 			}
 
-			obj.SetActive(true);
+			obj.GetComponent<Poolable>().OnSpawn();
 			return obj;
 		}
 
@@ -76,16 +85,18 @@ namespace ProjectJS.Manager
 				return;
 			}
 
-			obj.SetActive(false);
+			obj.GetComponent<Poolable>().OnDespawn();
 			obj.transform.SetParent(poolRoot);
 
 			poolDict[type].Enqueue(obj);
 		}
-
+		
 		private GameObject CreateNewObject(PoolingEntry entry)
 		{
 			GameObject obj = GameObject.Instantiate(entry.Prefab, poolRoot);
 			obj.name = $"{entry.Type}_Pooled";
+			obj.gameObject.SetActive(false);
+			obj.GetComponent<Poolable>().PoolingType = entry.Type;
 			return obj;
 		}
 	}

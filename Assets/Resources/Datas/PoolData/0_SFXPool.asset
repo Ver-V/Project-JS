@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa92fc09179a0d344b87930e6236c649, type: 3}
   m_Name: 0_SFXPool
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.ScriptableObjects.PoolingData
-  poolingList: []
+  poolingList:
+  - type: 1
+    prefab: {fileID: 5053337118273517651, guid: a8d1dfe84c207ee4ea65c050001fc322, type: 3}
+    initCount: 10

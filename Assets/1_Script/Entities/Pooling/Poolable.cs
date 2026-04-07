@@ -1,50 +1,34 @@
 using ProjectJS.ScriptableObjects;
-using System;
 using UnityEngine;
+using ProjectJS.Manager;
 
 namespace ProjectJS.Entities
 {
 	/// <summary>
 	/// Pooling 한 객체들의 Auto-Return을 위해 필요합니다.
 	/// </summary>
-	public class Poolable : MonoBehaviour
+	public abstract class Poolable : MonoBehaviour
 	{
-		private float timer = 0f;
-		private Action<PoolingType, GameObject> onReturnEvent = null;
-		private PoolingType poolingType = PoolingType.None;
+		protected bool isUsing = false;
 
-		public void SetPoolable(PoolingType type, Action<PoolingType, GameObject> evt)
+		protected PoolingType poolingType = PoolingType.None;
+		public PoolingType PoolingType { get => poolingType; set => poolingType = value; }
+
+		public virtual void OnSpawn()
 		{
-			poolingType = type;
-			onReturnEvent = evt;
+			isUsing = true;
+			gameObject.SetActive(true);
 		}
 
-		public void Return()
+		public virtual void OnDespawn()
 		{
-			if(onReturnEvent == null)
-			{
-				Debug.LogError("Return Action is null");
-				return;
-			}
-
-			onReturnEvent.Invoke(poolingType, gameObject);
+			isUsing = false;
+			gameObject.SetActive(false);
 		}
 
-		public void Clear()
+		protected void Return()
 		{
-			timer = 0f;
-		}
-
-		private void Update()
-		{
-			if (timer > 0f)
-			{
-				timer -= Time.deltaTime;
-				if (timer <= 0f)
-				{
-					
-				}
-			}	
+			Managers.Pool.Return(poolingType, gameObject);
 		}
 	}
 }

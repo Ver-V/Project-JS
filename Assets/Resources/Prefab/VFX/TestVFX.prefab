@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7462907807883422696}
   - component: {fileID: 5309247556441360188}
   - component: {fileID: 661502594890016252}
+  - component: {fileID: 968518008487105247}
   m_Layer: 0
   m_Name: TestVFX
   m_TagString: Untagged
@@ -4836,3 +4837,15 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
+--- !u!114 &968518008487105247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9153812318743987127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d98271488de42408896ff1fb013822, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Entities.VFXPoolable
