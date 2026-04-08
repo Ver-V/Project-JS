@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using ProjectJS.PStats;
-using Unity.Netcode
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -132,6 +132,7 @@ public class Player : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
     private void PlayJustGuardEffectClientRpc()
     {
         // TODO : SFX, VFX.
