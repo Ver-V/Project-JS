@@ -1,13 +1,13 @@
-using Garage.Manager;
 using ProjectJS.Structs;
 using ProjectJS.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace ProjectJS.Manager
 {
-    public class GameManagerEx : MonoBehaviour
+	public class GameManagerEx : MonoBehaviour
     {
 		#region Singleton
 		private static GameManagerEx instance;
