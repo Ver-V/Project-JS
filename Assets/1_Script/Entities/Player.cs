@@ -1,74 +1,91 @@
+using System.Collections.Generic;
+using ProjectJS.PStats;
+using Unity.Netcode;
 using UnityEditor.Toolbars;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
+    [Header("Stats")]
+    [SerializeField] private PlayerStats BaseStats;
 
-    public float maxHealth = 100f; // Player's max health
-    public float curHealth; // player's current health
-    public float maxGuardGauge = 100f; // player's max guard gauge
-    public float curGuardGauge; // player's current guard gauge
-    public float moveSpeed = 5f; // player's movement speed
-    public float damage = 10f; // player's attack damage
-    public float attackRange = 1f; // player's attack range
-    public float attackSpeed = 1f; // player's attack speed per second
-    
-    private float guardStartTime = 0f; 
-    private Rigidbody2D rb;
-    private Vector2 movement;
-    private bool isGuarding = false;
-    private float nextAttackTime = 0f;
+    [Header("Weapon System")]
+    [SerializeField] private List<WeaponData> AvailableWeapons;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private NetworkVariable<float> CurHealth = new NetworkVariable<float>(); // player's current health
+    private NetworkVariable<float> CurGuardGauge = new NetworkVariable<float>(); // player's current guard gauge
+    private NetworkVariable<int> CurrentWeaponIndex = new NetworkVariable<int>(0);
+
+    private Rigidbody2D Rb;
+    private Vector2 Movement;
+    private bool IsGuarding = false;
+    private float GuardStartTime = 0.0f;
+    private float NextAttackTime = 0f;
+    private WeaponData CurrentWeapon;
+
+    public override void OnNetworkSpawn()
     {
-        rb = GetComponent<Rigidbody2D>();
-        curHealth = maxHealth;
-        curGuardGauge = maxGuardGauge;
+
+        Rb = GetComponent<Rigidbody2D>();
+        CurrentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
+
+        if (IsOwner) 
+        {   // Throw Selection class
+            int WeaponChoice = PlayerWeaponSelection.SelectedWeaponIndex;
+            // report my choice
+            RequestSetWeaponServerRpc(WeaponChoice);
+        }
+        else if (CurrentWeaponIndex.Value != -1)
+        {   // Synchronize with other players
+            UpdateWeaponVisual(-1, CurrentWeaponIndex.Value);
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!IsOwner) return;
         HandleInput();
     }
 
     void FixedUpdate()
     {
+        if (!IsOwner) return;
         Move();
     }
 
     private void HandleInput()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
-        movement = movement.normalized;
+        Movement.x = Input.GetAxisRaw("Horizontal");
+        Movement.y = Input.GetAxisRaw("Vertical");
+        Movement = Movement.normalized;
 
-        if (Input.GetMouseButton(1)  && curGuardGauge > 0)
+        if (Input.GetMouseButton(1)  && CurGuardGauge.Value > 0)
         {
-            guardStartTime = Time.time;
-            isGuarding = true;
+            if (!IsGuarding) GuardStartTime = Time.time;
+            IsGuarding = true;
         }
         else
         {
-            isGuarding = false;
+            IsGuarding = false;
         }
         if (Input.GetMouseButton(0))
         {
-            if (Time.time >= nextAttackTime && !isGuarding)
+            if (Time.time >= NextAttackTime && !IsGuarding)
             {
                 Attack();
-                nextAttackTime = Time.time + 1f / attackSpeed;
+                NextAttackTime = Time.time + 1f / CurrentWeapon.GetAttackSpeed;
             }
         }
     }
 
     private void Move()
     {
-        Vector2 nextPosition = rb.position + movement * moveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(nextPosition);
+        Vector2 NextPosition = Rb.position + Movement * BaseStats.GetMoveSpeed * Time.fixedDeltaTime;
+        Rb.MovePosition(NextPosition);
     }
 
     private void Attack()
@@ -76,40 +93,54 @@ public class Player : MonoBehaviour
         return;
     }
 
+    [ServerRpc]
+    private void RequestSetWeaponServerRpc(int Index)
+    {
+        CurrentWeaponIndex.Value = Index;
+        if (CurHealth.Value <= 0) CurHealth.Value = BaseStats.GetMaxHealth;
+    }
+
+    private void UpdateWeaponVisual(int OldIndex, int NewIndex)
+    {
+        if (NewIndex < 0 || NewIndex >= AvailableWeapons.Count) return;
+        CurrentWeapon = AvailableWeapons[NewIndex];
+        // TODO: Weapon Modeling change logic (Thank you UI)
+    }
     public void TakeDamage(float EnemyDamage)
     {
-        if (isGuarding && curGuardGauge > 0)
+        if (!IsServer) return;
+
+        if (IsGuarding && CurGuardGauge.Value > 0)
         {
-            if (Time.time - guardStartTime <= 0.2f)
+            if (Time.time - GuardStartTime <= 0.2f)
             {
-                curGuardGauge -= (EnemyDamage * 0.5f);
-                PlayJustGuardEffect();
+                CurGuardGauge.Value -= (EnemyDamage * 0.5f);
+                PlayJustGuardEffectClientRpc();
             }
             else
             {
                 float blockedDamage = EnemyDamage * 0.5f;
-                curGuardGauge -= blockedDamage;
+                CurGuardGauge.Value -= blockedDamage;
             }
         }
         else
         {
-            curHealth -= EnemyDamage;
+            CurHealth.Value -= EnemyDamage;
         }
 
-        if (curHealth <= 0)
+        if (CurHealth.Value <= 0)
         {
             Die();
         }
     }
 
-    private void PlayJustGuardEffect()
+    private void PlayJustGuardEffectClientRpc()
     {
         // TODO : SFX, VFX.
     }
 
     private void Die()
     {
-        return;
         // TODO : gameover screen, sprite.play(died)
     }
 
