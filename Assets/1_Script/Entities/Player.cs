@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using ProjectJS.PStats;
-using Unity.Netcode;
-using UnityEditor.Toolbars;
+using Unity.Netcode
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : NetworkBehaviour
