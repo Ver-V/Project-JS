@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace ProjectJS.Manager
 {
-    public class PlayerSpawner : NetworkBehaviour
+	public class PlayerSpawner : NetworkBehaviour
 	{
 		private static PlayerSpawner instance;
 		public static PlayerSpawner Instance { get => instance; }

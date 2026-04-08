@@ -1,6 +1,5 @@
-using Garage.Manager;
-using ProjectJS.Utils;
 using Netcode.Transports.Facepunch;
+using ProjectJS.Utils;
 using Steamworks;
 using Steamworks.Data;
 using System.Collections.Generic;
@@ -38,7 +37,7 @@ namespace ProjectJS.Manager
 			if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.IsConnectedClient)
 			{
 				ulong ping = NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetCurrentRtt(NetworkManager.ServerClientId);
-				//Debug.Log("PingRtt: " + ping + "ms");
+				Debug.Log("PingRtt: " + ping + "ms");
 			}
 		}
 

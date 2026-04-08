@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using ProjectJS.PStats;
 using Unity.Netcode;
-using UnityEditor.Toolbars;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : NetworkBehaviour
@@ -14,33 +12,32 @@ public class Player : NetworkBehaviour
     [Header("Weapon System")]
     [SerializeField] private List<WeaponData> AvailableWeapons;
 
-    private NetworkVariable<float> curHealth = new NetworkVariable<float>(); // player's current health
-    private NetworkVariable<float> curGuardGauge = new NetworkVariable<float>(); // player's current guard gauge
-    private NetworkVariable<int> currentWeaponIndex = new NetworkVariable<int>(0);
+    private NetworkVariable<float> CurHealth = new NetworkVariable<float>(); // player's current health
+    private NetworkVariable<float> CurGuardGauge = new NetworkVariable<float>(); // player's current guard gauge
+    private NetworkVariable<int> CurrentWeaponIndex = new NetworkVariable<int>(0);
 
-    private Rigidbody2D rb;
-    private Vector2 movement;
-    private bool isGuarding = false;
-    private float guardStartTime = 0.0f;
-    private float nextAttackTime = 0f;
-    private WeaponData currentWeapon;
-    public WeaponData CurrentWeapon => currentWeapon;
+    private Rigidbody2D Rb;
+    private Vector2 Movement;
+    private bool IsGuarding = false;
+    private float GuardStartTime = 0.0f;
+    private float NextAttackTime = 0f;
+    private WeaponData CurrentWeapon;
 
     public override void OnNetworkSpawn()
     {
 
-        rb = GetComponent<Rigidbody2D>();
-        currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
+        Rb = GetComponent<Rigidbody2D>();
+        CurrentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
 
         if (IsOwner) 
         {   // Throw Selection class
             int WeaponChoice = PlayerWeaponSelection.SelectedWeaponIndex;
             // report my choice
-            SetWeaponRpc(WeaponChoice);
+            RequestSetWeaponServerRpc(WeaponChoice);
         }
-        else if (currentWeaponIndex.Value != -1)
+        else if (CurrentWeaponIndex.Value != -1)
         {   // Synchronize with other players
-            UpdateWeaponVisual(-1, currentWeaponIndex.Value);
+            UpdateWeaponVisual(-1, CurrentWeaponIndex.Value);
         }
 
     }
@@ -60,33 +57,33 @@ public class Player : NetworkBehaviour
 
     private void HandleInput()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
-        movement = movement.normalized;
+        Movement.x = Input.GetAxisRaw("Horizontal");
+        Movement.y = Input.GetAxisRaw("Vertical");
+        Movement = Movement.normalized;
 
-        if (Input.GetMouseButton(1)  && curGuardGauge.Value > 0)
+        if (Input.GetMouseButton(1)  && CurGuardGauge.Value > 0)
         {
-            if (!isGuarding) guardStartTime = Time.time;
-            isGuarding = true;
+            if (!IsGuarding) GuardStartTime = Time.time;
+            IsGuarding = true;
         }
         else
         {
-            isGuarding = false;
+            IsGuarding = false;
         }
         if (Input.GetMouseButton(0))
         {
-            if (Time.time >= nextAttackTime && !isGuarding && currentWeapon != null)
+            if (Time.time >= NextAttackTime && !IsGuarding)
             {
                 Attack();
-                nextAttackTime = Time.time + 1f / Mathf.Max(0.01f, currentWeapon.AttackSpeed);
+                NextAttackTime = Time.time + 1f / CurrentWeapon.GetAttackSpeed;
             }
         }
     }
 
     private void Move()
     {
-        Vector2 NextPosition = rb.position + movement * BaseStats.MoveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(NextPosition);
+        Vector2 NextPosition = Rb.position + Movement * BaseStats.GetMoveSpeed * Time.fixedDeltaTime;
+        Rb.MovePosition(NextPosition);
     }
 
     private void Attack()
@@ -94,55 +91,49 @@ public class Player : NetworkBehaviour
         return;
     }
 
-    [Rpc(SendTo.Server)]
-    private void SetWeaponRpc(int Index)
+    [ServerRpc]
+    private void RequestSetWeaponServerRpc(int Index)
     {
-        currentWeaponIndex.Value = Index;
-        if (curHealth.Value <= 0) curHealth.Value = BaseStats.MaxHealth;
+        CurrentWeaponIndex.Value = Index;
+        if (CurHealth.Value <= 0) CurHealth.Value = BaseStats.GetMaxHealth;
     }
 
     private void UpdateWeaponVisual(int OldIndex, int NewIndex)
     {
         if (NewIndex < 0 || NewIndex >= AvailableWeapons.Count) return;
-        currentWeapon = AvailableWeapons[NewIndex];
+        CurrentWeapon = AvailableWeapons[NewIndex];
         // TODO: Weapon Modeling change logic (Thank you UI)
     }
     public void TakeDamage(float EnemyDamage)
     {
-        if (!IsOwner) return;
+        if (!IsServer) return;
 
-        TakeDamageServerRpc(EnemyDamage);
-    }
-
-    [Rpc(SendTo.Server)]
-    private void TakeDamageServerRpc(float EnemyDamage)
-    {
-        if (isGuarding && curGuardGauge.Value > 0)
+        if (IsGuarding && CurGuardGauge.Value > 0)
         {
-            if (Time.time - guardStartTime <= 0.2f)
+            if (Time.time - GuardStartTime <= 0.2f)
             {
-                curGuardGauge.Value -= (EnemyDamage * 0.5f);
-                PlayJustGuardEffectRpc();
+                CurGuardGauge.Value -= (EnemyDamage * 0.5f);
+                PlayJustGuardEffectClientRpc();
             }
             else
             {
                 float blockedDamage = EnemyDamage * 0.5f;
-                curGuardGauge.Value -= blockedDamage;
+                CurGuardGauge.Value -= blockedDamage;
             }
         }
         else
         {
-            curHealth.Value -= EnemyDamage;
+            CurHealth.Value -= EnemyDamage;
         }
 
-        if (curHealth.Value <= 0)
+        if (CurHealth.Value <= 0)
         {
             Die();
         }
     }
 
-    [Rpc(SendTo.NotMe)]
-    private void PlayJustGuardEffectRpc()
+    [ClientRpc]
+    private void PlayJustGuardEffectClientRpc()
     {
         // TODO : SFX, VFX.
     }
