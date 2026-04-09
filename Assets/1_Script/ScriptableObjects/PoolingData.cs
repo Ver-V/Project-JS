@@ -12,7 +12,7 @@ namespace ProjectJS.ScriptableObjects
         SFX = 1,
 
         // VFX (51 ~ 100)
-        VFX_Splash = 51,
+        VFX_Explode = 51,
 
         // Projectile (101 ~ 120)
         Projectile_Bullet = 101,

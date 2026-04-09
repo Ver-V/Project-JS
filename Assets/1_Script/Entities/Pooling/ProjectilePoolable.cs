@@ -1,4 +1,6 @@
+using ProjectJS.Manager;
 using UnityEngine;
+using ProjectJS.ScriptableObjects;
 
 namespace ProjectJS.Entities
 {
@@ -15,11 +17,15 @@ namespace ProjectJS.Entities
         public override void OnDespawn()
         {
             base.OnDespawn();
-            CancelInvoke(nameof(Return));
+
+			Managers.Pool.Get(PoolingType.VFX_Explode, transform.position);
+			CancelInvoke(nameof(Return));
         }
 
         void OnCollisionEnter(Collision collision)
         {
+            // TODO - 이건 Projectile에서 호출 필요
+            Managers.Pool.Get(PoolingType.VFX_Explode, transform.position);
             Return();
         }
     }
