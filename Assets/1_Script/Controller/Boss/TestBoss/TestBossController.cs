@@ -1,10 +1,9 @@
-using ProjectJS.Animation;
+using ProjectJS.Entities;
 using ProjectJS.Manager;
+using ProjectJS.ScriptableObjects;
+using ProjectJS.Utils;
 using System.Collections;
 using UnityEngine;
-using ProjectJS.ScriptableObjects;
-using ProjectJS.Entities;
-using ProjectJS.Utils;
 
 namespace ProjectJS.Controller
 {
@@ -25,19 +24,9 @@ namespace ProjectJS.Controller
 		private enum State { Init, Roam, Detect, Pattern }
 		private StateMachine<State> stateMachine;
 
-		protected Animator animator;
-		protected BossAttackAnimNotifier[] attackAnimNotifiers;
-		protected bool isAttackAnimPlaying = false;
-
-		private void Awake()
+		protected override void OnAwake()
 		{
-			animator = GetComponent<Animator>();
-			attackAnimNotifiers = animator.GetBehaviours<BossAttackAnimNotifier>();
-			foreach (var notifiers in attackAnimNotifiers)
-			{
-				notifiers.OnStartAction += OnAttackStart;
-				notifiers.OnEndAction += OnAttackEnd;
-			}
+			base.OnAwake();
 
 			stateMachine = new(this);
 			stateMachine.AddState(State.Init, OnStartInit);
@@ -75,7 +64,7 @@ namespace ProjectJS.Controller
 
 		private IEnumerator OnStartPattern()
 		{
-			yield return Pattern1();
+			yield return bossAttack.GetRandomPattern();
 			stateMachine.ChangeState(State.Roam);
 		}
 
@@ -108,28 +97,15 @@ namespace ProjectJS.Controller
 			transform.position = targetPos;
 		}
 
-		// HACK - 테스트용 코루틴입니다.
-		//	실사용시 IBossPattern 인터페이스 구현하여 BossAttack 스크립트를 통해 실행되어야 합니다.
-		private IEnumerator Pattern1()
-		{
-			animator.SetTrigger("isAttack");
-			yield return null;
-			yield return new WaitUntil(() => !isAttackAnimPlaying);
-		}
-
-		protected virtual void OnAttackStart()
-		{
-			isAttackAnimPlaying = true;
-		}
-		protected virtual void OnAttackEnd()
-		{
-			isAttackAnimPlaying = false;
-		}
-
-		// Animation Event
 		private void OnAttack()
 		{
 			Managers.Pool.Get(PoolingType.Projectile_Bullet)
+				.GetComponent<Projectile>()
+				.Init(0, pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
+			Managers.Pool.Get(PoolingType.Projectile_Bullet1)
+				.GetComponent<Projectile>()
+				.Init(0, pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
+			Managers.Pool.Get(PoolingType.Projectile_Bullet2)
 				.GetComponent<Projectile>()
 				.Init(0, pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
 		}

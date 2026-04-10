@@ -16,6 +16,8 @@ namespace ProjectJS.ScriptableObjects
 
         // Projectile (101 ~ 120)
         Projectile_Bullet = 101,
+        Projectile_Bullet1,
+        Projectile_Bullet2,
     }
 
     [System.Serializable]

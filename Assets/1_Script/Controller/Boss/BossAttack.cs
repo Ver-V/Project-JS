@@ -1,3 +1,4 @@
+using ProjectJS.Animation;
 using ProjectJS.Utils;
 using System.Collections;
 using System.Linq;
@@ -16,50 +17,41 @@ namespace ProjectJS.Controller
     {
 		[SerializeField] private int enablePatternCount;
 
-		private bool isPatterning = false;
-		private Coroutine patternCoroutine = null;
+		protected BossAttackAnimNotifier[] attackAnimNotifiers;
+		protected bool isAttackAnimPlaying = false;
+
 		private IBossPattern[] enablePattern = null;
+		
+		public bool IsAttackAnimPlaying => isAttackAnimPlaying;
 		
 		private void Awake()
 		{
-			isPatterning = false;
 			enablePattern = GetComponents<IBossPattern>();
 			enablePattern.Shuffle();
 			enablePattern = enablePattern.Take(enablePatternCount).ToArray();
+
+			attackAnimNotifiers = GetComponent<Animator>().GetBehaviours<BossAttackAnimNotifier>();
+			foreach (var notifiers in attackAnimNotifiers)
+			{
+				notifiers.OnStartAction += OnAttackStart;
+				notifiers.OnEndAction += OnAttackEnd;
+			}
 		}
 
-		public void StartAttack()
+		public IEnumerator GetRandomPattern()
 		{
-			if (isPatterning)
-			{
-				Debug.LogWarning("BossAttack - Pattern in progress.");
-				return; 
-			}
-
-			try
-			{
-				enablePattern.Shuffle();
-				patternCoroutine = StartCoroutine(AttackCoroutine(enablePattern.First(), 0f /** TODO - Boss attack power needed **/));
-			}
-			catch { }
+			enablePattern.Shuffle();
+			return enablePattern.First().DoPattern(this, 0f);
 		}
 
-		public void StopAttack()
+		protected virtual void OnAttackStart()
 		{
-			if (!isPatterning)
-			{
-				Debug.LogWarning("BossAttack - Pattern is not in progress.");
-				return;
-			}
-
-			StopCoroutine(patternCoroutine);
+			isAttackAnimPlaying = true;
 		}
 
-		private IEnumerator AttackCoroutine(IBossPattern pattern, float attackPower)
+		protected virtual void OnAttackEnd()
 		{
-			isPatterning = true;
-			yield return pattern.DoPattern(this, attackPower);
-			isPatterning = false;
+			isAttackAnimPlaying = false;
 		}
 	}
 }
