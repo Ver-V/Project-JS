@@ -52,8 +52,25 @@ namespace ProjectJS.Skills
                 // cooldown update
                 lastSkillTime = Time.time;
                 
+                PlayLocalSkillEffects(currentSkill, direction);
+
                 // using skill syscall
                 UseSkillServerRpc(direction, shIdx);
+            }
+        }
+
+        private void PlayLocalSkillEffects(SkillData skillData, Vector2 direction)
+        {
+            if (skillData.VfxPrefab != null)
+            {
+                // TODO: Run VFX locally
+                // 예: Instantiate(skillData.VfxPrefab, transform.position, Quaternion.identity);
+            }
+
+            if (skillData.SfxClip != null)
+            {
+                // TODO: Run SFXs locally
+                // 예: AudioSource.PlayClipAtPoint(skillData.SfxClip, transform.position);
             }
         }
 
@@ -72,7 +89,7 @@ namespace ProjectJS.Skills
             NetworkObject networkObj = skillInstance.GetComponent<NetworkObject>();
             if (networkObj != null)
             {
-                networkObj.SpawnWithOwnership(rpcParams.Receive.SenderClientId);
+                networkObj.Spawn();
                 skillInstance.Initialize(player, currentSkill, equippedShard, direction);
 
                 InitializeSkillClientRpc(networkObj.NetworkObjectId, direction, shardIdx);

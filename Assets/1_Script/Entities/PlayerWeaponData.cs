@@ -13,11 +13,11 @@ namespace ProjectJS.PStats
         [SerializeField] private GameObject weaponPrefab; // kind of weapon
         [SerializeField] private SkillData weaponSkill; // weapon's specific skill
 
-        public string WeaponName { get => weaponName; set => weaponName = value; }
-        public float Damage { get => damage; set => damage = value; }
-        public float AttackRange { get => attackRange; set => attackRange = value; }
-        public float AttackSpeed { get => attackSpeed; set => attackSpeed = value; }
-        public GameObject WeaponPrefab { get => weaponPrefab; set => weaponPrefab = value; }
-        public SkillData WeaponSkill { get => weaponSkill; set => weaponSkill = value; }
+        public string WeaponName => weaponName;
+        public float Damage => damage;
+        public float AttackRange => attackRange;
+        public float AttackSpeed => attackSpeed;
+        public GameObject WeaponPrefab => weaponPrefab;
+        public SkillData WeaponSkill => weaponSkill;
     }
 }

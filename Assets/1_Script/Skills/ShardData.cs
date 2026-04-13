@@ -20,12 +20,12 @@ namespace ProjectJS.Skills
         [SerializeField] private float cooldownMultiplier = 1.0f; // Cooldown reduce or increase
         [SerializeField] private GameObject speciesEffectprefab; // species effect
 
-        public string ShardName { get { return shardName; } set { shardName = value; } }
-        public ShardSpecies Species { get => species; set => species = value; }
+        public string ShardName => shardName;
+        public ShardSpecies Species => species;
         public StatusEffect GrantedEffect => grantedEffect;
-        public float DamageMultiplier { get => damageMultiplier; set => damageMultiplier = value; }
-        public float RangeMultiplier { get => rangeMultiplier; set => rangeMultiplier = value; }
-        public float CooldownMultiplier { get => cooldownMultiplier; set => cooldownMultiplier = value; }
-        public GameObject SpeciesEffectprefab { get => speciesEffectprefab; set => speciesEffectprefab = value; }
+        public float DamageMultiplier => damageMultiplier;
+        public float RangeMultiplier => rangeMultiplier;
+        public float CooldownMultiplier => cooldownMultiplier;
+        public GameObject SpeciesEffectprefab => speciesEffectprefab;
     }
 }

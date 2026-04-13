@@ -16,22 +16,22 @@ private float finalRange;
 private float finalCooldown;
 private StatusEffect finalStatusEffect;
 
-public Player Caster { get => caster; set => caster = value; }
-public SkillData BaseSkillData { get => baseSkillData; set => baseSkillData = value; }
-public ShardData EquippedShard { get => equippedShard; set => equippedShard = value; }
-public Vector2 SkillDirection { get => skillDirection; set => skillDirection = value; }
+public Player Caster => caster;
+public SkillData BaseSkillData => baseSkillData;
+public ShardData EquippedShard => equippedShard;
+public Vector2 SkillDirection => skillDirection;
 
-public float FinalDamage { get => finalDamage; set => finalDamage = value; }
-public float FinalRange { get => finalRange; set => finalRange = value; }
-public float FinalCooldown { get => finalCooldown; set => finalCooldown = value; }
-public StatusEffect FinalStatusEffect { get => finalStatusEffect; set => finalStatusEffect = value; }
+public float FinalDamage => finalDamage;
+public float FinalRange => finalRange;
+public float FinalCooldown => finalCooldown;
+public StatusEffect FinalStatusEffect => finalStatusEffect;
 
         public virtual void Initialize(Player caster, SkillData data, ShardData shard, Vector2 direction)
         {
-            Caster = caster;
-            BaseSkillData = data;
-            EquippedShard = shard;
-            SkillDirection = direction.normalized;
+            this.caster = caster;
+            this.baseSkillData = data;
+            this.equippedShard = shard;
+            this.skillDirection = direction.normalized;
 
             CalculateFinalStats();
             PlayEffects();
@@ -43,12 +43,12 @@ public StatusEffect FinalStatusEffect { get => finalStatusEffect; set => finalSt
 
         private void CalculateFinalStats()
         {
-            float damageMultiplier = (EquippedShard != null) ? EquippedShard.DamageMultiplier : 1.0f;
-            float rangeMultiplier = (EquippedShard != null) ? EquippedShard.RangeMultiplier : 1.0f;
-            float cooldownMultiplier = (EquippedShard != null) ? EquippedShard.CooldownMultiplier : 1.0f;
-            FinalDamage = BaseSkillData.BaseDamage* damageMultiplier;
-            FinalRange = BaseSkillData.BaseRange* rangeMultiplier;
-            FinalStatusEffect = (EquippedShard != null) ? EquippedShard.GrantedEffect : StatusEffect.None;
+            float damageMultiplier = (equippedShard != null) ? equippedShard.DamageMultiplier : 1.0f;
+            float rangeMultiplier = (equippedShard != null) ? equippedShard.RangeMultiplier : 1.0f;
+            float cooldownMultiplier = (equippedShard != null) ? equippedShard.CooldownMultiplier : 1.0f;
+            finalDamage = baseSkillData.BaseDamage* damageMultiplier;
+            finalRange = baseSkillData.BaseRange* rangeMultiplier;
+            finalStatusEffect = (equippedShard != null) ? equippedShard.GrantedEffect : StatusEffect.None;
         }
 
 protected void PlayEffects()
@@ -68,7 +68,7 @@ protected abstract void Execute();
 
 protected void ApplyDamageAndEffect(Collider2D enemyCollider)
     {
-        if (!IsOwner) return;
+        if (!IsServer) return;
 
          /* TODO: fix the script later 
           var enemy = enemyCollider.GetComponent<Enemy>();
@@ -77,6 +77,8 @@ protected void ApplyDamageAndEffect(Collider2D enemyCollider)
               if (FinalStatusEffect != StatusEffect.None) {
                   enemy.ApplyStatusEffect(FinalStatusEffect);
               } 
+              
+              GetComponent<NetworkObject>().Despawn();
           } */
 
         }

@@ -14,16 +14,15 @@ namespace ProjectJS.Skills
         [Header("Visual & Audio")]
         [SerializeField] private GameObject vfxPrefab; // Skill Effects
         [SerializeField] private AudioClip sfxClip; // Skill Sounds
-
         [SerializeField] private SkillBase skillLogicPrefab; // Skill logic prefab (sword, axe, spear... etc.)
         
-        public string SkillName { get => skillName; set => skillName = value; }
-        public float BaseDamage { get => baseDamage; set => baseDamage = value; }
-        public float BaseCooldown { get => baseCooldown; set => baseCooldown = value; }
-        public float BaseRange { get => baseRange; set => baseRange = value; }
-        public GameObject VfxPrefab { get => vfxPrefab; set => vfxPrefab = value; }
-        public AudioClip SfxClip { get => sfxClip; set => sfxClip = value; }
-        public SkillBase SkillLogicPrefab { get => skillLogicPrefab; set => skillLogicPrefab = value; }
+        public string SkillName => skillName;
+        public float BaseDamage => baseDamage;
+        public float BaseCooldown => baseCooldown;
+        public float BaseRange => baseRange;
+        public GameObject VfxPrefab => vfxPrefab;
+        public AudioClip SfxClip => sfxClip;
+        public SkillBase SkillLogicPrefab => skillLogicPrefab;
     }
 
 }

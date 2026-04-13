@@ -10,9 +10,9 @@ namespace ProjectJS.PStats
         [SerializeField] private float maxGuardGauge = 100.0f; // player's max guard gauge
         [SerializeField] private float moveSpeed = 5.0f; // player's movement speed
 
-        public float MaxHealth { get => maxHealth; set => maxHealth = value; }
-        public float MaxGuardGauge { get => maxGuardGauge; set => maxGuardGauge = value; }
-        public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
+        public float MaxHealth => maxHealth;
+        public float MaxGuardGauge => maxGuardGauge;
+        public float MoveSpeed => moveSpeed;
 
     }
 }

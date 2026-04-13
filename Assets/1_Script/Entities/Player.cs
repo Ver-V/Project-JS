@@ -22,7 +22,7 @@ public class Player : NetworkBehaviour
     private Vector2 movement;
     private bool isGuarding = false;
     private float guardStartTime = 0.0f;
-    private float nextAttackTime = 0f;
+    private float nextAttackTime = 0.0f;
     private WeaponData currentWeapon;
     public WeaponData CurrentWeapon => currentWeapon;
 
@@ -137,8 +137,14 @@ public class Player : NetworkBehaviour
 
         if (curHealth.Value <= 0)
         {
-            Die();
+            DieClientRpc();
         }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void DieClientRpc()
+    {
+        Die();
     }
 
     [Rpc(SendTo.NotMe)]
