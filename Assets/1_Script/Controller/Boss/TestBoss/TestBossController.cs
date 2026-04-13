@@ -21,21 +21,38 @@ namespace ProjectJS.Controller
 		[Header("Sockets")]
 		[SerializeField] private Transform pattern1Socket;
 
-		private enum State { Init, Roam, Detect, Pattern }
+		private enum State { Init, Roam, Detect, Pattern, Dead }
 		private StateMachine<State> stateMachine;
 
 		protected override void OnAwake()
 		{
 			base.OnAwake();
 
+			var bossStat = Managers.Resource.GetBossStat();
+			statContainer.AddStat(new HealthStat(bossStat.MaxHP));
+			statContainer.AddStat(new AttackStat(DamageType.Physics, bossStat.AttackPower));
+			statContainer.AddStat(new DefenseStat(bossStat.DefensePower));
+			statContainer.AddStat(new MovementStat(bossStat.MoveSpeed));
+
 			stateMachine = new(this);
 			stateMachine.AddState(State.Init, OnStartInit);
 			stateMachine.AddState(State.Roam, OnStartRoam, OnEndRoam);
 			stateMachine.AddState(State.Detect, OnStartDetect);
 			stateMachine.AddState(State.Pattern, OnStartPattern, OnEndPattern);
+			stateMachine.AddState(State.Dead, OnStartDead, OnEndDead);
 			stateMachine.ChangeState(State.Init);
 		}
 
+		protected override void OnDamaged()
+		{
+
+		}
+
+		protected override void OnDead()
+		{
+			stateMachine.ChangeState(State.Dead);
+		}
+		
 		private IEnumerator OnStartInit()
 		{
 			yield return null;
@@ -71,6 +88,16 @@ namespace ProjectJS.Controller
 		private IEnumerator OnEndPattern()
 		{
 			yield return new WaitForSeconds(1.0f);
+		}
+
+		private IEnumerator OnStartDead()
+		{
+			yield return null;
+		}
+
+		private IEnumerator OnEndDead()
+		{
+			yield return null;
 		}
 
 		private IEnumerator Move()

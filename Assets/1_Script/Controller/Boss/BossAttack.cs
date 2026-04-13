@@ -44,6 +44,11 @@ namespace ProjectJS.Controller
 			return enablePattern.First().DoPattern(this, 0f);
 		}
 
+		public void OnReset()
+		{
+			isAttackAnimPlaying = false;
+		}
+
 		protected virtual void OnAttackStart()
 		{
 			isAttackAnimPlaying = true;
