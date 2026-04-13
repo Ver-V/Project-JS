@@ -19,6 +19,7 @@ namespace ProjectJS.Controller
 		private void Start()
 		{
 			if (!NetworkManager.IsHost) return;
+			OnStart();
 		}
 
 		protected abstract void OnDamaged();
@@ -43,6 +44,7 @@ namespace ProjectJS.Controller
 			}
 
 			healthStat.OnCurrentHPChanged += ((value) => { currentHP.Value = value; });
+			healthStat.OnCurrentHPChanged.Invoke(healthStat.CurrentHP);
 		}
 
 		public void RequestAnimTrigger(string param)

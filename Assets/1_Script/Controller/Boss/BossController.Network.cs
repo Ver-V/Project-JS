@@ -8,7 +8,7 @@ namespace ProjectJS.Controller
 		[Header("DEBUG")]
 		[SerializeField] protected NetworkVariable<float> currentHP = new();
 
-		[ServerRpc]
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
 		public void RequestTakeDamageServerRpc(float damage)
 		{
 			if (!statContainer.TryGet(out HealthStat healthStat))
