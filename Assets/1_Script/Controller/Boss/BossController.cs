@@ -12,13 +12,13 @@ namespace ProjectJS.Controller
 
 		private void Awake()
 		{
-			if (!IsHost) return;
+			if (!NetworkManager.IsHost) return;
 			OnAwake();
 		}
 
 		private void Start()
 		{
-			if (!IsHost) return;
+			if (!NetworkManager.IsHost) return;
 		}
 
 		protected abstract void OnDamaged();

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3710203708703460802}
   - component: {fileID: 6355758406729802214}
   - component: {fileID: 4792818828789318457}
+  - component: {fileID: -7651527958085768688}
   m_Layer: 0
   m_Name: TestBoss
   m_TagString: Untagged
@@ -51,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 355936672
+  GlobalObjectIdHash: 2200437023
   InScenePlacedSourceGlobalObjectIdHash: 2200437023
   DeferredDespawnTick: 0
   Ownership: 1
@@ -97,7 +98,7 @@ MonoBehaviour:
   SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 1
-  SyncScaleX: 0
+  SyncScaleX: 1
   SyncScaleY: 0
   SyncScaleZ: 0
   PositionThreshold: 0.001
@@ -251,9 +252,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets._1_Script.Controller.Boss.TestBoss.TestBossController
   ShowTopMostFoldoutHeaderGroup: 1
+  currentHP:
+    m_InternalValue: 0
   moveDistance: 1
   moveSpeed: 0.5
   pattern1Socket: {fileID: 4266314090549980620}
+--- !u!114 &-7651527958085768688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e33b1c2aaad865145aaf9b405432531a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.BossAttack
+  enablePatternCount: 1
 --- !u!1 &4444471778697123865
 GameObject:
   m_ObjectHideFlags: 0
