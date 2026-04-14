@@ -422,6 +422,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9057763096665452381}
   - component: {fileID: 5109994840109856660}
+  - component: {fileID: 7150829758230016181}
   m_Layer: 0
   m_Name: PartyMemberInfoUI
   m_TagString: Untagged
@@ -458,3 +459,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9091808690872377803}
   m_CullTransparentMesh: 1
+--- !u!114 &7150829758230016181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9091808690872377803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50241c11cdfdab048a97085a7c1366fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HPGaugeUI
+  gaugeSlider: {fileID: 1566859822309050988}
+  fillImage: {fileID: 5052451836306272929}
+  _hpGaugeText: {fileID: 5364957264204338228}

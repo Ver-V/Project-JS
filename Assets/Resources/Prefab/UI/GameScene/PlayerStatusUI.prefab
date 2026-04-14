@@ -46,6 +46,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3603717076737447593}
   - component: {fileID: 3043004732359437370}
+  - component: {fileID: 7065758701826308553}
   m_Layer: 0
   m_Name: PlayerGuardGaugeUI
   m_TagString: Untagged
@@ -82,6 +83,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2311531843696533129}
   m_CullTransparentMesh: 1
+--- !u!114 &7065758701826308553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2311531843696533129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82870d44185420d47b79b54928ec151f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GuardGaugeUI
+  gaugeSlider: {fileID: 6362793283033128455}
+  fillImage: {fileID: 5668514243458768197}
+  _guardGaugeText: {fileID: 7377259510164867537}
 --- !u!1 &2482285171273460843
 GameObject:
   m_ObjectHideFlags: 0
@@ -205,6 +221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4059834024235298315}
   - component: {fileID: 8257006104205085087}
+  - component: {fileID: 1354218540994400015}
   m_Layer: 0
   m_Name: PlayerHPUI
   m_TagString: Untagged
@@ -241,6 +258,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3585448373064404297}
   m_CullTransparentMesh: 1
+--- !u!114 &1354218540994400015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3585448373064404297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50241c11cdfdab048a97085a7c1366fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HPGaugeUI
+  gaugeSlider: {fileID: 2573710887040355480}
+  fillImage: {fileID: 165304289056230086}
+  _hpGaugeText: {fileID: 4412389023650650426}
 --- !u!1 &3651203764658087816
 GameObject:
   m_ObjectHideFlags: 0
