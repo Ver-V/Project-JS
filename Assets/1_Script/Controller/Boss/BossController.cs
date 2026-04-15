@@ -1,56 +1,55 @@
-using System.Collections;
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace ProjectJS.Controller
 {
-	public partial class BossController : NetworkBehaviour
+	public abstract partial class BossController : NetworkBehaviour
 	{
-		private enum State { Init, Roam, Detect, Pattern }
-		private StateMachine<State> stateMachine;
+		protected Animator animator;
+		protected BossAttack bossAttack;
+
+		protected StatContainer statContainer;
 
 		private void Awake()
 		{
-			stateMachine = new(this);
-			stateMachine.AddState(State.Init, OnStartInit);
-			stateMachine.AddState(State.Roam, OnStartRoam);
-			stateMachine.AddState(State.Detect, OnStartDetect);
-			stateMachine.AddState(State.Pattern, OnStartPattern, OnEndPattern);
-			stateMachine.ChangeState(State.Init);
+			if (!NetworkManager.IsHost) return;
+			OnAwake();
 		}
 
-		private IEnumerator OnStartInit()
+		private void Start()
 		{
-			Debug.Log("Init");
-			yield return null;
-			stateMachine.ChangeState(State.Roam);
-		}
-	
-		private IEnumerator OnStartRoam()
-		{
-			Debug.Log("Roaming...");
-			yield return new WaitForSeconds(1.0f);
-			stateMachine.ChangeState(State.Detect);
-		}
-		
-		private IEnumerator OnStartDetect()
-		{
-			Debug.Log("Detecting...");
-			yield return new WaitForSeconds(1.0f);
-			stateMachine.ChangeState(State.Pattern);
+			if (!NetworkManager.IsHost) return;
+			OnStart();
 		}
 
-		private IEnumerator OnStartPattern()
+		protected abstract void OnDamaged();
+		protected abstract void OnDead();
+
+		protected virtual void OnAwake()
 		{
-			Debug.Log("StartPattern");
-			yield return new WaitForSeconds(1.0f);
-			stateMachine.ChangeState(State.Roam);
+			animator = GetComponent<Animator>();
+			bossAttack = GetComponent<BossAttack>();
+
+			statContainer = new();
+
+			// TODO - HP/UI 연결
+			// currentHP.OnValueChanged((value) => { UIManager.SetHPBar(value); });
+		}
+		protected virtual void OnStart()
+		{
+			if (!statContainer.TryGet(out HealthStat healthStat))
+			{
+				Debug.LogError("No Health Stat");
+				return;
+			}
+
+			healthStat.OnCurrentHPChanged += ((value) => { currentHP.Value = value; });
+			healthStat.OnCurrentHPChanged.Invoke(healthStat.CurrentHP);
 		}
 
-		private IEnumerator OnEndPattern()
+		public void RequestAnimTrigger(string param)
 		{
-			Debug.Log("EndPattern");
-			yield return null;
+			animator.SetTrigger(param);
 		}
 	}
 }

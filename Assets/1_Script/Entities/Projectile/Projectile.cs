@@ -18,9 +18,10 @@ namespace ProjectJS.Entities
 			movement = GetComponent<IProjectileMovement>();
 		}
 
-		public void Init(int id, Vector2 dir)
+		public void Init(int id, Vector2 pos, Vector2 dir)
 		{
 			this.id = id;
+			transform.position = pos.ToVector3();
 			startPos = transform.position;
 			startTime = Time.time;
 			startDir = dir;
@@ -37,12 +38,7 @@ namespace ProjectJS.Entities
 			if (dir.sqrMagnitude > Mathf.Epsilon)
 			{
 				Quaternion targetRot = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
-
-				transform.rotation = Quaternion.Slerp(
-					transform.rotation,
-					targetRot,
-					10f * Time.deltaTime
-				);
+				transform.rotation = targetRot;
 			}
 		}
 	}

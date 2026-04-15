@@ -1,24 +1,26 @@
+using ProjectJS.Controller;
+using Unity.Netcode;
 using UnityEngine;
-using ProjectJS.Manager;
-using ProjectJS.ScriptableObjects;
-using ProjectJS.Entities;
 
 namespace ProjectJS.zTest
 {
-    public class TestComponent : MonoBehaviour
+	public class TestComponent : MonoBehaviour
     {
+        [SerializeField] private GameObject bossPrefab;
         int id = 0;
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                GameObject projectile = Managers.Pool.Get(PoolingType.Projectile_Bullet);
-                projectile.GetComponent<Projectile>().Init(id++, new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)));
+                var obj = Instantiate(bossPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                obj.GetComponent<NetworkObject>().Spawn();
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+
+            if (Input.GetKeyDown(KeyCode.T))
             {
-                Managers.Pool.Get(PoolingType.VFX_Splash);
-            }
+                var obj = FindObjectOfType<BossController>();
+                obj.RequestTakeDamageServerRpc(10);
+			}
         }
     }
 }

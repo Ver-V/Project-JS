@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace ProjectJS.Manager
 {
+	[DefaultExecutionOrder(-100)]
 	public class Managers : MonoBehaviour
 	{
 		private static Managers instance;
@@ -26,6 +27,7 @@ namespace ProjectJS.Manager
 
 			_scene.Init();
 			_input.Init();
+			_resource.Init();
 			_pool.Init();
 		}
 
