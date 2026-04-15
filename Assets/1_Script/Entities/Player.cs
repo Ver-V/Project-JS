@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using ProjectJS.PStats;
 using Unity.Netcode;
+using UnityEditor.Toolbars;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : NetworkBehaviour
@@ -12,32 +14,33 @@ public class Player : NetworkBehaviour
     [Header("Weapon System")]
     [SerializeField] private List<WeaponData> AvailableWeapons;
 
-    private NetworkVariable<float> CurHealth = new NetworkVariable<float>(); // player's current health
-    private NetworkVariable<float> CurGuardGauge = new NetworkVariable<float>(); // player's current guard gauge
-    private NetworkVariable<int> CurrentWeaponIndex = new NetworkVariable<int>(0);
+    private NetworkVariable<float> curHealth = new NetworkVariable<float>(); // player's current health
+    private NetworkVariable<float> curGuardGauge = new NetworkVariable<float>(); // player's current guard gauge
+    private NetworkVariable<int> currentWeaponIndex = new NetworkVariable<int>(0);
 
-    private Rigidbody2D Rb;
-    private Vector2 Movement;
-    private bool IsGuarding = false;
-    private float GuardStartTime = 0.0f;
-    private float NextAttackTime = 0f;
-    private WeaponData CurrentWeapon;
+    private Rigidbody2D rb;
+    private Vector2 movement;
+    private bool isGuarding = false;
+    private float guardStartTime = 0.0f;
+    private float nextAttackTime = 0.0f;
+    private WeaponData currentWeapon;
+    public WeaponData CurrentWeapon => currentWeapon;
 
     public override void OnNetworkSpawn()
     {
 
-        Rb = GetComponent<Rigidbody2D>();
-        CurrentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
+        rb = GetComponent<Rigidbody2D>();
+        currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
 
         if (IsOwner) 
         {   // Throw Selection class
             int WeaponChoice = PlayerWeaponSelection.SelectedWeaponIndex;
             // report my choice
-            RequestSetWeaponServerRpc(WeaponChoice);
+            SetWeaponRpc(WeaponChoice);
         }
-        else if (CurrentWeaponIndex.Value != -1)
+        else if (currentWeaponIndex.Value != -1)
         {   // Synchronize with other players
-            UpdateWeaponVisual(-1, CurrentWeaponIndex.Value);
+            UpdateWeaponVisual(-1, currentWeaponIndex.Value);
         }
 
     }
@@ -57,33 +60,33 @@ public class Player : NetworkBehaviour
 
     private void HandleInput()
     {
-        Movement.x = Input.GetAxisRaw("Horizontal");
-        Movement.y = Input.GetAxisRaw("Vertical");
-        Movement = Movement.normalized;
+        movement.x = Input.GetAxisRaw("Horizontal");
+        movement.y = Input.GetAxisRaw("Vertical");
+        movement = movement.normalized;
 
-        if (Input.GetMouseButton(1)  && CurGuardGauge.Value > 0)
+        if (Input.GetMouseButton(1)  && curGuardGauge.Value > 0)
         {
-            if (!IsGuarding) GuardStartTime = Time.time;
-            IsGuarding = true;
+            if (!isGuarding) guardStartTime = Time.time;
+            isGuarding = true;
         }
         else
         {
-            IsGuarding = false;
+            isGuarding = false;
         }
         if (Input.GetMouseButton(0))
         {
-            if (Time.time >= NextAttackTime && !IsGuarding)
+            if (Time.time >= nextAttackTime && !isGuarding && currentWeapon != null)
             {
                 Attack();
-                NextAttackTime = Time.time + 1f / CurrentWeapon.GetAttackSpeed;
+                nextAttackTime = Time.time + 1f / Mathf.Max(0.01f, currentWeapon.AttackSpeed);
             }
         }
     }
 
     private void Move()
     {
-        Vector2 NextPosition = Rb.position + Movement * BaseStats.GetMoveSpeed * Time.fixedDeltaTime;
-        Rb.MovePosition(NextPosition);
+        Vector2 NextPosition = rb.position + movement * BaseStats.MoveSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(NextPosition);
     }
 
     private void Attack()
@@ -91,49 +94,61 @@ public class Player : NetworkBehaviour
         return;
     }
 
-    [ServerRpc]
-    private void RequestSetWeaponServerRpc(int Index)
+    [Rpc(SendTo.Server)]
+    private void SetWeaponRpc(int Index)
     {
-        CurrentWeaponIndex.Value = Index;
-        if (CurHealth.Value <= 0) CurHealth.Value = BaseStats.GetMaxHealth;
+        currentWeaponIndex.Value = Index;
+        if (curHealth.Value <= 0) curHealth.Value = BaseStats.MaxHealth;
     }
 
     private void UpdateWeaponVisual(int OldIndex, int NewIndex)
     {
         if (NewIndex < 0 || NewIndex >= AvailableWeapons.Count) return;
-        CurrentWeapon = AvailableWeapons[NewIndex];
+        currentWeapon = AvailableWeapons[NewIndex];
         // TODO: Weapon Modeling change logic (Thank you UI)
     }
     public void TakeDamage(float EnemyDamage)
     {
-        if (!IsServer) return;
+        if (!IsOwner) return;
 
-        if (IsGuarding && CurGuardGauge.Value > 0)
+        TakeDamageServerRpc(EnemyDamage);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void TakeDamageServerRpc(float EnemyDamage)
+    {
+        if (isGuarding && curGuardGauge.Value > 0)
         {
-            if (Time.time - GuardStartTime <= 0.2f)
+            if (Time.time - guardStartTime <= 0.2f)
             {
-                CurGuardGauge.Value -= (EnemyDamage * 0.5f);
-                PlayJustGuardEffectClientRpc();
+                curGuardGauge.Value -= (EnemyDamage * 0.5f);
+                PlayJustGuardEffectRpc();
             }
             else
             {
                 float blockedDamage = EnemyDamage * 0.5f;
-                CurGuardGauge.Value -= blockedDamage;
+                curGuardGauge.Value -= blockedDamage;
             }
         }
         else
         {
-            CurHealth.Value -= EnemyDamage;
+            curHealth.Value -= EnemyDamage;
         }
 
-        if (CurHealth.Value <= 0)
+        if (curHealth.Value <= 0)
         {
-            Die();
+            DieClientRpc();
         }
     }
 
-    [ClientRpc]
-    private void PlayJustGuardEffectClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void DieClientRpc()
+    {
+        Die();
+    }
+
+    [Rpc(SendTo.NotMe)]
+    private void PlayJustGuardEffectRpc()
     {
         // TODO : SFX, VFX.
     }
