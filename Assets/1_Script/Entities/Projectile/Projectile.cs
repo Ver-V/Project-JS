@@ -1,3 +1,4 @@
+using ProjectJS.Manager;
 using ProjectJS.Utils;
 using UnityEngine;
 
@@ -5,7 +6,7 @@ namespace ProjectJS.Entities
 {
 	public class Projectile : MonoBehaviour
     {
-		private int id;
+		[SerializeField] private int id;
         private IProjectileMovement movement;
         private Vector2 startPos;
         private Vector2 startDir;
@@ -20,6 +21,8 @@ namespace ProjectJS.Entities
 
 		public void Init(int id, Vector2 pos, Vector2 dir)
 		{
+			Managers.Pool.RegisterProjectileSync(id, this.gameObject);
+			
 			this.id = id;
 			transform.position = pos.ToVector3();
 			startPos = transform.position;
