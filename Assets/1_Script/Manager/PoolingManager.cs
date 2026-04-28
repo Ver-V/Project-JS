@@ -102,16 +102,29 @@ namespace ProjectJS.Manager
 			poolDict[type].Push(obj);
 		}
 
-		public void RegisterProjectileSync(int id, GameObject gameObject)
+		public bool RegisterProjectileSync(int id, GameObject gameObject)
 		{
 			if (projectileDict.ContainsKey(id))
 			{
 				Debug.LogError($"[PoolingManager] ID exists : {id}");
-				return;
+				return false;
 			}
 
 			projectileDict[id] = gameObject;
+			return true;
 		}
+		public bool RemoveProjectile(int id)
+        {
+            if (!projectileDict.ContainsKey(id))
+            {
+                Debug.LogError($"[PoolingManager] ID exists : {id}");
+                return false;
+            }
+
+			GameObject projectileGo = projectileDict[id];
+            Return(projectileGo.GetComponent<Poolable>().PoolingType, projectileGo);
+			return true;
+        }
 
 		private GameObject CreateNewObject(PoolingEntry entry)
 		{

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ProjectJS.Manager
 {
-	public class NetworkTransmission : NetworkBehaviour
+	public partial class NetworkTransmission : NetworkBehaviour
 	{
 		[SerializeField] GameObject playerPrefab;
 		private Dictionary<ulong, PlayerController> playerDict = new();
