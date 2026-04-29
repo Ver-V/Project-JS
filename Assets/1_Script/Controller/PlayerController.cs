@@ -1,5 +1,7 @@
+using ProjectJS.Manager;
 using Unity.Netcode;
 using UnityEngine;
+using ProjectJS.Skills;
 
 namespace ProjectJS.Controller
 {
@@ -10,6 +12,10 @@ namespace ProjectJS.Controller
         private Player player;
         private Rigidbody2D rb;
         private Vector2 movement;
+        private PlayerSkillManager skillManager;
+        private Animator anim;
+
+     
 
         public override void OnNetworkSpawn()
         {
@@ -21,6 +27,8 @@ namespace ProjectJS.Controller
 
             player = GetComponent<Player>();
             rb = GetComponent<Rigidbody2D>();
+            anim = GetComponentInChildren<Animator>();
+            skillManager = GetComponent<PlayerSkillManager>();
         }
 
         void Update()
@@ -37,11 +45,13 @@ namespace ProjectJS.Controller
 
         private void HandleInput()
         {
-            movement.x = Input.GetAxisRaw("Horizontal");
-            movement.y = Input.GetAxisRaw("Vertical");
-            movement = movement.normalized;
+            var input = Managers.PlayerInput.Player;
 
-            if (Input.GetMouseButton(1) && player.CurGuardGauge > 0)
+            movement = input.Move.ReadValue<Vector2>().normalized;
+
+            bool isGuarding = input.Guard.IsPressed();
+
+            if (isGuarding && player.CurGuardGauge > 0)
             {
                 player.SetGuarding(true);
             }
@@ -50,16 +60,32 @@ namespace ProjectJS.Controller
                 player.SetGuarding(false);
             }
 
-            if (Input.GetMouseButton(0))
+            if (input.Attack.WasPressedThisFrame())
             {
                 player.TryAttack();
+            }
+
+            if (input.Skill.WasPressedThisFrame())
+            {
+                if (skillManager != null)
+                {
+                    skillManager.TrySkill();
+                }
             }
         }
 
         private void Move()
         {
-            if (player.Stats == null) return;
+            if (movement != Vector2.zero)
+            {
+                player.FacingDirection = movement;
+                anim.SetFloat("DirX", movement.x);
+                anim.SetFloat("DirY", movement.y);
+            }
             
+            anim.SetFloat("Speed", movement.sqrMagnitude);
+            
+            if (player.Stats == null) return;
             Vector2 nextPosition = rb.position + movement * player.Stats.MoveSpeed * Time.fixedDeltaTime;
             rb.MovePosition(nextPosition);
         }

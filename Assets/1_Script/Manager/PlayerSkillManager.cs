@@ -13,10 +13,12 @@ namespace ProjectJS.Skills
 
         private float lastSkillTime = -100f; // last skill usetime
         private Player player;
+        private Animator anim;
 
         public override void OnNetworkSpawn()
         {
             player = GetComponent<Player>();
+            anim = GetComponentInChildren<Animator>();
         }
 
         void Update()
@@ -45,9 +47,13 @@ namespace ProjectJS.Skills
 
             if (Time.time >= lastSkillTime + finalCooldown)
             {
-                // calculate mouse position
-                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Vector2 direction = (mouseWorldPos - transform.position).normalized;
+                if (anim != null)
+                {
+                    anim.SetTrigger("Skill");
+                }
+                
+                // use facing direction instead of mouse
+                Vector2 direction = player.FacingDirection;
 
                 // cooldown update
                 lastSkillTime = Time.time;
@@ -64,13 +70,13 @@ namespace ProjectJS.Skills
             if (skillData.VfxPrefab != null)
             {
                 // TODO: Run VFX locally
-                // 예: Instantiate(skillData.VfxPrefab, transform.position, Quaternion.identity);
+                Instantiate(skillData.VfxPrefab, transform.position, Quaternion.identity);
             }
 
             if (skillData.SfxClip != null)
             {
                 // TODO: Run SFXs locally
-                // 예: AudioSource.PlayClipAtPoint(skillData.SfxClip, transform.position);
+                AudioSource.PlayClipAtPoint(skillData.SfxClip, transform.position);
             }
         }
 
