@@ -18,18 +18,17 @@ public class Player : NetworkBehaviour
     private NetworkVariable<float> curGuardGauge = new NetworkVariable<float>(); // player's current guard gauge
     private NetworkVariable<int> currentWeaponIndex = new NetworkVariable<int>(0);
 
-    private Rigidbody2D rb;
-    private Vector2 movement;
-    private bool isGuarding = false;
+    public bool IsGuarding { get; private set; } = false;
     private float guardStartTime = 0.0f;
     private float nextAttackTime = 0.0f;
     private WeaponData currentWeapon;
+    
     public WeaponData CurrentWeapon => currentWeapon;
+    public PlayerStats Stats => BaseStats;
+    public float CurGuardGauge => curGuardGauge.Value;
 
     public override void OnNetworkSpawn()
     {
-
-        rb = GetComponent<Rigidbody2D>();
         currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
 
         if (IsOwner) 
@@ -45,48 +44,19 @@ public class Player : NetworkBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetGuarding(bool state)
     {
-        if (!IsOwner) return;
-        HandleInput();
+        if (state && !IsGuarding) guardStartTime = Time.time;
+        IsGuarding = state;
     }
 
-    void FixedUpdate()
+    public void TryAttack()
     {
-        if (!IsOwner) return;
-        Move();
-    }
-
-    private void HandleInput()
-    {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
-        movement = movement.normalized;
-
-        if (Input.GetMouseButton(1)  && curGuardGauge.Value > 0)
+        if (Time.time >= nextAttackTime && !IsGuarding && currentWeapon != null)
         {
-            if (!isGuarding) guardStartTime = Time.time;
-            isGuarding = true;
+            Attack();
+            nextAttackTime = Time.time + 1f / Mathf.Max(0.01f, currentWeapon.AttackSpeed);
         }
-        else
-        {
-            isGuarding = false;
-        }
-        if (Input.GetMouseButton(0))
-        {
-            if (Time.time >= nextAttackTime && !isGuarding && currentWeapon != null)
-            {
-                Attack();
-                nextAttackTime = Time.time + 1f / Mathf.Max(0.01f, currentWeapon.AttackSpeed);
-            }
-        }
-    }
-
-    private void Move()
-    {
-        Vector2 NextPosition = rb.position + movement * BaseStats.MoveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(NextPosition);
     }
 
     private void Attack()
@@ -107,6 +77,7 @@ public class Player : NetworkBehaviour
         currentWeapon = AvailableWeapons[NewIndex];
         // TODO: Weapon Modeling change logic (Thank you UI)
     }
+    
     public void TakeDamage(float EnemyDamage)
     {
         if (!IsOwner) return;
@@ -117,7 +88,7 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void TakeDamageServerRpc(float EnemyDamage)
     {
-        if (isGuarding && curGuardGauge.Value > 0)
+        if (IsGuarding && curGuardGauge.Value > 0)
         {
             if (Time.time - guardStartTime <= 0.2f)
             {
