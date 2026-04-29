@@ -124,17 +124,22 @@ namespace ProjectJS.Controller
 			transform.position = targetPos;
 		}
 
+		// HACK 
+		private int bossID = 1;
+		private int projectileIdx = 0;
 		private void OnAttack()
 		{
+			if (!NetworkManager.IsHost) return;
+
 			Managers.Pool.Get(PoolingType.Projectile_Bullet)
 				.GetComponent<Projectile>()
-				.Init(0, pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
+				.Init(IdUtil.GetProjectileID(bossID, projectileIdx++), pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
 			Managers.Pool.Get(PoolingType.Projectile_Bullet1)
 				.GetComponent<Projectile>()
-				.Init(0, pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
+				.Init(IdUtil.GetProjectileID(bossID, projectileIdx++), pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
 			Managers.Pool.Get(PoolingType.Projectile_Bullet2)
 				.GetComponent<Projectile>()
-				.Init(0, pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
+				.Init(IdUtil.GetProjectileID(bossID, projectileIdx++), pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
 		}
 	}
 }

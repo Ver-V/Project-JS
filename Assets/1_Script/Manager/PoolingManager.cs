@@ -1,7 +1,7 @@
+using ProjectJS.Entities;
 using ProjectJS.ScriptableObjects;
 using System.Collections.Generic;
 using UnityEngine;
-using ProjectJS.Entities;
 
 namespace ProjectJS.Manager
 {
@@ -10,6 +10,8 @@ namespace ProjectJS.Manager
 		private Transform poolRoot = null;
 		private Dictionary<PoolingType, PoolingEntry> entryDict = new();
 		private Dictionary<PoolingType, Stack<GameObject>> poolDict = new();
+
+		private Dictionary<int, GameObject> projectileDict = new();
 
 		private const string PATH_POOLDATA = "Datas/PoolData/";
 
@@ -88,11 +90,42 @@ namespace ProjectJS.Manager
 			}
 
 			obj.GetComponent<Poolable>().OnDespawn();
-			obj.transform.SetParent(poolRoot);
+			// obj.transform.SetParent(poolRoot);
+
+			if (type >= PoolingType.Projectile_Bullet)
+			{
+				int projId = obj.GetComponent<Projectile>().Id;
+				if (projectileDict.ContainsKey(projId))
+					projectileDict.Remove(projId);
+			}
 
 			poolDict[type].Push(obj);
 		}
-		
+
+		public bool RegisterProjectileSync(int id, GameObject gameObject)
+		{
+			if (projectileDict.ContainsKey(id))
+			{
+				Debug.LogError($"[PoolingManager] ID exists : {id}");
+				return false;
+			}
+
+			projectileDict[id] = gameObject;
+			return true;
+		}
+		public bool RemoveProjectile(int id)
+        {
+            if (!projectileDict.ContainsKey(id))
+            {
+                Debug.LogError($"[PoolingManager] ID exists : {id}");
+                return false;
+            }
+
+			GameObject projectileGo = projectileDict[id];
+            Return(projectileGo.GetComponent<Poolable>().PoolingType, projectileGo);
+			return true;
+        }
+
 		private GameObject CreateNewObject(PoolingEntry entry)
 		{
 			GameObject obj = GameObject.Instantiate(entry.Prefab, poolRoot);

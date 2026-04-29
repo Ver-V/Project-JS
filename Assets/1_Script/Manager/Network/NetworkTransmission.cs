@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ProjectJS.Manager
 {
-	public class NetworkTransmission : NetworkBehaviour
+	public partial class NetworkTransmission : NetworkBehaviour
 	{
 		[SerializeField] GameObject playerPrefab;
 		private Dictionary<ulong, PlayerController> playerDict = new();
@@ -85,15 +85,15 @@ namespace ProjectJS.Manager
 			isHeartbeating = false;
 		}
 
-		[ServerRpc(RequireOwnership = false)]
-		private void SendPingServerRpc(ServerRpcParams rpcParams = default)
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+		private void SendPingServerRpc(RpcParams rpcParams = default)
 		{
 			if (!NetworkManager.Singleton.IsHost)
 				return;
 
 			ReceivePingClientRpc(rpcParams.Receive.SenderClientId);
 		}
-		[ClientRpc]
+		[Rpc(SendTo.ClientsAndHost)]
 		private void ReceivePingClientRpc(ulong clientId)
 		{
 			if (clientId != NetworkManager.Singleton.LocalClientId)
@@ -114,19 +114,19 @@ namespace ProjectJS.Manager
 
 		#endregion
 
-		[ServerRpc(RequireOwnership = false)]
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
 		public void IWishToSendAChatServerRPC(string message, ulong fromwho)
 		{
 			ChatFromServerClientRPC(message, fromwho);
 		}
 
-		[ClientRpc]
+		[Rpc(SendTo.ClientsAndHost)]
 		private void ChatFromServerClientRPC(string message, ulong fromwho)
 		{
 			GameManagerEx.Instance.SendMessageToChat(message, fromwho, false);
 		}
 
-		[ServerRpc(RequireOwnership = false)]
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
 		public void AddMeToDictionayServerRPC(ulong steamId, string steamName, ulong clientId)
 		{
 			GameManagerEx.Instance.SendMessageToChat($"{steamName} has joined", clientId, true);
@@ -134,13 +134,13 @@ namespace ProjectJS.Manager
 			GameManagerEx.Instance.UpdateClients();
 		}
 
-		[ClientRpc]
+		[Rpc(SendTo.ClientsAndHost)]
 		public void UpdateClientsPlayerInfoClientRPC(ulong steamId, string steamName, ulong clientId)
 		{
 			GameManagerEx.Instance.AddPlayerToDictionary(clientId, steamName, steamId);
 		}
 
-		[ServerRpc(RequireOwnership = false)]
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
 		public void RemoveMeFromDictionaryServerRPC(ulong steamId)
 		{
 			ulong clientId = GameManagerEx.Instance.GetClientIDBySteamID(steamId);
@@ -148,26 +148,26 @@ namespace ProjectJS.Manager
 			RemovePlayerFromDictionaryClientRPC(steamId);
 		}
 
-		[ClientRpc]
+		[Rpc(SendTo.ClientsAndHost)]
 		public void RemovePlayerFromDictionaryClientRPC(ulong steamId)
 		{
 			Debug.Log("removing client");
 			GameManagerEx.Instance.RemovePlayerFromDictionary(steamId);
 		}
 
-		[ServerRpc(RequireOwnership = false)]
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
 		public void IsTheClientReadyServerRPC(bool ready, ulong clientId)
 		{
 			AClientMightBeReadyClientRPC(ready, clientId);
 		}
 
-		[ClientRpc]
+		[Rpc(SendTo.ClientsAndHost)]
 		private void AClientMightBeReadyClientRPC(bool ready, ulong clientId)
 		{
 			GameManagerEx.Instance.UpdatePlayerIsReady(ready, clientId);
 		}
 
-		[ClientRpc]
+		[Rpc(SendTo.ClientsAndHost)]
 		public void DisconnectAllClientRPC()
 		{
 			if (!IsHost)
@@ -180,7 +180,7 @@ namespace ProjectJS.Manager
 
 		public bool isInGame = false;
 
-		[ServerRpc]
+		[Rpc(SendTo.Server)]
 		public void StartGameServerRPC()
 		{
 			if (!isInGame)
@@ -189,7 +189,7 @@ namespace ProjectJS.Manager
 				StartGameClientRPC();
 			}
 		}
-		[ClientRpc]
+		[Rpc(SendTo.ClientsAndHost)]
 		public void StartGameClientRPC()
 		{
 			isInGame = true;

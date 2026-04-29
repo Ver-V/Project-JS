@@ -1,6 +1,7 @@
 using ProjectJS.Controller;
 using Unity.Netcode;
 using UnityEngine;
+using ProjectJS.Manager;
 
 namespace ProjectJS.zTest
 {
@@ -18,8 +19,7 @@ namespace ProjectJS.zTest
 
             if (Input.GetKeyDown(KeyCode.T))
             {
-                var obj = FindObjectOfType<BossController>();
-                obj.RequestTakeDamageServerRpc(10);
+                NetworkTransmission.instance.RemoveProjectileServerRPC(1007);
 			}
         }
     }
