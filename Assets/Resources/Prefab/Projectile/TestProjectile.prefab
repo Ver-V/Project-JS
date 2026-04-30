@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c9630e11046845469b3dc243b5aed4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Entities.Projectile
+  id: 0
 --- !u!114 &933673618968610228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,9 +124,9 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 8383388497487750666, guid: 45b789b18cec9b9499fe347127ec3717, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8aa0e0e2d29294d5799919b3b96ebe69, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.16, y: 0.16}

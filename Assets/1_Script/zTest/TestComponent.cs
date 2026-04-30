@@ -1,7 +1,6 @@
-using ProjectJS.Controller;
+using ProjectJS.Manager;
 using Unity.Netcode;
 using UnityEngine;
-using ProjectJS.Manager;
 
 namespace ProjectJS.zTest
 {
