@@ -10,6 +10,7 @@ namespace ProjectJS.Controller
 
 		protected StatContainer statContainer;
 
+
 		private void Awake()
 		{
 			if (!NetworkManager.IsHost) return;
@@ -21,6 +22,16 @@ namespace ProjectJS.Controller
 			if (!NetworkManager.IsHost) return;
 			OnStart();
 		}
+
+		protected override void OnNetworkPostSpawn()
+		{
+			base.OnNetworkPostSpawn();
+
+			IncreaseSpawnCountServerRPC();
+		}
+
+		public abstract void TriggerIntro();
+		public abstract void TriggerCombat();
 
 		protected abstract void OnDamaged();
 		protected abstract void OnDead();

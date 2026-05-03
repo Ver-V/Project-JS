@@ -52,7 +52,17 @@ namespace ProjectJS.Controller
 		{
 			stateMachine.ChangeState(State.Dead);
 		}
-		
+
+		public override void TriggerIntro()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public override void TriggerCombat()
+		{
+			throw new System.NotImplementedException();
+		}
+
 		private IEnumerator OnStartInit()
 		{
 			yield return null;
