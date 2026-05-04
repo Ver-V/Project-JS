@@ -139,18 +139,18 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 9128384846270689552, guid: fbb2cd56e7166794abe717e80f083918, type: 3}
+  m_Sprite: {fileID: 1826435285958538685, guid: 4bb48ae9850842c4293fdfda4a26bda0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.21, y: 0.36}
+  m_Size: {x: 0.17, y: 0.34}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!95 &5576231521105880479
 Animator:
   serializedVersion: 7
@@ -167,7 +167,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
+  m_AnimatePhysics: 1
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -302,6 +302,7 @@ Transform:
   - {fileID: 2275703667673801576}
   - {fileID: 6181385065593960196}
   - {fileID: 6333999588769730265}
+  - {fileID: 5119813401710401778}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4521389915209454200
@@ -365,8 +366,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.01, y: 0}
-  m_Size: {x: 0.15, y: 0.35}
+  m_Offset: {x: -0.0033599287, y: -0.014194906}
+  m_Size: {x: 0.16001993, y: 0.34499002}
   m_Direction: 0
 --- !u!114 &-4695640303278020078
 MonoBehaviour:
@@ -380,7 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4261299305
+  GlobalObjectIdHash: 2361543480
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -409,13 +410,14 @@ MonoBehaviour:
   BaseStats:
     maxHealth: 100
     maxGuardGauge: 100
-    moveSpeed: 5
-  AvailableWeapons: []
-  attackPoint: {fileID: 0}
+    moveSpeed: 4
+  AvailableWeapons:
+  - {fileID: 11400000, guid: 524d5e9d319c7094cb5d687a45d221bd, type: 2}
+  attackPoint: {fileID: 5119813401710401778}
   attackSize: {x: 0, y: 0}
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
 --- !u!114 &-5385126495476415868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -443,3 +445,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Skills.PlayerSkillManager
   ShowTopMostFoldoutHeaderGroup: 1
   availableShards: []
+--- !u!1 &6773318671893412020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5119813401710401778}
+  m_Layer: 0
+  m_Name: AttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5119813401710401778
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6773318671893412020}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.148, y: -0.001, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7207697167584427443}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

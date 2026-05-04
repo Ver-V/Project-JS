@@ -62,11 +62,13 @@ namespace ProjectJS.Controller
 
             if (input.Attack.WasPressedThisFrame())
             {
+                Debug.Log("[PlayerController] Attack Input Detected");
                 player.TryAttack();
             }
 
             if (input.Skill.WasPressedThisFrame())
             {
+                Debug.Log("[PlayerController] Skill Input Detected");
                 if (skillManager != null)
                 {
                     skillManager.TrySkill();
@@ -78,11 +80,15 @@ namespace ProjectJS.Controller
         {
             if (movement != Vector2.zero)
             {
-                player.FacingDirection = movement;
-                anim.SetFloat("DirX", movement.x);
-                anim.SetFloat("DirY", movement.y);
+
+                if (movement.x != 0)
+                {
+                    player.FacingDirection = movement.x > 0 ? Vector2.right : Vector2.left;
+                }
+
+                anim.SetFloat("DirX", player.FacingDirection.x);
             }
-            
+
             anim.SetFloat("Speed", movement.sqrMagnitude);
             
             if (player.Stats == null) return;

@@ -24,6 +24,11 @@ namespace ProjectJS.Manager
 			{
 				instance = this;
 				DontDestroyOnLoad(gameObject);
+
+				if (GetComponent<SteamManager>() == null)
+				{
+					gameObject.AddComponent<SteamManager>();
+				}
 			}
 			else
 			{
@@ -178,21 +183,24 @@ namespace ProjectJS.Manager
 
 			NetworkManager.Singleton.SceneManager.OnUnloadEventCompleted += OnSceneUnloaded;
 			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnSceneloaded;
+			
+			// 이 부분이 플레이어 스폰을 담당하는 핵심 이벤트 연결입니다.
+			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnSceneLoadedInNetwork;
+
 			currentLobby.Value.SetGameServer(currentLobby.Value.Owner.Id);
 			Debug.Log("Start Game in lobby...");
 			LockLobby();
 
-			// TODO - Change Scene
-			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnSceneLoadedInNetwork;
+			NetworkManager.Singleton.SceneManager.LoadScene("testScene", LoadSceneMode.Single);
 		}
 		private void OnSceneLoadedInNetwork(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
 		{
 			Debug.Log($"Scene loaded by Server {sceneName}");
-			if (sceneName == "GameScene")
+			if (sceneName == "GameScene" || sceneName == "testScene")
 			{
 				if (!NetworkManager.Singleton.IsHost) return;
 
-				Debug.Log("Game Scene loaded on all clients. Spawning players...");
+				Debug.Log($"{sceneName} loaded on all clients. Spawning players...");
 
 				foreach (ulong clientId in GameManagerEx.Instance.playerInfo.Keys)
 				{
@@ -206,8 +214,9 @@ namespace ProjectJS.Manager
 		private Vector3 GetRandomSpawnPosition()
 		{
 			Vector3 spawnPos = Vector3.zero;
-			spawnPos.x = UnityEngine.Random.Range(-1, 1);
-			spawnPos.z = UnityEngine.Random.Range(-1, 1);
+			spawnPos.x = UnityEngine.Random.Range(-1f, 1f);
+			spawnPos.y = UnityEngine.Random.Range(-1f, 1f);
+			spawnPos.z = 0f;
 
 			return spawnPos;
 		}

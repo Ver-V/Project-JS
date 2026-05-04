@@ -23,30 +23,40 @@ namespace ProjectJS.Skills
 
         void Update()
         {
-            if (!IsOwner) return;
-            // Temp Keycode
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                TrySkill();
-            }
+            // Input is handled via PlayerController
         }
         
         public void TrySkill()
         {
             WeaponData currentWeapon = player.CurrentWeapon;
-            if (currentWeapon == null || currentWeapon.WeaponSkill == null) return;
+            if (currentWeapon == null)
+            {
+                Debug.LogWarning("[PlayerSkillManager] CurrentWeapon is null!");
+                return;
+            }
+            if (currentWeapon.WeaponSkill == null)
+            {
+                Debug.LogWarning($"[PlayerSkillManager] {currentWeapon.WeaponName} has no skill assigned!");
+                return;
+            }
+
             SkillData currentSkill = currentWeapon.WeaponSkill;
 
             int shIdx = equippedShardIndex.Value;
             ShardData equippedShard = (availableShards != null && shIdx >= 0 && shIdx < availableShards.Count) ? availableShards[shIdx] : null;
 
-            if (currentSkill.SkillLogicPrefab == null) return;
+            if (currentSkill.SkillLogicPrefab == null)
+            {
+                Debug.LogError($"[PlayerSkillManager] {currentSkill.name} is missing SkillLogicPrefab!");
+                return;
+            }
 
             float cooldownMultiplier = (equippedShard != null) ? equippedShard.CooldownMultiplier : 1.0f;
             float finalCooldown = currentSkill.BaseCooldown * cooldownMultiplier;
 
             if (Time.time >= lastSkillTime + finalCooldown)
             {
+                Debug.Log($"[PlayerSkillManager] Triggering Skill: {currentSkill.name}");
                 if (anim != null)
                 {
                     anim.SetTrigger("Skill");

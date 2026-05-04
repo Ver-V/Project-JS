@@ -11,6 +11,7 @@ namespace ProjectJS.PStats
         [SerializeField] private float attackRange = 1f; // player's attack range
         [SerializeField] private float attackSpeed = 1f; // player's attack speed per second
         [SerializeField] private GameObject weaponPrefab; // kind of weapon
+        [SerializeField] private Sprite weaponSprite; // weapon's sprite for visual
         [SerializeField] private SkillData weaponSkill; // weapon's specific skill
 
         public string WeaponName => weaponName;
@@ -18,6 +19,7 @@ namespace ProjectJS.PStats
         public float AttackRange => attackRange;
         public float AttackSpeed => attackSpeed;
         public GameObject WeaponPrefab => weaponPrefab;
+        public Sprite WeaponSprite => weaponSprite;
         public SkillData WeaponSkill => weaponSkill;
     }
 }

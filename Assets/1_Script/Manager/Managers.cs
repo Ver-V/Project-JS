@@ -23,6 +23,7 @@ namespace ProjectJS.Manager
 			else
 			{
 				Destroy(this.gameObject);
+				return;
 			}
 
 			_scene.Init();

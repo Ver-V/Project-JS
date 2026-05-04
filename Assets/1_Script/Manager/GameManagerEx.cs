@@ -28,6 +28,7 @@ namespace ProjectJS.Manager
 			else
 			{
 				Destroy(this.gameObject);
+				return;
 			}
 		}
 		#endregion
@@ -68,7 +69,7 @@ namespace ProjectJS.Manager
 
 		public void ConnectedAsClient()
 		{
-			Managers.Scene.UnloadCurrentScene();
+			Managers.Scene.ChangeScene(SceneEnum.Lobby);
 
 			isHost = false;
 			isConnected = true;

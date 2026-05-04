@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using ProjectJS.PStats;
 using Unity.Netcode;
-using UnityEditor.Toolbars;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : NetworkBehaviour
@@ -32,42 +30,61 @@ public class Player : NetworkBehaviour
     public WeaponData CurrentWeapon => currentWeapon;
     public PlayerStats Stats => BaseStats;
     public float CurGuardGauge => curGuardGauge.Value;
-    public Vector2 FacingDirection { get; set; } = Vector2.down;
+    public Vector2 FacingDirection { get; set; } = Vector2.right;
+public override void OnNetworkSpawn()
+{
+    anim = GetComponentInChildren<Animator>();
+    currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
 
-    public override void OnNetworkSpawn()
-    {
-        anim= GetComponentInChildren<Animator>();
+    if (IsOwner) 
+    {   
+        int WeaponChoice = ProjectJS.PStats.PlayerWeaponSelection.SelectedWeaponIndex;
+        if (WeaponChoice < 0) WeaponChoice = 0;
 
-        currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
+        SetWeaponRpc(WeaponChoice);
 
-        if (IsOwner) 
-        {   // Throw Selection class
-            int WeaponChoice = PlayerWeaponSelection.SelectedWeaponIndex;
-            // report my choice
-            SetWeaponRpc(WeaponChoice);
-        }
-        else if (currentWeaponIndex.Value != -1)
-        {   // Synchronize with other players
-            UpdateWeaponVisual(-1, currentWeaponIndex.Value);
-        }
-
-  
-
+        UpdateWeaponVisual(-1, WeaponChoice);
+        Debug.Log($"[Player] Owner Initialized with weapon index: {WeaponChoice}");
     }
+    else if (currentWeaponIndex.Value != -1)
+    {   
+        UpdateWeaponVisual(-1, currentWeaponIndex.Value);
+    }
+}
 
 
     public void OnAttackHit()
     {
-        Vector2 hitCenter = (Vector2)transform.position + (FacingDirection * 1.0f);
+        if (currentWeapon == null) return;
+
+        Vector2 hitCenter;
+
+        if (attackPoint != null)
+        {
+            Vector3 localPos = attackPoint.localPosition;
+            float directionSign = FacingDirection.x >= 0 ? 1f : -1f;
+
+            Vector3 mirroredLocalPos = new Vector3(Mathf.Abs(localPos.x) * directionSign, localPos.y, localPos.z);
+            hitCenter = transform.TransformPoint(mirroredLocalPos);
+        }
+
+        else
+        {
+            float offsetDistance = currentWeapon.AttackRange;
+            hitCenter = (Vector2)transform.position + (FacingDirection * offsetDistance);
+        }
+
+        Debug.DrawLine((Vector2)transform.position, hitCenter, Color.red, 0.5f);
+
         Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(hitCenter, attackSize, 0f, enemyLayer);
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            return;
-           //  enemy.GetComponent<Enemy>().TakeDamage(currentWeapon.Damage);
-        
+            if (enemy.TryGetComponent<ProjectJS.Controller.BossController>(out var boss))
+            {
+                boss.RequestTakeDamageServerRpc(currentWeapon.Damage);
+            }
         }
-
     }
     
     public void SetGuarding(bool state)
@@ -78,7 +95,13 @@ public class Player : NetworkBehaviour
 
     public void TryAttack()
     {
-        if (Time.time >= nextAttackTime && !IsGuarding && currentWeapon != null)
+        if (currentWeapon == null)
+        {
+            Debug.LogWarning("[Player] CurrentWeapon is null! Attack failed.");
+            return;
+        }
+
+        if (Time.time >= nextAttackTime && !IsGuarding)
         {
             Attack();
             nextAttackTime = Time.time + 1f / Mathf.Max(0.01f, currentWeapon.AttackSpeed);
@@ -87,6 +110,7 @@ public class Player : NetworkBehaviour
 
     private void Attack()
     {
+        Debug.Log("[Player] Attack Triggered!");
         if (anim != null)
         {
             anim.SetTrigger("Attack");
@@ -102,22 +126,39 @@ public class Player : NetworkBehaviour
 
     private void UpdateWeaponVisual(int OldIndex, int NewIndex)
     {
-        if (NewIndex < 0 || NewIndex >= AvailableWeapons.Count) return;
+        if (AvailableWeapons == null || AvailableWeapons.Count == 0)
+        {
+            Debug.LogError("[Player] AvailableWeapons list is empty!");
+            return;
+        }
+
+        if (NewIndex < 0 || NewIndex >= AvailableWeapons.Count)
+        {
+            Debug.LogWarning($"[Player] Invalid Weapon Index: {NewIndex}");
+            return;
+        }
+
         currentWeapon = AvailableWeapons[NewIndex];
-        // TODO: Weapon Modeling change logic (Thank you UI)
+        Debug.Log($"[Player] Weapon Updated: {currentWeapon.WeaponName} (Index: {NewIndex})");
+        
+        // TODO: Weapon Sprite change logic
+        // Example: weaponSpriteRenderer.sprite = currentWeapon.WeaponSprite;
     }
     
-    public void TakeDamage(float EnemyDamage)
+    public void TakeDamage(float EnemyDamage, Vector2 attackerPos)
     {
         if (!IsOwner) return;
 
-        TakeDamageServerRpc(EnemyDamage);
+        TakeDamageServerRpc(EnemyDamage, attackerPos);
     }
 
     [Rpc(SendTo.Server)]
-    private void TakeDamageServerRpc(float EnemyDamage)
+    private void TakeDamageServerRpc(float EnemyDamage, Vector2 attackerPos)
     {
-        if (IsGuarding && curGuardGauge.Value > 0)
+        Vector2 dirToAttacker = (attackerPos - (Vector2)transform.position).normalized;
+        float dot = Vector2.Dot(FacingDirection, dirToAttacker);
+
+        if (IsGuarding && curGuardGauge.Value > 0 && dot > 0)
         {
             if (Time.time - guardStartTime <= 0.2f)
             {
