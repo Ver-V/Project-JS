@@ -51,19 +51,18 @@ public StatusEffect FinalStatusEffect => finalStatusEffect;
             finalStatusEffect = (equippedShard != null) ? equippedShard.GrantedEffect : StatusEffect.None;
         }
 
-protected void PlayEffects()
-    {
-            
-        if (BaseSkillData.VfxPrefab != null)
+        protected void PlayEffects()
+        {
+            if (BaseSkillData.VfxPrefab != null)
             {
-                // TODO: Run VFX
+                Instantiate(BaseSkillData.VfxPrefab, transform.position, Quaternion.identity);
             }
 
-        if (BaseSkillData.SfxClip != null)
+            if (BaseSkillData.SfxClip != null)
             {
-                // TODO: Run SFXs
-            } 
-    }
+                AudioSource.PlayClipAtPoint(BaseSkillData.SfxClip, transform.position);
+            }
+        }
 protected abstract void Execute();
 
 protected void ApplyDamageAndEffect(Collider2D enemyCollider)

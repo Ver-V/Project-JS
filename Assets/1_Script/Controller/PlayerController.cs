@@ -40,6 +40,7 @@ namespace ProjectJS.Controller
         void FixedUpdate()
         {
             if (!IsOwner) return;
+            if (player.IsHitStopping) return;
             Move();
         }
 

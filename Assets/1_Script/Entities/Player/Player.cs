@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ProjectJS.PStats;
+using ProjectJS.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -26,31 +27,36 @@ public class Player : NetworkBehaviour
     private float nextAttackTime = 0.0f;
     private WeaponData currentWeapon;
     private Animator anim;
+    private Rigidbody2D rb;
+    private bool isHitStopping = false;
 
+    public bool IsHitStopping => isHitStopping;
     public WeaponData CurrentWeapon => currentWeapon;
     public PlayerStats Stats => BaseStats;
     public float CurGuardGauge => curGuardGauge.Value;
     public Vector2 FacingDirection { get; set; } = Vector2.right;
-public override void OnNetworkSpawn()
-{
-    anim = GetComponentInChildren<Animator>();
-    currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
 
-    if (IsOwner) 
-    {   
-        int WeaponChoice = ProjectJS.PStats.PlayerWeaponSelection.SelectedWeaponIndex;
-        if (WeaponChoice < 0) WeaponChoice = 0;
+    public override void OnNetworkSpawn()
+    {
+        anim = GetComponentInChildren<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
 
-        SetWeaponRpc(WeaponChoice);
+        if (IsOwner) 
+        {   
+            int WeaponChoice = ProjectJS.PStats.PlayerWeaponSelection.SelectedWeaponIndex;
+            if (WeaponChoice < 0) WeaponChoice = 0;
 
-        UpdateWeaponVisual(-1, WeaponChoice);
-        Debug.Log($"[Player] Owner Initialized with weapon index: {WeaponChoice}");
+            SetWeaponRpc(WeaponChoice);
+
+            UpdateWeaponVisual(-1, WeaponChoice);
+            Debug.Log($"[Player] Owner Initialized with weapon index: {WeaponChoice}");
+        }
+        else if (currentWeaponIndex.Value != -1)
+        {   
+            UpdateWeaponVisual(-1, currentWeaponIndex.Value);
+        }
     }
-    else if (currentWeaponIndex.Value != -1)
-    {   
-        UpdateWeaponVisual(-1, currentWeaponIndex.Value);
-    }
-}
 
 
     public void OnAttackHit()
@@ -78,6 +84,25 @@ public override void OnNetworkSpawn()
 
         Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(hitCenter, attackSize, 0f, enemyLayer);
 
+        if (hitEnemies.Length > 0)
+        {
+            // Trigger Effects on Hit
+            if (currentWeapon.AttackVfxPrefab != null)
+            {
+                Instantiate(currentWeapon.AttackVfxPrefab, hitCenter, Quaternion.identity);
+            }
+
+            // Hit Stop & Screen Shake (only for owner)
+            if (IsOwner)
+            {
+                StartCoroutine(TriggerHitStop(0.07f));
+                if (CameraShake.Instance != null)
+                {
+                    CameraShake.Instance.Shake(0.1f, 0.2f);
+                }
+            }
+        }
+
         foreach (Collider2D enemy in hitEnemies)
         {
             if (enemy.TryGetComponent<ProjectJS.Controller.BossController>(out var boss))
@@ -87,6 +112,22 @@ public override void OnNetworkSpawn()
         }
     }
     
+    private System.Collections.IEnumerator TriggerHitStop(float duration)
+    {
+        if (isHitStopping) yield break;
+        isHitStopping = true;
+        
+        // Pause Animator
+        float prevAnimSpeed = anim.speed;
+        anim.speed = 0.05f;
+
+        yield return new WaitForSecondsRealtime(duration);
+
+        anim.speed = prevAnimSpeed;
+        
+        isHitStopping = false;
+    }
+
     public void SetGuarding(bool state)
     {
         if (state && !IsGuarding) guardStartTime = Time.time;
@@ -114,6 +155,12 @@ public override void OnNetworkSpawn()
         if (anim != null)
         {
             anim.SetTrigger("Attack");
+        }
+
+        // Play Attack SFX
+        if (currentWeapon != null && currentWeapon.AttackSfxClip != null)
+        {
+            AudioSource.PlayClipAtPoint(currentWeapon.AttackSfxClip, transform.position);
         }
     }
 
