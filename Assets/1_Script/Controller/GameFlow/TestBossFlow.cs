@@ -32,6 +32,11 @@ namespace ProjectJS.Controller
 			stateMachine.AddState(State.Outro, OnStartOutro);
 			stateMachine.AddState(State.Exit, OnStartExit);
 
+		}
+
+		[ContextMenu("PLAYTEST")]
+		public void PlayTest()
+		{
 			stateMachine.ChangeState(State.Init);
 		}
 
@@ -53,8 +58,7 @@ namespace ProjectJS.Controller
 			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToBoss);
 			yield return new WaitUntil(() => isDone);
 
-			// TODO - WaitUntil Intro Needed
-			bossController.TriggerIntro();
+			yield return StartCoroutine(bossController.OnStartIntro());
 			stateMachine.ChangeState(State.Combat);
 		}
 		
@@ -63,6 +67,8 @@ namespace ProjectJS.Controller
 			bool isDone = false;
 			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToPlayer);
 			yield return new WaitUntil(() => isDone);
+
+			yield return StartCoroutine(bossController.OnEndIntro());
 		}
 
 		private IEnumerator OnStartCombat()
@@ -70,7 +76,7 @@ namespace ProjectJS.Controller
 			// Game Start UI (async)
 			// Unlock players' input
 
-			bossController.TriggerCombat();
+			yield return StartCoroutine(bossController.OnStartCombat());
 			yield return null;
 		}
 

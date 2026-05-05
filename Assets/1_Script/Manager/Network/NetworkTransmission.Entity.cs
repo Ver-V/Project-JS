@@ -51,22 +51,22 @@ namespace ProjectJS.Manager
 			finishedClients.Clear();
 
 			StartEventSyncClientRPC(evtType, ++currentEventId);
-			OnGameEvent.Invoke(evtType, currentEventId);	// OnHost
+			OnGameEvent?.Invoke(evtType, currentEventId);	// OnHost
 		}
 
 		[Rpc(SendTo.NotServer, InvokePermission = RpcInvokePermission.Server)]
 		public void StartEventSyncClientRPC(GameEventType evtType, int eventId)
 		{
 			currentEventId = eventId;
-			OnGameEvent.Invoke(evtType, eventId);	// OnClient
+			OnGameEvent?.Invoke(evtType, eventId);	// OnClient
 		}
 
 		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-		public void ReportEventFinishServerRPC(int eventId, ulong clinetId)
+		public void ReportEventFinishServerRPC(int eventId, ulong clientId)
 		{
 			if (currentEventId != eventId) return;
-			
-			if (finishedClients.Add(clinetId))
+
+			if (finishedClients.Add(clientId))
 			{
 				if(finishedClients.Count == NetworkManager.ConnectedClientsList.Count)
 				{

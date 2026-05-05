@@ -8,7 +8,7 @@ namespace ProjectJS.Controller
 	{
 		public IEnumerator DoPattern(BossAttack boss, float attack)
 		{
-			boss.GetComponent<BossController>().RequestAnimTrigger("isAttack");
+			boss.GetComponent<BossController>().RequestAnimParam("isAttack");
 			yield return null;
 			yield return new WaitUntil(() => !boss.IsAttackAnimPlaying);
 		}

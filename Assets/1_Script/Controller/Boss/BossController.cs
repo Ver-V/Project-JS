@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -30,8 +31,9 @@ namespace ProjectJS.Controller
 			IncreaseSpawnCountServerRPC();
 		}
 
-		public abstract void TriggerIntro();
-		public abstract void TriggerCombat();
+		public abstract IEnumerator OnStartIntro();
+		public abstract IEnumerator OnEndIntro();
+		public abstract IEnumerator OnStartCombat();
 
 		protected abstract void OnDamaged();
 		protected abstract void OnDead();
@@ -58,7 +60,11 @@ namespace ProjectJS.Controller
 			healthStat.OnCurrentHPChanged.Invoke(healthStat.CurrentHP);
 		}
 
-		public void RequestAnimTrigger(string param)
+		public void RequestAnimParam(string param, bool isOn)
+		{
+			animator.SetBool(param, isOn);
+		}
+		public void RequestAnimParam(string param)
 		{
 			animator.SetTrigger(param);
 		}

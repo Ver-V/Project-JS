@@ -1,8 +1,10 @@
+using NUnit.Framework.Constraints;
 using ProjectJS.Entities;
 using ProjectJS.Manager;
 using ProjectJS.ScriptableObjects;
 using ProjectJS.Utils;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectJS.Controller
@@ -53,20 +55,27 @@ namespace ProjectJS.Controller
 			stateMachine.ChangeState(State.Dead);
 		}
 
-		public override void TriggerIntro()
+		public override IEnumerator OnStartIntro()
 		{
-			throw new System.NotImplementedException();
+			RequestAnimParam("isIntro", true);
+			yield return new WaitForSeconds(1f);
 		}
 
-		public override void TriggerCombat()
+		public override IEnumerator OnEndIntro()
 		{
-			throw new System.NotImplementedException();
+			RequestAnimParam("isIntro", false);
+			yield return null;
+		}
+
+		public override IEnumerator OnStartCombat()
+		{
+			stateMachine.ChangeState(State.Roam);
+			yield return null;
 		}
 
 		private IEnumerator OnStartInit()
 		{
 			yield return null;
-			stateMachine.ChangeState(State.Roam);
 		}
 
 		private IEnumerator OnStartRoam()

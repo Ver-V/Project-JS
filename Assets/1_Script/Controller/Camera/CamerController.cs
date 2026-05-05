@@ -2,6 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using ProjectJS.Manager;
 using Unity.Collections;
+using UnityEngine.LightTransport;
 
 namespace ProjectJS.Controller
 {
@@ -23,8 +24,8 @@ namespace ProjectJS.Controller
 
 		private void Awake()
 		{
-			targetPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.transform;
-			targetTransform = targetPlayer;
+			// targetPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.transform;
+			// targetTransform = targetPlayer;
 		}
 
 		private void OnEnable()
@@ -41,7 +42,7 @@ namespace ProjectJS.Controller
 		{
 			if (targetTransform == null)
 			{
-				if (targetPlayer == null)
+				if (targetPlayer == null && NetworkManager.Singleton.LocalClient.PlayerObject != null)
 					targetPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.transform;
 
 				targetTransform = targetPlayer;
@@ -58,14 +59,25 @@ namespace ProjectJS.Controller
 			}
 		}
 
+		private int testEventId = 0;
+
+		[ContextMenu("TEST")]
+		public void TEST()
+		{
+			NetworkTransmission.instance.ReportEventFinishServerRPC(testEventId,
+				NetworkManager.Singleton.LocalClientId);
+		}
+
 		private void OnGameEvent(GameEventType eventType, int eventId)
 		{
 			switch (eventType)
 			{
 				case GameEventType.Camera_ToBoss:
 					// Find Current Boss ( with tag?.. )
+					testEventId = eventId;
 					break;
 				case GameEventType.Camera_ToPlayer:
+					testEventId = eventId;
 					targetTransform = targetPlayer;
 					break;
 			}
