@@ -1,10 +1,5 @@
-using NUnit.Framework.Constraints;
-using ProjectJS.Entities;
 using ProjectJS.Manager;
-using ProjectJS.ScriptableObjects;
-using ProjectJS.Utils;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectJS.Controller
@@ -14,14 +9,11 @@ namespace ProjectJS.Controller
 	/// 
 	/// - Roaming -> 물리 연산으로 처리 필요
 	/// </summary>
-	public class TestBossController : BossController
+	public class AngelBossController : BossController
 	{
 		[Header("Move")]
 		[SerializeField] private float moveDistance = 1f;
 		[SerializeField] private float moveSpeed = .5f;
-
-		[Header("Sockets")]
-		[SerializeField] private Transform pattern1Socket;
 
 		private enum State { Init, Roam, Detect, Pattern, Dead }
 		private StateMachine<State> stateMachine;
@@ -58,7 +50,7 @@ namespace ProjectJS.Controller
 		public override IEnumerator OnStartIntro()
 		{
 			RequestAnimParam("isIntro", true);
-			yield return new WaitForSeconds(1f);
+			yield return new WaitForSeconds(3f);
 		}
 
 		public override IEnumerator OnEndIntro()
@@ -143,22 +135,9 @@ namespace ProjectJS.Controller
 			transform.position = targetPos;
 		}
 
-		// HACK 
-		private int bossID = 1;
-		private int projectileIdx = 0;
-		private void OnAttack()
+		public override float GetDamage()
 		{
-			if (!NetworkManager.IsHost) return;
-
-			Managers.Pool.Get(PoolingType.Projectile_Bullet)
-				.GetComponent<Projectile>()
-				.Init(IdUtil.GetProjectileID(bossID, projectileIdx++), pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
-			Managers.Pool.Get(PoolingType.Projectile_Bullet1)
-				.GetComponent<Projectile>()
-				.Init(IdUtil.GetProjectileID(bossID, projectileIdx++), pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
-			Managers.Pool.Get(PoolingType.Projectile_Bullet2)
-				.GetComponent<Projectile>()
-				.Init(IdUtil.GetProjectileID(bossID, projectileIdx++), pattern1Socket.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
+			return statContainer.Get<AttackStat>().CurrentAttack.Value;
 		}
 	}
 }

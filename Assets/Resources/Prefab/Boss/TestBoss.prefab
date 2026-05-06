@@ -243,6 +243,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39c230e49b605954a9bc629ef87cd4ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.TestBossPattern1
+  phaseType: 0
+  swingPatternSocket: {fileID: 4266314090549980620}
+  swingSize: {x: 1.6, y: 1.14}
 --- !u!114 &4792818828789318457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,7 +265,6 @@ MonoBehaviour:
     m_InternalValue: 0
   moveDistance: 1
   moveSpeed: 0.5
-  pattern1Socket: {fileID: 4266314090549980620}
 --- !u!114 &-7651527958085768688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,7 +288,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4266314090549980620}
   m_Layer: 0
-  m_Name: Socket_Pattern1
+  m_Name: SwingSocket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -301,7 +303,7 @@ Transform:
   m_GameObject: {fileID: 4444471778697123865}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.551, y: 0.209, z: 0}
+  m_LocalPosition: {x: 0.138, y: -0.143, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

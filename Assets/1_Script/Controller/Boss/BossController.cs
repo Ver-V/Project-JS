@@ -1,3 +1,4 @@
+using ProjectJS.Utils;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,6 +12,9 @@ namespace ProjectJS.Controller
 
 		protected StatContainer statContainer;
 
+		private int bossID = 1;
+		private int projectileIdx = 0;
+		public int GetNewProjectileID() => IdUtil.GetProjectileID(bossID, projectileIdx++);
 
 		private void Awake()
 		{
@@ -30,6 +34,8 @@ namespace ProjectJS.Controller
 
 			IncreaseSpawnCountServerRPC();
 		}
+
+		public abstract float GetDamage();
 
 		public abstract IEnumerator OnStartIntro();
 		public abstract IEnumerator OnEndIntro();

@@ -3,16 +3,15 @@ using UnityEngine;
 
 namespace ProjectJS.Controller
 {
-	public class TestBossPattern2 : MonoBehaviour
-		, IBossPattern
+	public class Angel_CastPattern : BossPatternBase
 	{
-		public IEnumerator DoPattern(BossAttack boss, float attack)
+		public override IEnumerator DoPattern(BossAttack boss, float attack)
 		{
 			yield return new WaitForSeconds(2.0f);
 			// TODO -player.TakeDamage(attack);
 			Debug.Log("DoPattern2");
 		}
 
-		public bool Predict() => true;
+		public override bool Predict() => true;
 	}
 }

@@ -6,11 +6,21 @@ using UnityEngine;
 
 namespace ProjectJS.Controller
 {
+	[System.Flags]
+	public enum BossPhaseType
+	{
+		None = 0,
+		Phase1 = 1 << 0,
+		Phase2 = 1 << 1,
+		Phase3 = 1 << 2,
+	}
+
 	public interface IBossPattern
 	{
 		public IEnumerator DoPattern(BossAttack boss, float attack);
 		// 체력 상태, 플레이어 위치 등을 탐지하여 사용 가능한 패턴인지 판단
-		public bool Predict();	
+		public bool Predict();
+		public BossPhaseType EnablePhase();
 	}
 
 	public class BossAttack : MonoBehaviour
