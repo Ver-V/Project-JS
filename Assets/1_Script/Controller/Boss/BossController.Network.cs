@@ -5,6 +5,14 @@ namespace ProjectJS.Controller
 {
 	public partial class BossController
 	{
+		public NetworkVariable<int> spawnedCount = new(0);
+
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+		private void IncreaseSpawnCountServerRPC()
+		{
+			spawnedCount.Value++;
+		}
+
 		[Header("DEBUG")]
 		[SerializeField] protected NetworkVariable<float> currentHP = new();
 

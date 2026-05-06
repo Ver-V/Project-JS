@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace ProjectJS.Controller
 
 		protected StatContainer statContainer;
 
+
 		private void Awake()
 		{
 			if (!NetworkManager.IsHost) return;
@@ -21,6 +23,17 @@ namespace ProjectJS.Controller
 			if (!NetworkManager.IsHost) return;
 			OnStart();
 		}
+
+		protected override void OnNetworkPostSpawn()
+		{
+			base.OnNetworkPostSpawn();
+
+			IncreaseSpawnCountServerRPC();
+		}
+
+		public abstract IEnumerator OnStartIntro();
+		public abstract IEnumerator OnEndIntro();
+		public abstract IEnumerator OnStartCombat();
 
 		protected abstract void OnDamaged();
 		protected abstract void OnDead();
@@ -47,7 +60,11 @@ namespace ProjectJS.Controller
 			healthStat.OnCurrentHPChanged.Invoke(healthStat.CurrentHP);
 		}
 
-		public void RequestAnimTrigger(string param)
+		public void RequestAnimParam(string param, bool isOn)
+		{
+			animator.SetBool(param, isOn);
+		}
+		public void RequestAnimParam(string param)
 		{
 			animator.SetTrigger(param);
 		}

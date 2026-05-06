@@ -6,6 +6,7 @@ namespace ProjectJS.Utils
         None = -1,
         Main,
         Lobby,
-        Game
+        Game,
+        test
     }
 }

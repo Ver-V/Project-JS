@@ -13,41 +13,57 @@ namespace ProjectJS.Skills
 
         private float lastSkillTime = -100f; // last skill usetime
         private Player player;
+        private Animator anim;
 
         public override void OnNetworkSpawn()
         {
             player = GetComponent<Player>();
+            anim = GetComponentInChildren<Animator>();
         }
 
         void Update()
         {
-            if (!IsOwner) return;
-            // Temp Keycode
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                TrySkill();
-            }
+            // Input is handled via PlayerController
         }
         
         public void TrySkill()
         {
             WeaponData currentWeapon = player.CurrentWeapon;
-            if (currentWeapon == null || currentWeapon.WeaponSkill == null) return;
+            if (currentWeapon == null)
+            {
+                Debug.LogWarning("[PlayerSkillManager] CurrentWeapon is null!");
+                return;
+            }
+            if (currentWeapon.WeaponSkill == null)
+            {
+                Debug.LogWarning($"[PlayerSkillManager] {currentWeapon.WeaponName} has no skill assigned!");
+                return;
+            }
+
             SkillData currentSkill = currentWeapon.WeaponSkill;
 
             int shIdx = equippedShardIndex.Value;
             ShardData equippedShard = (availableShards != null && shIdx >= 0 && shIdx < availableShards.Count) ? availableShards[shIdx] : null;
 
-            if (currentSkill.SkillLogicPrefab == null) return;
+            if (currentSkill.SkillLogicPrefab == null)
+            {
+                Debug.LogError($"[PlayerSkillManager] {currentSkill.name} is missing SkillLogicPrefab!");
+                return;
+            }
 
             float cooldownMultiplier = (equippedShard != null) ? equippedShard.CooldownMultiplier : 1.0f;
             float finalCooldown = currentSkill.BaseCooldown * cooldownMultiplier;
 
             if (Time.time >= lastSkillTime + finalCooldown)
             {
-                // calculate mouse position
-                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Vector2 direction = (mouseWorldPos - transform.position).normalized;
+                Debug.Log($"[PlayerSkillManager] Triggering Skill: {currentSkill.name}");
+                if (anim != null)
+                {
+                    anim.SetTrigger("Skill");
+                }
+                
+                // use facing direction instead of mouse
+                Vector2 direction = player.FacingDirection;
 
                 // cooldown update
                 lastSkillTime = Time.time;
@@ -64,13 +80,13 @@ namespace ProjectJS.Skills
             if (skillData.VfxPrefab != null)
             {
                 // TODO: Run VFX locally
-                // 예: Instantiate(skillData.VfxPrefab, transform.position, Quaternion.identity);
+                Instantiate(skillData.VfxPrefab, transform.position, Quaternion.identity);
             }
 
             if (skillData.SfxClip != null)
             {
                 // TODO: Run SFXs locally
-                // 예: AudioSource.PlayClipAtPoint(skillData.SfxClip, transform.position);
+                AudioSource.PlayClipAtPoint(skillData.SfxClip, transform.position);
             }
         }
 

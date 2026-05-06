@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2200437023
+  GlobalObjectIdHash: 3099588260
   InScenePlacedSourceGlobalObjectIdHash: 2200437023
   DeferredDespawnTick: 0
   Ownership: 1
@@ -160,7 +160,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 4723107735738678597, guid: a6fa7f4d3ec408f4789a4d7a9cf3ad21, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 740e5b95ce51d4a8eb7a62c431ec26b5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -226,6 +226,10 @@ MonoBehaviour:
       NameHash: -2035800095
       Synchronize: 1
       ParameterType: 9
+    - name: isIntro
+      NameHash: 319992862
+      Synchronize: 1
+      ParameterType: 4
   AnimatorParametersExpanded: 0
 --- !u!114 &6355758406729802214
 MonoBehaviour:
@@ -252,6 +256,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets._1_Script.Controller.Boss.TestBoss.TestBossController
   ShowTopMostFoldoutHeaderGroup: 1
+  spawnedCount:
+    m_InternalValue: 0
   currentHP:
     m_InternalValue: 0
   moveDistance: 1
