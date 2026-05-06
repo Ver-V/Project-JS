@@ -1,8 +1,7 @@
-using Unity.Netcode;
-using UnityEngine;
 using ProjectJS.Manager;
 using Unity.Collections;
-using UnityEngine.LightTransport;
+using Unity.Netcode;
+using UnityEngine;
 
 namespace ProjectJS.Controller
 {
@@ -12,7 +11,7 @@ namespace ProjectJS.Controller
 	/// Intro, Outro 등 특정 이벤트가 있는 경우를 대비해서,
 	/// Player와 별개의 오브젝트로 움직이도록 하는게 나을 것 같아 따로 만들어 두었습니다.
 	/// </summary>
-    public class CamerController : MonoBehaviour
+	public class CameraController : MonoBehaviour
     {
 		[Header("Camera Settings")]
 		[SerializeField] float followSpeed = 10f;
@@ -50,6 +49,7 @@ namespace ProjectJS.Controller
 			else
 			{
 				Vector3 targetPos = targetTransform.position;
+				targetPos.z = -10f;
 
 				transform.position = Vector3.Lerp(
 					transform.position,
