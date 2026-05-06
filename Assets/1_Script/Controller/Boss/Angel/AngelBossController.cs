@@ -15,7 +15,7 @@ namespace ProjectJS.Controller
 		[SerializeField] private float moveDistance = 1f;
 		[SerializeField] private float moveSpeed = .5f;
 
-		private enum State { Init, Roam, Detect, Pattern, Dead }
+		private enum State { Init, Detect, Roam, Pattern, Dead }
 		private StateMachine<State> stateMachine;
 
 		protected override void OnAwake()
@@ -61,13 +61,22 @@ namespace ProjectJS.Controller
 
 		public override IEnumerator OnStartCombat()
 		{
-			stateMachine.ChangeState(State.Roam);
+			stateMachine.ChangeState(State.Detect);
 			yield return null;
 		}
 
 		private IEnumerator OnStartInit()
 		{
 			yield return null;
+		}
+
+		private IEnumerator OnStartDetect()
+		{
+			// ex. 근거리에 있으면 근거리 패턴
+			// 원거리에 있으면 그 방향으로 Roam or 원거리 패턴
+			yield return null;
+			//stateMachine.ChangeState(State.Roam);
+			stateMachine.ChangeState(State.Pattern);
 		}
 
 		private IEnumerator OnStartRoam()
@@ -83,13 +92,6 @@ namespace ProjectJS.Controller
 			yield return null;
 		}
 
-		private IEnumerator OnStartDetect()
-		{
-			// TODO - 플레이어 중 타겟 지정 필요
-			yield return null;
-			stateMachine.ChangeState(State.Pattern);
-		}
-
 		private IEnumerator OnStartPattern()
 		{
 			yield return bossAttack.GetRandomPattern();
@@ -98,7 +100,7 @@ namespace ProjectJS.Controller
 
 		private IEnumerator OnEndPattern()
 		{
-			yield return new WaitForSeconds(1.0f);
+			yield return new WaitForSeconds(.5f);
 		}
 
 		private IEnumerator OnStartDead()
@@ -135,7 +137,7 @@ namespace ProjectJS.Controller
 			transform.position = targetPos;
 		}
 
-		public override float GetDamage()
+		public override float GetAttackPower()
 		{
 			return statContainer.Get<AttackStat>().CurrentAttack.Value;
 		}

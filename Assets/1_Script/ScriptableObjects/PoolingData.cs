@@ -15,9 +15,7 @@ namespace ProjectJS.ScriptableObjects
         VFX_Explode = 51,
 
         // Projectile (101 ~ 120)
-        Projectile_Bullet = 101,
-        Projectile_Bullet1,
-        Projectile_Bullet2,
+        Projectile_Angel_Spiral = 101,
     }
 
     [System.Serializable]

@@ -1,10 +1,7 @@
-using ProjectJS.Manager;
-using ProjectJS.ScriptableObjects;
 using ProjectJS.Utils;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
-using ProjectJS.Entities;
 
 namespace ProjectJS.Controller
 {
@@ -52,19 +49,8 @@ namespace ProjectJS.Controller
 			{
 				if (!colliders[i].GetComponent<NetworkObject>().IsOwner) return;
 				colliders[i].GetComponent<Player>()
-					.TakeDamage(GetComponent<BossController>().GetDamage() * damageMult, transform.position.ToVector2());
+					.TakeDamage(GetComponent<BossController>().GetAttackPower() * damageMult, transform.position.ToVector2());
 			}
-
-			BossController bossController = GetComponent<BossController>();
-			Managers.Pool.Get(PoolingType.Projectile_Bullet)
-				.GetComponent<Projectile>()
-				.Init(bossController.GetNewProjectileID(), transform.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
-			Managers.Pool.Get(PoolingType.Projectile_Bullet1)
-				.GetComponent<Projectile>()
-				.Init(bossController.GetNewProjectileID(), transform.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
-			Managers.Pool.Get(PoolingType.Projectile_Bullet2)
-				.GetComponent<Projectile>()
-				.Init(bossController.GetNewProjectileID(), transform.position.ToVector2(), new Vector2(transform.localScale.x > 0 ? 1 : -1, 0));
 		}
 
 		private void OnDrawGizmosSelected()

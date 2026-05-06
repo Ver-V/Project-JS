@@ -30,15 +30,18 @@ namespace ProjectJS.Controller
 		protected BossAttackAnimNotifier[] attackAnimNotifiers;
 		protected bool isAttackAnimPlaying = false;
 
-		private IBossPattern[] enablePattern = null;
+		private BossPatternBase[] enablePattern = null;
 		
 		public bool IsAttackAnimPlaying => isAttackAnimPlaying;
 		
 		private void Awake()
 		{
-			enablePattern = GetComponents<IBossPattern>();
+			enablePattern = GetComponents<BossPatternBase>();
 			enablePattern.Shuffle();
-			enablePattern = enablePattern.Take(enablePatternCount).ToArray();
+			enablePattern = enablePattern
+				.Where(x => x.enabled)
+				.Take(enablePatternCount)
+				.ToArray();
 
 			attackAnimNotifiers = GetComponent<Animator>().GetBehaviours<BossAttackAnimNotifier>();
 			foreach (var notifiers in attackAnimNotifiers)

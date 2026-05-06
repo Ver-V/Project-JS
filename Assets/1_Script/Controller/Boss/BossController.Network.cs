@@ -15,6 +15,9 @@ namespace ProjectJS.Controller
 
 		[Header("DEBUG")]
 		[SerializeField] protected NetworkVariable<float> currentHP = new();
+		[SerializeField] protected NetworkVariable<bool> isFlashing = new();
+
+		protected float remainedFlashTime = 0f;
 
 		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
 		public void RequestTakeDamageServerRpc(float damage)
@@ -36,6 +39,11 @@ namespace ProjectJS.Controller
 				OnDead();
 			}
 		}
-		
+
+		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+		public void RequestResetFlashTimeServerRPC()
+		{
+			remainedFlashTime = .15f;
+		}
 	}
 }
