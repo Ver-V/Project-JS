@@ -298,7 +298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  playerPrefab: {fileID: 0}
+  playerPrefab: {fileID: 5302093961305435749, guid: 0cc51764174c8784ba4b7479b019d16d, type: 3}
   pingInterval: 2
   timeoutThreshold: 5
   isInGame: 0

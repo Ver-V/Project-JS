@@ -29,8 +29,9 @@ namespace ProjectJS.Manager
 
 		public async void UnloadCurrentScene()
 		{
-			if (CurrentScene.SceneEnum == SceneEnum.None) return;
-			await SceneManager.UnloadSceneAsync(CurrentScene.SceneEnum.ToString() + "Scene");
+			SceneBase scene = CurrentScene;
+			if (scene == null || scene.SceneEnum == SceneEnum.None) return;
+			await SceneManager.UnloadSceneAsync(scene.SceneEnum.ToString() + "Scene");
 		}
 
 		public void MoveGameObjectToCurrentScene(GameObject go)
