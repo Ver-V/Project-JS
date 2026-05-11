@@ -66,7 +66,7 @@ namespace ProjectJS.UI.LobbyScene
 
 			startButton.onClick.AddListener(() =>
 			{
-				GameNetworkManager.Instance.StartGameInLobby();
+				Managers.Scene.ChangeScene(SceneEnum.Game);
 			});
 
             inviteButton.onClick.AddListener(() =>

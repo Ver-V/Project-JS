@@ -141,7 +141,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1826435285958538685, guid: 4bb48ae9850842c4293fdfda4a26bda0, type: 3}
+  m_Sprite: {fileID: 3781665898625333168, guid: 54edaf15f511c5f45a66fc96af20b31f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -328,7 +328,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
@@ -366,8 +366,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.0033599287, y: -0.014194906}
-  m_Size: {x: 0.16001993, y: 0.34499002}
+  m_Offset: {x: 0.0017955154, y: 0.003849119}
+  m_Size: {x: 0.14970905, y: 0.19548231}
   m_Direction: 0
 --- !u!114 &-4695640303278020078
 MonoBehaviour:
@@ -381,7 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2361543480
+  GlobalObjectIdHash: 4261299305
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -413,8 +413,10 @@ MonoBehaviour:
     moveSpeed: 4
   AvailableWeapons:
   - {fileID: 11400000, guid: 524d5e9d319c7094cb5d687a45d221bd, type: 2}
+  - {fileID: 11400000, guid: 79b4f1a62e2d05c49be2da309c8ee629, type: 2}
+  - {fileID: 11400000, guid: 1627e6f5a4ebaaa4ebf263ce7c22e730, type: 2}
   attackPoint: {fileID: 5119813401710401778}
-  attackSize: {x: 0, y: 0}
+  attackSize: {x: 0.2, y: 0.45}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 1
@@ -470,7 +472,7 @@ Transform:
   m_GameObject: {fileID: 6773318671893412020}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.148, y: -0.001, z: 0}
+  m_LocalPosition: {x: 0.242, y: -0.001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

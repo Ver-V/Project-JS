@@ -25,10 +25,11 @@ namespace ProjectJS.Manager
 				instance = this;
 				DontDestroyOnLoad(gameObject);
 
-				if (GetComponent<SteamManager>() == null)
-				{
-					gameObject.AddComponent<SteamManager>();
-				}
+				// Fix: SteamManager Init이 중복 실행되서 주석처리 했습니다.
+				//if (GetComponent<SteamManager>() == null)
+				//{
+				//	gameObject.AddComponent<SteamManager>();
+				//}
 			}
 			else
 			{

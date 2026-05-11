@@ -39,11 +39,25 @@ namespace ProjectJS.Entities
 			Vector3 nextPos = movement.Evaluate(startPos, startDir, Time.time - startTime).ToVector3();
 			Vector2 dir = (nextPos - transform.position).ToVector2();
 			transform.position = nextPos;
-
 			if (dir.sqrMagnitude > Mathf.Epsilon)
 			{
-				Quaternion targetRot = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
-				transform.rotation = targetRot;
+				float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+				Vector3 scale = transform.localScale;
+
+				// rotation/scale 보정
+				if (angle >= -90f && angle <= 90f)
+				{
+					scale.x = 1f;
+					transform.rotation = Quaternion.Euler(0, 0, angle);
+				}
+				else
+				{
+					scale.x = -1f;
+					float adjustedAngle = angle + (angle > 0 ? -180f : 180f);
+					transform.rotation = Quaternion.Euler(0, 0, adjustedAngle);
+				}
+
+				transform.localScale = scale;
 			}
 		}
 
