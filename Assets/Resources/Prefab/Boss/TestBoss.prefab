@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 4978823064194465635}
   - component: {fileID: 6355758406729802214}
   - component: {fileID: 4897361426983469867}
+  - component: {fileID: 4003740430222521559}
   m_Layer: 0
   m_Name: TestBoss
   m_TagString: Untagged
@@ -326,6 +327,13 @@ MonoBehaviour:
     TransitionDuration: 0
     TriggerNameHash: 1396330855
     TransitionIndex: 4
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: 296140221
+    TransitionDuration: 0
+    TriggerNameHash: -902627107
+    TransitionIndex: 5
   AnimatorParameterEntries:
     ParameterEntries:
     - name: isWalk
@@ -350,6 +358,10 @@ MonoBehaviour:
       ParameterType: 4
     - name: isAttack5
       NameHash: 1396330855
+      Synchronize: 1
+      ParameterType: 9
+    - name: isAttack6
+      NameHash: -902627107
       Synchronize: 1
       ParameterType: 9
   AnimatorParametersExpanded: 0
@@ -425,13 +437,29 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3338869448384287981}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3bf2cae35a417324b94cb75e04fbfd99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.Angel_MultiCastPattern
   phaseType: 2
   castSocket: {fileID: 2320468953353657847}
+--- !u!114 &4003740430222521559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 296105bf827c6224c8073eea3937bc05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.Angel_RushPattern
+  phaseType: 1
+  swingSize: {x: 10, y: 2}
+  rushDuration: 0.1
+  damageMult: 1
 --- !u!1 &4444471778697123865
 GameObject:
   m_ObjectHideFlags: 0

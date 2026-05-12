@@ -1,3 +1,5 @@
+using NUnit.Framework.Constraints;
+using ProjectJS.Animation;
 using ProjectJS.Utils;
 using System.Collections;
 using Unity.Netcode;
@@ -14,7 +16,6 @@ namespace ProjectJS.Controller
 
 		[Header("Swing Pattern")]
 		[SerializeField] private Vector2 swingSize;
-		[SerializeField] private float rushSpeed = 10f;
 		[SerializeField] private float rushDuration = .3f;
 		[SerializeField] private float damageMult = 1f;
 		
@@ -30,7 +31,12 @@ namespace ProjectJS.Controller
 
 		public override IEnumerator DoPattern(BossAttack boss, float attack)
 		{
-			boss.GetComponent<BossController>().RequestAnimParam("isAttack5");
+			Transform target = GetComponent<BossAttack>().GetTarget();
+			Vector2 dirToTarget = (target.position - transform.position).normalized;
+			cachedRotation = Mathf.Atan2(dirToTarget.y, dirToTarget.x) * Mathf.Rad2Deg;
+            transform.localScale = new Vector3(dirToTarget.x > 0 ? 1 : -1, 1, 1);
+
+			boss.GetComponent<BossController>().RequestAnimParam("isAttack6");
 			yield return null;
 			yield return new WaitUntil(() => !boss.IsAttackAnimPlaying);
 		}
@@ -63,16 +69,14 @@ namespace ProjectJS.Controller
         {
             if (!NetworkManager.Singleton.IsHost) return;
 
-            cachedRotation = Random.Range(0f, 360f);
+			Transform target = GetComponent<BossAttack>().GetTarget();
+			Vector2 dirToTarget = (target.position - transform.position).normalized;
+			cachedRotation = Mathf.Atan2(dirToTarget.y, dirToTarget.x) * Mathf.Rad2Deg;
+			transform.localScale = new Vector3(dirToTarget.x > 0 ? 1 : -1, 1, 1);
 
-            Vector2 dir = new Vector2(
-                Mathf.Cos(cachedRotation * Mathf.Deg2Rad),
-                Mathf.Sin(cachedRotation * Mathf.Deg2Rad)
-            );
-            
-            float offset = Mathf.Max(swingSize.x, swingSize.y) * 0.5f;
+			float offset = Mathf.Max(swingSize.x, swingSize.y) * 0.5f;
 
-            cachedSocketPosiiton = (Vector2)transform.position + dir * offset;
+            cachedSocketPosiiton = (Vector2)transform.position + dirToTarget * offset;
 
             StartCoroutine(RushCoroutine());
         }
@@ -81,7 +85,7 @@ namespace ProjectJS.Controller
         {
             if (!NetworkManager.Singleton.IsHost) return;
 
-            playerCount = Physics2D.OverlapBox(
+			playerCount = Physics2D.OverlapBox(
                 cachedSocketPosiiton,
                 swingSize,
                 cachedRotation,
@@ -106,27 +110,6 @@ namespace ProjectJS.Controller
                 }
             }
         }
-        private void OnDrawGizmosSelected()
-		{
-			return;
 
-			Color backupColor = Gizmos.color;
-			Gizmos.color = Color.red;
-
-			Vector2 center = (transform).position.ToVector2();
-			Vector2 size = swingSize;
-			float angle = 0f;
-
-			Matrix4x4 matrix = Matrix4x4.TRS(
-				center,
-				Quaternion.Euler(0, 0, angle),
-				Vector3.one
-			);
-
-			Gizmos.matrix = matrix;
-
-			Gizmos.DrawWireCube(Vector3.zero, size);
-			Gizmos.color = backupColor;
-		}
 	}
 }
