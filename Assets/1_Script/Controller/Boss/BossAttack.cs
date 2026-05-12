@@ -62,6 +62,12 @@ namespace ProjectJS.Controller
 			isAttackAnimPlaying = false;
 		}
 
+		// HACK - 테스트용 함수. 어그로 로직 개발 필요
+		public Transform GetTarget()
+		{
+			return FindObjectOfType<PlayerController>().transform;
+		}
+
 		protected virtual void OnAttackStart()
 		{
 			isAttackAnimPlaying = true;

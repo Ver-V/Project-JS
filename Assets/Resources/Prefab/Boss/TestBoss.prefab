@@ -11,7 +11,10 @@ GameObject:
   - component: {fileID: 4093395615898090748}
   - component: {fileID: 7248412919801288614}
   - component: {fileID: 6580980249411967457}
+  - component: {fileID: 5075690381136405833}
   - component: {fileID: -1437063157627772836}
+  - component: {fileID: 679579537620621667}
+  - component: {fileID: 7315575202947294956}
   - component: {fileID: 38752718065871988}
   - component: {fileID: 3710203708703460802}
   - component: {fileID: 4792818828789318457}
@@ -55,7 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2200437023
+  GlobalObjectIdHash: 3099588260
   InScenePlacedSourceGlobalObjectIdHash: 2200437023
   DeferredDespawnTick: 0
   Ownership: 1
@@ -114,6 +117,23 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &5075690381136405833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody2D
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 0
+  AutoUpdateKinematicState: 1
+  AutoSetKinematicOnDespawn: 1
 --- !u!212 &-1437063157627772836
 SpriteRenderer:
   serializedVersion: 2
@@ -173,6 +193,79 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!61 &679579537620621667
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.08517411, y: -0.35496178}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.5, y: 2}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1.1590328, y: 0.8956743}
+  m_EdgeRadius: 0
+--- !u!50 &7315575202947294956
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!95 &38752718065871988
 Animator:
   serializedVersion: 7
@@ -226,6 +319,13 @@ MonoBehaviour:
     TransitionDuration: 0
     TriggerNameHash: -849427260
     TransitionIndex: 2
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: 1426158033
+    TransitionDuration: 0
+    TriggerNameHash: 1396330855
+    TransitionIndex: 4
   AnimatorParameterEntries:
     ParameterEntries:
     - name: isWalk
@@ -248,6 +348,10 @@ MonoBehaviour:
       NameHash: -1168509870
       Synchronize: 1
       ParameterType: 4
+    - name: isAttack5
+      NameHash: 1396330855
+      Synchronize: 1
+      ParameterType: 9
   AnimatorParametersExpanded: 0
 --- !u!114 &4792818828789318457
 MonoBehaviour:
@@ -270,6 +374,7 @@ MonoBehaviour:
     m_InternalValue: 0
   moveDistance: 1
   moveSpeed: 0.5
+  roamDuration: 1
 --- !u!114 &-7651527958085768688
 MonoBehaviour:
   m_ObjectHideFlags: 0

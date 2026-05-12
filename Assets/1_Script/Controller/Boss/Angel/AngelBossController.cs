@@ -14,15 +14,20 @@ namespace ProjectJS.Controller
 		[Header("Move")]
 		[SerializeField] private float moveDistance = 1f;
 		[SerializeField] private float moveSpeed = .5f;
+		[SerializeField] private float roamDuration = 1f;
 
-		private enum State { Init, Detect, Roam, Pattern, Dead }
+		private Rigidbody2D rigidbody;
+
+        private enum State { Init, Detect, Roam, Pattern, Dead }
 		private StateMachine<State> stateMachine;
 
 		protected override void OnAwake()
 		{
 			base.OnAwake();
 
-			var bossStat = Managers.Resource.GetBossStat();
+			rigidbody = GetComponent<Rigidbody2D>();
+
+            var bossStat = Managers.Resource.GetBossStat();
 			statContainer.AddStat(new HealthStat(bossStat.MaxHP));
 			statContainer.AddStat(new AttackStat(DamageType.Physics, bossStat.AttackPower));
 			statContainer.AddStat(new DefenseStat(bossStat.DefensePower));
@@ -113,31 +118,28 @@ namespace ProjectJS.Controller
 			yield return null;
 		}
 
-		private IEnumerator Move()
-		{
-			Vector2 startPos = transform.position;
-			Vector2 randomDir = Random.insideUnitCircle.normalized;
-			Vector2 targetPos = startPos + randomDir * moveDistance;
+        private IEnumerator Move()
+        {
+            Vector2 randomDir = Random.insideUnitCircle.normalized;
+            transform.localScale = new Vector3(
+                randomDir.x < 0 ? -1f : 1f,
+                1f,
+                1f
+            );
 
-			transform.localScale = new Vector3(randomDir.x < 0 ? -1f : 1f, 1f, 1f);
+            rigidbody.linearVelocity = randomDir * moveSpeed;
 
-			float totalDistance = Vector2.Distance(startPos, targetPos);
-			float moved = 0f;
+            float elapsed = 0f;
+            while (elapsed < roamDuration)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
 
-			while (moved < totalDistance)
-			{
-				float step = moveSpeed * Time.deltaTime;
-				moved += step;
+            rigidbody.linearVelocity = Vector2.zero;
+        }
 
-				transform.position = Vector2.MoveTowards(transform.position, targetPos, step);
-
-				yield return null;
-			}
-
-			transform.position = targetPos;
-		}
-
-		public override float GetAttackPower()
+        public override float GetAttackPower()
 		{
 			return statContainer.Get<AttackStat>().CurrentAttack.Value;
 		}
