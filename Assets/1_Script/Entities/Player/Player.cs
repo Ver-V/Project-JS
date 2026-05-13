@@ -112,6 +112,7 @@ public class Player : NetworkBehaviour
         }
     }
     
+ 
     private System.Collections.IEnumerator TriggerHitStop(float duration)
     {
         if (isHitStopping) yield break;
@@ -132,6 +133,11 @@ public class Player : NetworkBehaviour
     {
         if (state && !IsGuarding) guardStartTime = Time.time;
         IsGuarding = state;
+
+        if (anim != null)
+        {
+            anim.SetBool("IsGuarding", state);
+        }
     }
 
     public void TryAttack()
@@ -186,7 +192,11 @@ public class Player : NetworkBehaviour
         }
 
         currentWeapon = AvailableWeapons[NewIndex];
-        Debug.Log($"[Player] Weapon Updated: {currentWeapon.WeaponName} (Index: {NewIndex})");
+        
+        if (anim != null && currentWeapon.WeaponAnimatorController != null)
+        {
+            anim.runtimeAnimatorController = currentWeapon.WeaponAnimatorController;
+        }
         
         // TODO: Weapon Sprite change logic
         // Example: weaponSpriteRenderer.sprite = currentWeapon.WeaponSprite;
@@ -246,4 +256,36 @@ public class Player : NetworkBehaviour
         // TODO : gameover screen, sprite.play(died)
     }
 
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        // Set Gizmo color to semi-transparent red
+        Gizmos.color = new Color(1, 0, 0, 0.5f); 
+
+        Vector2 hitCenter;
+        
+        // Default attack range to 1f if no weapon is selected in the editor
+        float currentAttackRange = (currentWeapon != null) ? currentWeapon.AttackRange : 1f;
+
+        if (attackPoint != null)
+        {
+            // Calculate direction sign based on facing direction (default to right in editor if not playing)
+            float directionSign = Application.isPlaying ? (FacingDirection.x >= 0 ? 1f : -1f) : 1f;
+            Vector3 localPos = attackPoint.localPosition;
+            
+            // Mirror the local position based on facing direction
+            Vector3 mirroredLocalPos = new Vector3(Mathf.Abs(localPos.x) * directionSign, localPos.y, localPos.z);
+            hitCenter = transform.TransformPoint(mirroredLocalPos);
+        }
+        else
+        {
+            // Calculate hit center based on attack range if no attack point is assigned
+            Vector2 faceDir = Application.isPlaying ? FacingDirection : Vector2.right; 
+            hitCenter = (Vector2)transform.position + (faceDir * currentAttackRange);
+        }
+
+        // Draw the wireframe cube representing the attack area
+        Gizmos.DrawWireCube(hitCenter, attackSize);
+    }
+#endif
 }

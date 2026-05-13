@@ -13,6 +13,7 @@ namespace ProjectJS.PStats
         [SerializeField] private GameObject weaponPrefab; // kind of weapon
         [SerializeField] private Sprite weaponSprite; // weapon's sprite for visual
         [SerializeField] private SkillData weaponSkill; // weapon's specific skill
+        [SerializeField] private RuntimeAnimatorController weaponAnimatorController;
         
         [Header("Visual & Audio")]
         [SerializeField] private GameObject attackVfxPrefab; // Attack Hit Effects
@@ -27,5 +28,6 @@ namespace ProjectJS.PStats
         public SkillData WeaponSkill => weaponSkill;
         public GameObject AttackVfxPrefab => attackVfxPrefab;
         public AudioClip AttackSfxClip => attackSfxClip;
+        public RuntimeAnimatorController WeaponAnimatorController => weaponAnimatorController;
     }
 }
