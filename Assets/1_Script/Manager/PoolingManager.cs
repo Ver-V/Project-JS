@@ -92,7 +92,7 @@ namespace ProjectJS.Manager
 			obj.GetComponent<Poolable>().OnDespawn();
 			// obj.transform.SetParent(poolRoot);
 
-			if (type >= PoolingType.Projectile_Bullet)
+			if (type >= PoolingType.Projectile_Angel_Spiral)
 			{
 				int projId = obj.GetComponent<Projectile>().Id;
 				if (projectileDict.ContainsKey(projId))

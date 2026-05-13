@@ -1,3 +1,4 @@
+using ProjectJS.Utils;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,11 +10,17 @@ namespace ProjectJS.Controller
 		protected Animator animator;
 		protected BossAttack bossAttack;
 
+		protected Material spriteMaterial;
 		protected StatContainer statContainer;
 
+		private int bossID = 1;
+		private int projectileIdx = 0;
+		public int GetNewProjectileID() => IdUtil.GetProjectileID(bossID, projectileIdx++);
 
 		private void Awake()
 		{
+			spriteMaterial = GetComponent<SpriteRenderer>().material;
+
 			if (!NetworkManager.IsHost) return;
 			OnAwake();
 		}
@@ -24,12 +31,34 @@ namespace ProjectJS.Controller
 			OnStart();
 		}
 
+		protected void Update()
+		{
+			if (!NetworkManager.IsHost) return;
+
+			if (remainedFlashTime > 0f)
+				remainedFlashTime -= Time.deltaTime;
+
+			isFlashing.Value = remainedFlashTime > 0f;
+
+			if (Input.GetKeyDown(KeyCode.R))
+			{
+				RequestResetFlashTimeServerRPC();
+			}
+		}
+
 		protected override void OnNetworkPostSpawn()
 		{
 			base.OnNetworkPostSpawn();
 
 			IncreaseSpawnCountServerRPC();
+
+			isFlashing.OnValueChanged += ((prev, cur) => {
+				if (prev != cur)
+					spriteMaterial.SetFloat("_EdgeStrength", cur ? 2f : 0f);
+				});
 		}
+
+		public abstract float GetAttackPower();
 
 		public abstract IEnumerator OnStartIntro();
 		public abstract IEnumerator OnEndIntro();

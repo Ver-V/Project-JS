@@ -20,6 +20,7 @@ namespace ProjectJS.Utils
 
 		public static readonly int LAYER_INTERACTABLE = 1 << 10;
 		public static readonly int LAYER_GROUND = 1 << 11;
+		public static readonly int LAYER_PLAYER = 1 << 12;
 
 		public static readonly int MAX_PLAYERS = 4;
 	}

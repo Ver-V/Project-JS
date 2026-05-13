@@ -1,5 +1,6 @@
 using ProjectJS.Manager;
 using ProjectJS.Utils;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace ProjectJS.Entities
@@ -63,9 +64,9 @@ namespace ProjectJS.Entities
 
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
-			if (collision.TryGetComponent<Player>(out var player))
+			if (collision.TryGetComponent<Player>(out var player) && collision.GetComponent<NetworkObject>().IsOwner)
 			{
-				player.TakeDamage(damage, (Vector2)transform.position);
+				player.TakeDamage(damage, transform.position.ToVector2());
 
 				if (TryGetComponent<Poolable>(out var poolable))
 				{

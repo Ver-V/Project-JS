@@ -1,4 +1,5 @@
 using ProjectJS.Manager;
+using System.Collections;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace ProjectJS.Controller
         [SerializeField, ReadOnly] private Transform targetPlayer;
 
 		private Transform targetTransform = null;
+		private bool isFollowPlayer = true;
 
 		private void Awake()
 		{
@@ -39,6 +41,8 @@ namespace ProjectJS.Controller
 
 		private void Update()
 		{
+			if (!isFollowPlayer) return;
+
 			if (targetTransform == null)
 			{
 				if (targetPlayer == null && NetworkManager.Singleton.LocalClient.PlayerObject != null)
@@ -59,30 +63,56 @@ namespace ProjectJS.Controller
 			}
 		}
 
-		private int testEventId = 0;
-
-		[ContextMenu("TEST")]
-		public void TEST()
-		{
-			NetworkTransmission.instance.ReportEventFinishServerRPC(testEventId,
-				NetworkManager.Singleton.LocalClientId);
-		}
-
 		private void OnGameEvent(GameEventType eventType, int eventId)
 		{
 			switch (eventType)
 			{
 				case GameEventType.Camera_ToBoss:
-					// Find Current Boss ( with tag?.. )
-					testEventId = eventId;
+					isFollowPlayer = false;
+					StartCoroutine(MoveCameraToBoss(eventId));
 					break;
 				case GameEventType.Camera_ToPlayer:
-					testEventId = eventId;
-					targetTransform = targetPlayer;
+					isFollowPlayer = true;
+					NetworkTransmission.instance.ReportEventFinishServerRPC(eventId,
+						NetworkManager.Singleton.LocalClientId);
 					break;
 			}
 		}
 
+		private IEnumerator MoveCameraToBoss(int eventId)
+		{
+			Vector3 startPos = transform.position;
+			BossController bossController = FindAnyObjectByType<BossController>();
+
+			if (bossController == null)
+			{
+				Debug.LogError("Boss doesn't exists!");
+				yield break;
+			}
+
+			Vector3 targetPos = bossController.transform.position;
+			targetPos.z = -10f;
+
+			float duration = 3f;
+			float elapsedTime = 0f;
+
+			while (elapsedTime < duration)
+			{
+				elapsedTime += Time.deltaTime;
+				float t = elapsedTime / duration;
+
+				transform.position = Vector3.Lerp(startPos, targetPos, t);
+
+				yield return null;
+			}
+
+			transform.position = targetPos;
+
+			NetworkTransmission.instance.ReportEventFinishServerRPC(
+				eventId,
+				NetworkManager.Singleton.LocalClientId
+			);
+		}
 
 	}
 }

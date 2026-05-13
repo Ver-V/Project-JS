@@ -11,12 +11,18 @@ GameObject:
   - component: {fileID: 4093395615898090748}
   - component: {fileID: 7248412919801288614}
   - component: {fileID: 6580980249411967457}
+  - component: {fileID: 5075690381136405833}
   - component: {fileID: -1437063157627772836}
+  - component: {fileID: 679579537620621667}
+  - component: {fileID: 7315575202947294956}
   - component: {fileID: 38752718065871988}
   - component: {fileID: 3710203708703460802}
-  - component: {fileID: 6355758406729802214}
   - component: {fileID: 4792818828789318457}
   - component: {fileID: -7651527958085768688}
+  - component: {fileID: 4978823064194465635}
+  - component: {fileID: 6355758406729802214}
+  - component: {fileID: 4897361426983469867}
+  - component: {fileID: 4003740430222521559}
   m_Layer: 0
   m_Name: TestBoss
   m_TagString: Untagged
@@ -38,6 +44,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4266314090549980620}
+  - {fileID: 2320468953353657847}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7248412919801288614
@@ -111,6 +118,23 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &5075690381136405833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody2D
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 0
+  AutoUpdateKinematicState: 1
+  AutoSetKinematicOnDespawn: 1
 --- !u!212 &-1437063157627772836
 SpriteRenderer:
   serializedVersion: 2
@@ -137,7 +161,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: 5502a4cd17ceede42b6dd8fc40188479, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -170,6 +194,79 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!61 &679579537620621667
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.08517411, y: -0.35496178}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.5, y: 2}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1.1590328, y: 0.8956743}
+  m_EdgeRadius: 0
+--- !u!50 &7315575202947294956
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!95 &38752718065871988
 Animator:
   serializedVersion: 7
@@ -216,6 +313,27 @@ MonoBehaviour:
     TransitionDuration: 0
     TriggerNameHash: -2035800095
     TransitionIndex: 1
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: -1299573048
+    TransitionDuration: 0
+    TriggerNameHash: -849427260
+    TransitionIndex: 2
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: 1426158033
+    TransitionDuration: 0
+    TriggerNameHash: 1396330855
+    TransitionIndex: 4
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: 296140221
+    TransitionDuration: 0
+    TriggerNameHash: -902627107
+    TransitionIndex: 5
   AnimatorParameterEntries:
     ParameterEntries:
     - name: isWalk
@@ -230,19 +348,23 @@ MonoBehaviour:
       NameHash: 319992862
       Synchronize: 1
       ParameterType: 4
+    - name: isAttack2
+      NameHash: -849427260
+      Synchronize: 1
+      ParameterType: 9
+    - name: isAttack3
+      NameHash: -1168509870
+      Synchronize: 1
+      ParameterType: 4
+    - name: isAttack5
+      NameHash: 1396330855
+      Synchronize: 1
+      ParameterType: 9
+    - name: isAttack6
+      NameHash: -902627107
+      Synchronize: 1
+      ParameterType: 9
   AnimatorParametersExpanded: 0
---- !u!114 &6355758406729802214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3338869448384287981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39c230e49b605954a9bc629ef87cd4ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.TestBossPattern1
 --- !u!114 &4792818828789318457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,9 +382,11 @@ MonoBehaviour:
     m_InternalValue: 0
   currentHP:
     m_InternalValue: 0
+  isFlashing:
+    m_InternalValue: 0
   moveDistance: 1
   moveSpeed: 0.5
-  pattern1Socket: {fileID: 4266314090549980620}
+  roamDuration: 1
 --- !u!114 &-7651527958085768688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -276,6 +400,66 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.BossAttack
   enablePatternCount: 1
+--- !u!114 &4978823064194465635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28e0fd8b3c0f0b0488c8b6148d0f7cc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.Angel_CastPattern
+  phaseType: 1
+  castSocket: {fileID: 2320468953353657847}
+--- !u!114 &6355758406729802214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c230e49b605954a9bc629ef87cd4ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.TestBossPattern1
+  phaseType: 1
+  swingPatternSocket: {fileID: 4266314090549980620}
+  swingSize: {x: 1.6, y: 1.14}
+  damageMult: 1
+--- !u!114 &4897361426983469867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bf2cae35a417324b94cb75e04fbfd99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.Angel_MultiCastPattern
+  phaseType: 2
+  castSocket: {fileID: 2320468953353657847}
+--- !u!114 &4003740430222521559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338869448384287981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 296105bf827c6224c8073eea3937bc05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.Angel_RushPattern
+  phaseType: 1
+  swingSize: {x: 10, y: 2}
+  rushDuration: 0.1
+  damageMult: 1
 --- !u!1 &4444471778697123865
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,7 +470,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4266314090549980620}
   m_Layer: 0
-  m_Name: Socket_Pattern1
+  m_Name: SwingSocket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -301,7 +485,38 @@ Transform:
   m_GameObject: {fileID: 4444471778697123865}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.551, y: 0.209, z: 0}
+  m_LocalPosition: {x: 0.138, y: -0.143, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4093395615898090748}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7157045540743552176
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2320468953353657847}
+  m_Layer: 0
+  m_Name: CastSocket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2320468953353657847
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7157045540743552176}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.018, y: -0.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

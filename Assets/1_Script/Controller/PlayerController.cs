@@ -86,8 +86,6 @@ namespace ProjectJS.Controller
                 {
                     player.FacingDirection = movement.x > 0 ? Vector2.right : Vector2.left;
                 }
-
-                anim.SetFloat("DirX", player.FacingDirection.x);
             }
 
             anim.SetFloat("Speed", movement.sqrMagnitude);

@@ -11,7 +11,7 @@ namespace ProjectJS.Controller
 	/// 보스방 입장, 게임 플레이, 실패 시 UI 및 처리 등..
 	/// 게임 한 판의 전체적인 Flow를 관리합니다.
 	/// </summary>
-	public class TestBossFlow : NetworkBehaviour
+	public class TestBossFlow : MonoBehaviour
 	{
 		[SerializeField] private GameObject bossPrefab;
 
@@ -22,7 +22,7 @@ namespace ProjectJS.Controller
 
 		protected void Awake()
 		{
-			if (!NetworkManager.IsHost) return;
+			if (!NetworkManager.Singleton.IsHost) return;
 
 			stateMachine = new(this);
 			stateMachine.AddState(State.Init, OnStartInit);
@@ -32,11 +32,6 @@ namespace ProjectJS.Controller
 			stateMachine.AddState(State.Outro, OnStartOutro);
 			stateMachine.AddState(State.Exit, OnStartExit);
 
-		}
-
-		[ContextMenu("PLAYTEST")]
-		public void PlayTest()
-		{
 			stateMachine.ChangeState(State.Init);
 		}
 
@@ -44,11 +39,11 @@ namespace ProjectJS.Controller
 		{
 			// TODO - Lock players' input
 
-			bossController = Instantiate(bossPrefab, Vector3.zero, Quaternion.identity, null)
+			bossController = Instantiate(bossPrefab, /*HACK*/ Vector3.up * 5f, Quaternion.identity, null)
 				.GetComponent<BossController>();
 			bossController.GetComponent<NetworkObject>().Spawn();
 
-			yield return new WaitUntil(() => bossController.spawnedCount.Value >= NetworkManager.ConnectedClients.Count);
+			yield return new WaitUntil(() => bossController.spawnedCount.Value >= NetworkManager.Singleton.ConnectedClients.Count);
 			stateMachine.ChangeState(State.Intro);
 		}
 
