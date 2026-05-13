@@ -288,19 +288,4 @@ public class Player : NetworkBehaviour
         Gizmos.DrawWireCube(hitCenter, attackSize);
     }
 #endif
-}on
-            Vector3 mirroredLocalPos = new Vector3(Mathf.Abs(localPos.x) * directionSign, localPos.y, localPos.z);
-            hitCenter = transform.TransformPoint(mirroredLocalPos);
-        }
-        else
-        {
-            // Calculate hit center based on attack range if no attack point is assigned
-            Vector2 faceDir = Application.isPlaying ? FacingDirection : Vector2.right; 
-            hitCenter = (Vector2)transform.position + (faceDir * currentAttackRange);
-        }
-
-        // Draw the wireframe cube representing the attack area
-        Gizmos.DrawWireCube(hitCenter, attackSize);
-    }
-#endif
 }
