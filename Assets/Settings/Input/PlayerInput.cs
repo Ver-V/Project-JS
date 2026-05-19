@@ -129,6 +129,15 @@ namespace ProjectJS
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenSettings"",
+                    ""type"": ""Button"",
+                    ""id"": ""c7e97b8d-e5d9-43e1-b68f-10f9b53a6551"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -274,6 +283,17 @@ namespace ProjectJS
                     ""action"": ""Skill"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6b633da7-2489-4db3-8a74-d5d261116c3e"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenSettings"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -353,6 +373,7 @@ namespace ProjectJS
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             m_Player_Guard = m_Player.FindAction("Guard", throwIfNotFound: true);
             m_Player_Skill = m_Player.FindAction("Skill", throwIfNotFound: true);
+            m_Player_OpenSettings = m_Player.FindAction("OpenSettings", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         }
@@ -440,6 +461,7 @@ namespace ProjectJS
         private readonly InputAction m_Player_Attack;
         private readonly InputAction m_Player_Guard;
         private readonly InputAction m_Player_Skill;
+        private readonly InputAction m_Player_OpenSettings;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -467,6 +489,10 @@ namespace ProjectJS
             /// Provides access to the underlying input action "Player/Skill".
             /// </summary>
             public InputAction @Skill => m_Wrapper.m_Player_Skill;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/OpenSettings".
+            /// </summary>
+            public InputAction @OpenSettings => m_Wrapper.m_Player_OpenSettings;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -505,6 +531,9 @@ namespace ProjectJS
                 @Skill.started += instance.OnSkill;
                 @Skill.performed += instance.OnSkill;
                 @Skill.canceled += instance.OnSkill;
+                @OpenSettings.started += instance.OnOpenSettings;
+                @OpenSettings.performed += instance.OnOpenSettings;
+                @OpenSettings.canceled += instance.OnOpenSettings;
             }
 
             /// <summary>
@@ -528,6 +557,9 @@ namespace ProjectJS
                 @Skill.started -= instance.OnSkill;
                 @Skill.performed -= instance.OnSkill;
                 @Skill.canceled -= instance.OnSkill;
+                @OpenSettings.started -= instance.OnOpenSettings;
+                @OpenSettings.performed -= instance.OnOpenSettings;
+                @OpenSettings.canceled -= instance.OnOpenSettings;
             }
 
             /// <summary>
@@ -746,6 +778,13 @@ namespace ProjectJS
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSkill(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "OpenSettings" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnOpenSettings(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
