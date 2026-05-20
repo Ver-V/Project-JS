@@ -1,6 +1,7 @@
 using ProjectJS.Manager;
 using ProjectJS.Structs;
 using ProjectJS.UI.LobbyScene.Items;
+using ProjectJS.UI.Settings;
 using ProjectJS.Utils;
 using Steamworks;
 using System.Collections.Generic;
@@ -18,6 +19,10 @@ namespace ProjectJS.UI.LobbyScene
         [SerializeField] private Button readyButton;
         [SerializeField] private Button notreadyButton;
         [SerializeField] private Button startButton;
+		[SerializeField] private Button settingsButton;
+
+		[Header("UI")]
+		[SerializeField] private SettingsUI settingsUI;
 
         [Tooltip("초대 버튼")] [SerializeField] private Button inviteButton;
 
@@ -45,7 +50,15 @@ namespace ProjectJS.UI.LobbyScene
 
 		private void Start()
 		{
-			GameManagerEx.Instance.OnSendMessageAction += SendMessage;
+            settingsUI?.gameObject.SetActive(false);
+            settingsUI.Init(() => { settingsUI.gameObject.SetActive(false); });
+
+            settingsButton.onClick.AddListener(() =>
+            {
+                settingsUI?.gameObject.SetActive(true);
+            });
+
+            GameManagerEx.Instance.OnSendMessageAction += SendMessage;
 			GameManagerEx.Instance.OnAddPlayerAction += OnAddPlayerToDictionary;
 			GameManagerEx.Instance.OnRemovePlayerAction += OnRemovePlayerFromDictionary;
 			GameManagerEx.Instance.OnUpdatePlayerReadyAction += OnUpdatePlayerReady;
@@ -66,8 +79,8 @@ namespace ProjectJS.UI.LobbyScene
 
 			startButton.onClick.AddListener(() =>
 			{
-				Managers.Scene.ChangeScene(SceneEnum.Game);
-			});
+				GameNetworkManager.Instance.StartGameInLobby();
+            });
 
             inviteButton.onClick.AddListener(() =>
             {
@@ -106,7 +119,13 @@ namespace ProjectJS.UI.LobbyScene
 			GameManagerEx.Instance.OnAddPlayerAction -= OnAddPlayerToDictionary;
 			GameManagerEx.Instance.OnRemovePlayerAction -= OnRemovePlayerFromDictionary;
 			GameManagerEx.Instance.OnUpdatePlayerReadyAction -= OnUpdatePlayerReady;
-		}
+
+			disconnectButton.onClick.RemoveAllListeners();
+            readyButton.onClick.RemoveAllListeners();
+            notreadyButton.onClick.RemoveAllListeners();
+            startButton.onClick.RemoveAllListeners();
+            settingsButton.onClick.RemoveAllListeners();
+        }
 
 
 		private void Update()

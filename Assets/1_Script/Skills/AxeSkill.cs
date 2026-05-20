@@ -6,14 +6,11 @@ namespace ProjectJS.Skills
     {
         protected override void Execute()
         {
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, FinalRange);
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, FinalRange, ProjectJS.Utils.Constants.LAYER_BOSS);
 
             foreach (var enemy in hitEnemies)
             {
-                if (enemy.CompareTag("Enemy"))
-                {
-                    ApplyDamageAndEffect(enemy);
-                }
+                ApplyDamageAndEffect(enemy);
             }
 
             Destroy(gameObject, 0.1f);

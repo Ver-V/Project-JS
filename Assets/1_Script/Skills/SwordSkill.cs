@@ -11,14 +11,11 @@ namespace ProjectJS.Skills
             Vector2 boxSize = new Vector2(FinalRange, 1.5f);
             float angle = Mathf.Atan2(skillDir.y, skillDir.x) * Mathf.Rad2Deg;
 
-            Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(boxCenter, boxSize, angle);
+            Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(boxCenter, boxSize, angle, ProjectJS.Utils.Constants.LAYER_BOSS);
 
             foreach (var enemy in hitEnemies)
             {
-                if (enemy.CompareTag("Enemy"))
-                {
-                    ApplyDamageAndEffect(enemy);
-                }
+                ApplyDamageAndEffect(enemy);
             }
             Destroy(gameObject, 0.1f);
         }

@@ -3,7 +3,7 @@ using UnityEngine;
 namespace ProjectJS.Skills
 
 {
-    public enum ShardSpecies {None, DarkMatter}
+    public enum ShardSpecies {None, DarkMatter, Angel}
 
     [CreateAssetMenu(fileName = "NewShardData", menuName = "ProjectJS/Skills/ShardData")]
     public class ShardData : ScriptableObject

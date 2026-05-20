@@ -44,7 +44,7 @@ namespace ProjectJS.Controller
 
 		protected override void OnDamaged()
 		{
-
+			RequestResetFlashTimeServerRPC();
 		}
 
 		protected override void OnDead()

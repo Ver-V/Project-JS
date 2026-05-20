@@ -19,27 +19,37 @@ namespace ProjectJS.Controller
 
         public override void OnNetworkSpawn()
         {
-            if (!IsOwner)
-            {
-                enabled = false;
-                return;
-            }
-
             player = GetComponent<Player>();
             rb = GetComponent<Rigidbody2D>();
             anim = GetComponentInChildren<Animator>();
             skillManager = GetComponent<PlayerSkillManager>();
+
+            if (!IsOwner)
+            {
+                rb.simulated = false;
+                enabled = false;
+                return;
+            }
         }
 
         void Update()
         {
             if (!IsOwner) return;
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                player.RequestRetryServerRpc();
+                return;
+            }
+
+            if (player.IsDead) return;
+
             HandleInput();
         }
 
         void FixedUpdate()
         {
-            if (!IsOwner) return;
+            if (!IsOwner || player.IsDead) return;
             if (player.IsHitStopping) return;
             Move();
         }

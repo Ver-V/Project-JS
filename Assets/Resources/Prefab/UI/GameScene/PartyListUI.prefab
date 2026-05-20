@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4807156365993238064}
   - component: {fileID: 5349953733676135571}
+  - component: {fileID: 3159747516775120167}
   m_Layer: 0
   m_Name: PartyListUI
   m_TagString: Untagged
@@ -62,3 +63,16 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
+--- !u!114 &3159747516775120167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3270732486653200497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bb097b5063f45a40b1c772c4de70744, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PartyListUI
+  partyHPUIPrefab: {fileID: 5821732206166005067, guid: b8ea6db15aa749a409645c9bfff97095, type: 3}
