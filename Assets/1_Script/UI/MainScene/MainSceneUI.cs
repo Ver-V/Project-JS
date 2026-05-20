@@ -1,4 +1,5 @@
 using ProjectJS.Manager;
+using ProjectJS.UI.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,11 +11,12 @@ namespace ProjectJS.UI.MainScene
         [SerializeField] private Button clientButton;
 		[SerializeField] private Button settingsButton;
 		[SerializeField] private Button exitGameButton;
-		[SerializeField] private GameObject settingsPopupPanel;
+		[SerializeField] private SettingsUI settingsUI;
 
 		private void Start()
 		{
-			settingsPopupPanel?.SetActive(false);
+            settingsUI?.gameObject.SetActive(false);
+			settingsUI.Init(() => { settingsUI.gameObject.SetActive(false); });
 
 			hostButton.onClick.AddListener(() =>
 			{
@@ -31,7 +33,7 @@ namespace ProjectJS.UI.MainScene
 
             settingsButton.onClick.AddListener( () => 
             {
-                settingsPopupPanel?.SetActive(true);
+                settingsUI?.gameObject.SetActive(true);
             });
 
             exitGameButton.onClick.AddListener(() =>

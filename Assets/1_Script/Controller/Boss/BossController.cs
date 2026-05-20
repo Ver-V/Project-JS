@@ -1,6 +1,9 @@
+using ProjectJS.Structs;
+using ProjectJS.UI.GameScene;
 using ProjectJS.Utils;
 using System.Collections;
 using Unity.Netcode;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 namespace ProjectJS.Controller
@@ -17,7 +20,9 @@ namespace ProjectJS.Controller
 		private int projectileIdx = 0;
 		public int GetNewProjectileID() => IdUtil.GetProjectileID(bossID, projectileIdx++);
 
-		private void Awake()
+        public event System.Action<float, float, float> OnHealthChangedEvent;
+
+        private void Awake()
 		{
 			spriteMaterial = GetComponent<SpriteRenderer>().material;
 
@@ -77,8 +82,8 @@ namespace ProjectJS.Controller
 			statContainer = new();
 
 			// TODO - HP/UI 연결
-			// currentHP.OnValueChanged((value) => { UIManager.SetHPBar(value); });
-		}
+			currentHP.OnValueChanged += OnCurHealthChanged;
+        }
 		protected virtual void OnStart()
 		{
 			if (!statContainer.TryGet(out HealthStat healthStat))
@@ -89,7 +94,8 @@ namespace ProjectJS.Controller
 
 			healthStat.OnCurrentHPChanged += ((value) => { currentHP.Value = value; });
 			healthStat.OnCurrentHPChanged.Invoke(healthStat.CurrentHP);
-		}
+            GameSceneUI.Instance.RegisterBoss(this);
+        }
 
 		public void RequestAnimParam(string param, bool isOn)
 		{
@@ -99,5 +105,11 @@ namespace ProjectJS.Controller
 		{
 			animator.SetTrigger(param);
 		}
-	}
+
+        private void OnCurHealthChanged(float previousValue, float newValue)
+        {
+            OnHealthChangedEvent?.Invoke(previousValue, newValue, statContainer.Get<HealthStat>().MaxHP);
+        }
+
+    }
 }

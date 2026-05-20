@@ -40,13 +40,22 @@ public class Player : NetworkBehaviour
     public WeaponData CurrentWeapon => currentWeapon;
     public PlayerStats Stats => BaseStats;
     public float CurGuardGauge => curGuardGauge.Value;
+    public float CurHealthGauge => curHealth.Value; //[jh] 체력 바를 위한 게이지 프로퍼티
     public Vector2 FacingDirection { get; set; } = Vector2.right;
+
+    //[jh] 게이지 UI에서 연결하기 위한 이벤트
+    public event System.Action<float, float, float> OnHealthChangedEvent;
+    public event System.Action<float, float, float> OnGuardGaugeChangedEvent;
 
     public override void OnNetworkSpawn()
     {
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
+
+        //[jh] NetworkVariable의 OnValueChanged 이벤트에 구독
+        curHealth.OnValueChanged += OnCurHealthChanged;
+        curGuardGauge.OnValueChanged += OnCurGuardGaugeChanged;
 
         if (IsOwner) 
         {   
@@ -61,8 +70,17 @@ public class Player : NetworkBehaviour
         {   
             UpdateWeaponVisual(-1, currentWeaponIndex.Value);
         }
+
+        //[jh] 게임 씬 로드될 때 플레이어 스폰 시 UI 연결
+        ProjectJS.UI.GameScene.GameSceneUI.Instance?.RegisterPlayer(this);
     }
 
+    //[jh] 테스트용 플레이어 UI 연결
+    [ContextMenu("TestUIConnect")]
+    public void TestUIConnect()
+    {
+        ProjectJS.UI.GameScene.GameSceneUI.Instance?.RegisterPlayer(this);
+    }
 
     public void OnAttackHit()
     {
@@ -286,6 +304,7 @@ public class Player : NetworkBehaviour
         }
     }
 
+
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
@@ -318,4 +337,16 @@ public class Player : NetworkBehaviour
         Gizmos.DrawWireCube(hitCenter, attackSize);
     }
 #endif
+
+    //[jh] netWorkVariable의 OnValueChanged 이벤트에 구독하기 위한 함수
+    private void OnCurHealthChanged(float previousValue, float newValue)
+    {
+        OnHealthChangedEvent?.Invoke(previousValue, newValue, Stats.MaxHealth);
+    }
+
+    private void OnCurGuardGaugeChanged(float previousValue, float newValue)
+    {
+        OnGuardGaugeChangedEvent?.Invoke(previousValue, newValue, Stats.MaxGuardGauge);
+    }
+
 }
