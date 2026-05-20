@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ProjectJS.PStats;
 using ProjectJS.Utils;
+using ProjectJS.Controller;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -18,10 +19,15 @@ public class Player : NetworkBehaviour
     public Vector2 attackSize;
     public LayerMask enemyLayer;
 
-    private NetworkVariable<float> curHealth = new NetworkVariable<float>(); // player's current health
-    private NetworkVariable<float> curGuardGauge = new NetworkVariable<float>(); // player's current guard gauge
+    [Header("Weapon Visuals")]
+    [SerializeField] private SpriteRenderer weaponSpriteRenderer;
+    [SerializeField] private List<Sprite> weaponSprites;
+
+    private NetworkVariable<float> curHealth = new NetworkVariable<float>();
+    private NetworkVariable<float> curGuardGauge = new NetworkVariable<float>();
     private NetworkVariable<int> currentWeaponIndex = new NetworkVariable<int>(0);
 
+    public bool IsDead { get; private set; } = false;
     public bool IsGuarding { get; private set; } = false;
     private float guardStartTime = 0.0f;
     private float nextAttackTime = 0.0f;
@@ -50,7 +56,6 @@ public class Player : NetworkBehaviour
             SetWeaponRpc(WeaponChoice);
 
             UpdateWeaponVisual(-1, WeaponChoice);
-            Debug.Log($"[Player] Owner Initialized with weapon index: {WeaponChoice}");
         }
         else if (currentWeaponIndex.Value != -1)
         {   
@@ -61,7 +66,7 @@ public class Player : NetworkBehaviour
 
     public void OnAttackHit()
     {
-        if (currentWeapon == null) return;
+        if (currentWeapon == null || IsDead) return;
 
         Vector2 hitCenter;
 
@@ -82,17 +87,15 @@ public class Player : NetworkBehaviour
 
         Debug.DrawLine((Vector2)transform.position, hitCenter, Color.red, 0.5f);
 
-        Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(hitCenter, attackSize, 0f, enemyLayer);
+        Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(hitCenter, attackSize, 0f, Constants.LAYER_BOSS);
 
         if (hitEnemies.Length > 0)
         {
-            // Trigger Effects on Hit
             if (currentWeapon.AttackVfxPrefab != null)
             {
                 Instantiate(currentWeapon.AttackVfxPrefab, hitCenter, Quaternion.identity);
             }
 
-            // Hit Stop & Screen Shake (only for owner)
             if (IsOwner)
             {
                 StartCoroutine(TriggerHitStop(0.07f));
@@ -118,7 +121,6 @@ public class Player : NetworkBehaviour
         if (isHitStopping) yield break;
         isHitStopping = true;
         
-        // Pause Animator
         float prevAnimSpeed = anim.speed;
         anim.speed = 0.05f;
 
@@ -131,6 +133,7 @@ public class Player : NetworkBehaviour
 
     public void SetGuarding(bool state)
     {
+        if (IsDead) return;
         if (state && !IsGuarding) guardStartTime = Time.time;
         IsGuarding = state;
 
@@ -142,11 +145,7 @@ public class Player : NetworkBehaviour
 
     public void TryAttack()
     {
-        if (currentWeapon == null)
-        {
-            Debug.LogWarning("[Player] CurrentWeapon is null! Attack failed.");
-            return;
-        }
+        if (currentWeapon == null || IsDead) return;
 
         if (Time.time >= nextAttackTime && !IsGuarding)
         {
@@ -157,13 +156,11 @@ public class Player : NetworkBehaviour
 
     private void Attack()
     {
-        Debug.Log("[Player] Attack Triggered!");
         if (anim != null)
         {
             anim.SetTrigger("Attack");
         }
 
-        // Play Attack SFX
         if (currentWeapon != null && currentWeapon.AttackSfxClip != null)
         {
             AudioSource.PlayClipAtPoint(currentWeapon.AttackSfxClip, transform.position);
@@ -175,21 +172,14 @@ public class Player : NetworkBehaviour
     {
         currentWeaponIndex.Value = Index;
         if (curHealth.Value <= 0) curHealth.Value = BaseStats.MaxHealth;
+        if (curGuardGauge.Value <= 0) curGuardGauge.Value = BaseStats.MaxGuardGauge;
     }
 
     private void UpdateWeaponVisual(int OldIndex, int NewIndex)
     {
-        if (AvailableWeapons == null || AvailableWeapons.Count == 0)
-        {
-            Debug.LogError("[Player] AvailableWeapons list is empty!");
-            return;
-        }
+        if (AvailableWeapons == null || AvailableWeapons.Count == 0) return;
 
-        if (NewIndex < 0 || NewIndex >= AvailableWeapons.Count)
-        {
-            Debug.LogWarning($"[Player] Invalid Weapon Index: {NewIndex}");
-            return;
-        }
+        if (NewIndex < 0 || NewIndex >= AvailableWeapons.Count) return;
 
         currentWeapon = AvailableWeapons[NewIndex];
         
@@ -198,13 +188,15 @@ public class Player : NetworkBehaviour
             anim.runtimeAnimatorController = currentWeapon.WeaponAnimatorController;
         }
         
-        // TODO: Weapon Sprite change logic
-        // Example: weaponSpriteRenderer.sprite = currentWeapon.WeaponSprite;
+        if (weaponSpriteRenderer != null && weaponSprites != null && NewIndex < weaponSprites.Count)
+        {
+            weaponSpriteRenderer.sprite = weaponSprites[NewIndex];
+        }
     }
     
     public void TakeDamage(float EnemyDamage, Vector2 attackerPos)
     {
-        if (!IsOwner) return;
+        if (!IsOwner || IsDead) return;
 
         TakeDamageServerRpc(EnemyDamage, attackerPos);
     }
@@ -248,12 +240,50 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.NotMe)]
     private void PlayJustGuardEffectRpc()
     {
-        // TODO : SFX, VFX.
     }
 
     private void Die()
     {
-        // TODO : gameover screen, sprite.play(died)
+        if (IsDead) return;
+        IsDead = true;
+        
+        if (anim != null)
+        {
+            anim.SetTrigger("Dead");
+        }
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    public void RequestRetryServerRpc()
+    {
+        RespawnClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void RespawnClientRpc()
+    {
+        Respawn();
+    }
+
+    private void Respawn()
+    {
+        IsDead = false;
+        
+        if (IsServer)
+        {
+            curHealth.Value = BaseStats.MaxHealth;
+            curGuardGauge.Value = BaseStats.MaxGuardGauge;
+        }
+
+        if (anim != null)
+        {
+            anim.Play("Idle"); // or whatever the default state is
+        }
     }
 
 #if UNITY_EDITOR

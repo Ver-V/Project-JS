@@ -8,14 +8,11 @@ namespace ProjectJS.Skills
         {
             float spearRange = FinalRange * 1.75f;
 
-            RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, new Vector2(0.5f, 0.5f), 0f, SkillDirection, spearRange);
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, new Vector2(0.5f, 0.5f), 0f, SkillDirection, spearRange, ProjectJS.Utils.Constants.LAYER_BOSS);
 
             foreach (var hit in hits)
             {
-                if (hit.collider.CompareTag("Enemy"))
-                {
-                    ApplyDamageAndEffect(hit.collider);
-                }
+                ApplyDamageAndEffect(hit.collider);
             }
 
             Destroy(gameObject, 0.1f);

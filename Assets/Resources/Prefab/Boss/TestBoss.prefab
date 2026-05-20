@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 6355758406729802214}
   - component: {fileID: 4897361426983469867}
   - component: {fileID: 4003740430222521559}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: TestBoss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3099588260
+  GlobalObjectIdHash: 2200437023
   InScenePlacedSourceGlobalObjectIdHash: 2200437023
   DeferredDespawnTick: 0
   Ownership: 1
@@ -469,7 +469,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4266314090549980620}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: SwingSocket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -500,7 +500,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2320468953353657847}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: CastSocket
   m_TagString: Untagged
   m_Icon: {fileID: 0}

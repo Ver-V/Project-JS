@@ -65,21 +65,19 @@ public StatusEffect FinalStatusEffect => finalStatusEffect;
         }
 protected abstract void Execute();
 
-protected void ApplyDamageAndEffect(Collider2D enemyCollider)
-    {
-        if (!IsServer) return;
+        protected void ApplyDamageAndEffect(Collider2D enemyCollider)
+        {
+            if (!IsServer) return;
 
-         /* TODO: fix the script later 
-          var enemy = enemyCollider.GetComponent<Enemy>();
-          if (enemy != null) {
-              enemy.TakeDamage(FinalDamage);
-              if (FinalStatusEffect != StatusEffect.None) {
-                  enemy.ApplyStatusEffect(FinalStatusEffect);
-              } 
-              
-              GetComponent<NetworkObject>().Despawn();
-          } */
-
+            if (enemyCollider.TryGetComponent<ProjectJS.Controller.BossController>(out var boss))
+            {
+                boss.RequestTakeDamageServerRpc(FinalDamage);
+                
+                if (TryGetComponent<NetworkObject>(out var netObj) && netObj.IsSpawned)
+                {
+                    netObj.Despawn();
+                }
+            }
         }
     }     
 }

@@ -72,6 +72,8 @@ namespace ProjectJS.Controller
 			animator = GetComponent<Animator>();
 			bossAttack = GetComponent<BossAttack>();
 
+			gameObject.layer = 13;
+
 			statContainer = new();
 
 			// TODO - HP/UI 연결

@@ -279,6 +279,8 @@ GameObject:
   - component: {fileID: 8909786324833286219}
   - component: {fileID: -5385126495476415868}
   - component: {fileID: -3491539382285881913}
+  - component: {fileID: -8764859403802481906}
+  - component: {fileID: 8775054916592547404}
   m_Layer: 12
   m_Name: Player
   m_TagString: Untagged
@@ -381,7 +383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4261299305
+  GlobalObjectIdHash: 2361543480
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -419,7 +421,12 @@ MonoBehaviour:
   attackSize: {x: 0.2, y: 0.45}
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 8192
+  weaponSpriteRenderer: {fileID: 0}
+  weaponSprites:
+  - {fileID: 3781665898625333168, guid: 54edaf15f511c5f45a66fc96af20b31f, type: 3}
+  - {fileID: -6070605824932911320, guid: 49cee8a0c2e1f60408ff79eaeedbc445, type: 3}
+  - {fileID: 2711784336968252271, guid: 9984f6e45f197b74a829fc01bf06b8ec, type: 3}
 --- !u!114 &-5385126495476415868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,6 +454,69 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Skills.PlayerSkillManager
   ShowTopMostFoldoutHeaderGroup: 1
   availableShards: []
+--- !u!114 &-8764859403802481906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5302093961305435749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 1
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
+--- !u!114 &8775054916592547404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5302093961305435749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody2D
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 0
+  AutoUpdateKinematicState: 1
+  AutoSetKinematicOnDespawn: 1
 --- !u!1 &6773318671893412020
 GameObject:
   m_ObjectHideFlags: 0
