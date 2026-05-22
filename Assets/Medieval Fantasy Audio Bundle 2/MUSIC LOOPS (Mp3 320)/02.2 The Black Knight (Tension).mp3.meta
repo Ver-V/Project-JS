@@ -1,0 +1,29 @@
+fileFormatVersion: 2
+guid: 9eceb2edb0cd9ba488ab6f4f7475f102
+timeCreated: 1456766913
+licenseType: Store
+AudioImporter:
+  serializedVersion: 6
+  defaultSettings:
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
+    quality: 1
+    conversionMode: 0
+  platformSettingOverrides: {}
+  forceToMono: 0
+  preloadAudioData: 1
+  loadInBackground: 0
+  3D: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 57168
+  packageName: Medieval Fantasy Audio Bundle 2
+  packageVersion: 1.0
+  assetPath: Assets/Medieval Fantasy Audio Bundle 2/MUSIC LOOPS (Mp3 320)/02.2 The
+    Black Knight (Tension).mp3
+  uploadId: 105481
