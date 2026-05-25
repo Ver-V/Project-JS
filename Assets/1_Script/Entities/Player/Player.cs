@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using ProjectJS.PStats;
 using ProjectJS.Utils;
@@ -17,11 +18,21 @@ public class Player : NetworkBehaviour
     [Header("Attack Settings")]
     public Transform attackPoint;
     public Vector2 attackSize;
+    public float attackOffset = 1.0f;
     public LayerMask enemyLayer;
 
     [Header("Weapon Visuals")]
     [SerializeField] private SpriteRenderer weaponSpriteRenderer;
     [SerializeField] private List<Sprite> weaponSprites;
+
+    [Header("Guard Settings")]
+    [SerializeField] private Vector2 guardSize = new Vector2(1.5f, 2.0f);
+    [SerializeField] private float guardOffset = 0.5f;
+
+    [Header("Invincibility Settings")]
+    [SerializeField] private float invincibilityDuration = 1.0f;
+    private float lastHitTime = -1.0f;
+    private Coroutine invincibilityCoroutine;
 
     private NetworkVariable<float> curHealth = new NetworkVariable<float>();
     private NetworkVariable<float> curGuardGauge = new NetworkVariable<float>();
@@ -86,26 +97,14 @@ public class Player : NetworkBehaviour
     {
         if (currentWeapon == null || IsDead) return;
 
-        Vector2 hitCenter;
+        Vector2 hitCenter = (Vector2)transform.position + (FacingDirection * attackOffset);
+        if (attackPoint != null) hitCenter.y = attackPoint.position.y;
 
-        if (attackPoint != null)
-        {
-            Vector3 localPos = attackPoint.localPosition;
-            float directionSign = FacingDirection.x >= 0 ? 1f : -1f;
-
-            Vector3 mirroredLocalPos = new Vector3(Mathf.Abs(localPos.x) * directionSign, localPos.y, localPos.z);
-            hitCenter = transform.TransformPoint(mirroredLocalPos);
-        }
-
-        else
-        {
-            float offsetDistance = currentWeapon.AttackRange;
-            hitCenter = (Vector2)transform.position + (FacingDirection * offsetDistance);
-        }
+        Vector2 effectiveSize = new Vector2(attackSize.x * currentWeapon.AttackRange, attackSize.y);
 
         Debug.DrawLine((Vector2)transform.position, hitCenter, Color.red, 0.5f);
 
-        Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(hitCenter, attackSize, 0f, Constants.LAYER_BOSS);
+        Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(hitCenter, effectiveSize, 0f, Constants.LAYER_BOSS);
 
         if (hitEnemies.Length > 0)
         {
@@ -124,9 +123,12 @@ public class Player : NetworkBehaviour
             }
         }
 
+        HashSet<ProjectJS.Controller.BossController> hitBosses = new HashSet<ProjectJS.Controller.BossController>();
+
         foreach (Collider2D enemy in hitEnemies)
         {
-            if (enemy.TryGetComponent<ProjectJS.Controller.BossController>(out var boss))
+            var boss = enemy.GetComponentInParent<ProjectJS.Controller.BossController>();
+            if (boss != null && hitBosses.Add(boss))
             {
                 boss.RequestTakeDamageServerRpc(currentWeapon.Damage);
             }
@@ -222,10 +224,13 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void TakeDamageServerRpc(float EnemyDamage, Vector2 attackerPos)
     {
-        Vector2 dirToAttacker = (attackerPos - (Vector2)transform.position).normalized;
-        float dot = Vector2.Dot(FacingDirection, dirToAttacker);
+        if (Time.time - lastHitTime < invincibilityDuration) return;
 
-        if (IsGuarding && curGuardGauge.Value > 0 && dot > 0)
+        Vector2 guardCenter = (Vector2)transform.position + (FacingDirection * guardOffset);
+        bool isAttackerInGuardArea = Mathf.Abs(attackerPos.x - guardCenter.x) <= guardSize.x / 2f &&
+                                     Mathf.Abs(attackerPos.y - guardCenter.y) <= guardSize.y / 2f;
+
+        if (IsGuarding && curGuardGauge.Value > 0 && isAttackerInGuardArea)
         {
             if (Time.time - guardStartTime <= 0.2f)
             {
@@ -241,11 +246,49 @@ public class Player : NetworkBehaviour
         else
         {
             curHealth.Value -= EnemyDamage;
+            lastHitTime = Time.time;
+            StartInvincibilityClientRpc();
         }
 
         if (curHealth.Value <= 0)
         {
             DieClientRpc();
+        }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void StartInvincibilityClientRpc()
+    {
+        if (invincibilityCoroutine != null) StopCoroutine(invincibilityCoroutine);
+        invincibilityCoroutine = StartCoroutine(InvincibilityFlashRoutine());
+    }
+
+    private IEnumerator InvincibilityFlashRoutine()
+    {
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+        float elapsed = 0f;
+        while (elapsed < invincibilityDuration)
+        {
+            foreach (var r in renderers)
+            {
+                if (r != null)
+                {
+                    Color c = r.color;
+                    c.a = (c.a == 1f) ? 0.5f : 1f;
+                    r.color = c;
+                }
+            }
+            yield return new WaitForSeconds(0.1f);
+            elapsed += 0.1f;
+        }
+        foreach (var r in renderers)
+        {
+            if (r != null)
+            {
+                Color c = r.color;
+                c.a = 1f;
+                r.color = c;
+            }
         }
     }
 
@@ -296,6 +339,7 @@ public class Player : NetworkBehaviour
         {
             curHealth.Value = BaseStats.MaxHealth;
             curGuardGauge.Value = BaseStats.MaxGuardGauge;
+            lastHitTime = -1.0f;
         }
 
         if (anim != null)
@@ -305,38 +349,27 @@ public class Player : NetworkBehaviour
     }
 
 
-#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
-        // Set Gizmo color to semi-transparent red
         Gizmos.color = new Color(1, 0, 0, 0.5f); 
 
-        Vector2 hitCenter;
-        
-        // Default attack range to 1f if no weapon is selected in the editor
-        float currentAttackRange = (currentWeapon != null) ? currentWeapon.AttackRange : 1f;
+        Vector2 currentDir = Application.isPlaying ? FacingDirection : 
+                            (transform.localScale.x >= 0 ? Vector2.right : Vector2.left);
 
-        if (attackPoint != null)
-        {
-            // Calculate direction sign based on facing direction (default to right in editor if not playing)
-            float directionSign = Application.isPlaying ? (FacingDirection.x >= 0 ? 1f : -1f) : 1f;
-            Vector3 localPos = attackPoint.localPosition;
-            
-            // Mirror the local position based on facing direction
-            Vector3 mirroredLocalPos = new Vector3(Mathf.Abs(localPos.x) * directionSign, localPos.y, localPos.z);
-            hitCenter = transform.TransformPoint(mirroredLocalPos);
-        }
-        else
-        {
-            // Calculate hit center based on attack range if no attack point is assigned
-            Vector2 faceDir = Application.isPlaying ? FacingDirection : Vector2.right; 
-            hitCenter = (Vector2)transform.position + (faceDir * currentAttackRange);
-        }
+        Vector2 hitCenter = (Vector2)transform.position + (currentDir * attackOffset);
+        if (attackPoint != null) hitCenter.y = attackPoint.position.y;
 
-        // Draw the wireframe cube representing the attack area
-        Gizmos.DrawWireCube(hitCenter, attackSize);
+        float rangeMultiplier = 1f;
+        if (currentWeapon != null) rangeMultiplier = currentWeapon.AttackRange;
+        else if (AvailableWeapons != null && AvailableWeapons.Count > 0) rangeMultiplier = AvailableWeapons[0].AttackRange;
+
+        Vector2 effectiveSize = new Vector2(attackSize.x * rangeMultiplier, attackSize.y);
+        Gizmos.DrawWireCube(hitCenter, effectiveSize);
+
+        Gizmos.color = new Color(0, 0, 1, 0.5f);
+        Vector2 guardCenter = (Vector2)transform.position + (currentDir * guardOffset);
+        Gizmos.DrawWireCube(guardCenter, guardSize);
     }
-#endif
 
     //[jh] netWorkVariable의 OnValueChanged 이벤트에 구독하기 위한 함수
     private void OnCurHealthChanged(float previousValue, float newValue)
