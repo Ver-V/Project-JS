@@ -1,5 +1,7 @@
 using ProjectJS.Manager;
+using ProjectJS.ScriptableObjects;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectJS.Controller
@@ -18,8 +20,19 @@ namespace ProjectJS.Controller
 
 		private Rigidbody2D rigidbody;
 
-        private enum State { Init, Detect, Roam, Pattern, Dead }
+        private enum State { Init, Detect, Roam, Pattern, Dead, Phasing }
+		private BossPhaseType currentPhase = BossPhaseType.Phase1;
 		private StateMachine<State> stateMachine;
+		private BossStat bossStat = null;
+
+		protected override void OnUpdate()
+		{
+			// TEST
+			if (Input.GetKeyDown(KeyCode.R))
+			{
+				currentHP.Value -= bossStat.MaxHP * .7f;
+			}
+		}
 
 		protected override void OnAwake()
 		{
@@ -27,7 +40,7 @@ namespace ProjectJS.Controller
 
 			rigidbody = GetComponent<Rigidbody2D>();
 
-            var bossStat = Managers.Resource.GetBossStat();
+            bossStat = Managers.Resource.GetBossStat();
 			statContainer.AddStat(new HealthStat(bossStat.MaxHP));
 			statContainer.AddStat(new AttackStat(DamageType.Physics, bossStat.AttackPower));
 			statContainer.AddStat(new DefenseStat(bossStat.DefensePower));
@@ -39,6 +52,7 @@ namespace ProjectJS.Controller
 			stateMachine.AddState(State.Detect, OnStartDetect);
 			stateMachine.AddState(State.Pattern, OnStartPattern, OnEndPattern);
 			stateMachine.AddState(State.Dead, OnStartDead, OnEndDead);
+			stateMachine.AddState(State.Phasing, OnStartPhasing, OnEndPhasing);
 			stateMachine.ChangeState(State.Init);
 		}
 
@@ -79,6 +93,14 @@ namespace ProjectJS.Controller
 		{
 			// ex. 근거리에 있으면 근거리 패턴
 			// 원거리에 있으면 그 방향으로 Roam or 원거리 패턴
+
+			if (currentPhase == BossPhaseType.Phase1 && currentHP.Value <= bossStat.MaxHP * .5f)
+			{
+				currentPhase = BossPhaseType.Phase2;
+				stateMachine.ChangeState(State.Phasing);
+				yield break;
+			}
+
 			yield return null;
 			//stateMachine.ChangeState(State.Roam);
 			stateMachine.ChangeState(State.Pattern);
@@ -86,6 +108,13 @@ namespace ProjectJS.Controller
 
 		private IEnumerator OnStartRoam()
 		{
+			if (currentPhase == BossPhaseType.Phase1 && currentHP.Value <= bossStat.MaxHP * .5f)
+			{
+				currentPhase = BossPhaseType.Phase2;
+				stateMachine.ChangeState(State.Phasing);
+				yield break;
+			}
+
 			animator.SetBool("isWalk", true);
 			yield return Move();
 			stateMachine.ChangeState(State.Detect);
@@ -99,7 +128,7 @@ namespace ProjectJS.Controller
 
 		private IEnumerator OnStartPattern()
 		{
-			yield return bossAttack.GetRandomPattern();
+			yield return bossAttack.GetRandomPattern(currentPhase);
 			stateMachine.ChangeState(State.Roam);
 		}
 
@@ -118,7 +147,26 @@ namespace ProjectJS.Controller
 			yield return null;
 		}
 
-        private IEnumerator Move()
+		private IEnumerator OnStartPhasing()
+		{
+			bool isDone = false;
+			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToBoss);
+			yield return new WaitUntil(() => isDone);
+
+			yield return StartCoroutine(OnStartIntro());
+			stateMachine.ChangeState(State.Detect);
+		}
+
+		private IEnumerator OnEndPhasing()
+		{
+			bool isDone = false;
+			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToPlayer);
+			yield return new WaitUntil(() => isDone);
+
+			yield return StartCoroutine(OnEndIntro());
+		}
+
+		private IEnumerator Move()
         {
             Vector2 randomDir = Random.insideUnitCircle.normalized;
             transform.localScale = new Vector3(
