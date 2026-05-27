@@ -31,7 +31,10 @@ namespace ProjectJS.Controller
 			stateMachine.AddState(State.PhaseTransition, OnStartPhaseTransition);
 			stateMachine.AddState(State.Outro, OnStartOutro);
 			stateMachine.AddState(State.Exit, OnStartExit);
+		}
 
+		public void Init()
+		{
 			stateMachine.ChangeState(State.Init);
 		}
 

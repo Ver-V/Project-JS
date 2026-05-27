@@ -1,4 +1,5 @@
 using Netcode.Transports.Facepunch;
+using ProjectJS.Controller;
 using ProjectJS.Utils;
 using Steamworks;
 using Steamworks.Data;
@@ -209,6 +210,9 @@ namespace ProjectJS.Manager
 				}
 
 				NetworkTransmission.instance.StartGameServerRPC();
+
+				// HACK
+				FindAnyObjectByType<TestBossFlow>().Init();
 			}
 		}
 
