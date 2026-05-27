@@ -67,16 +67,23 @@ protected abstract void Execute();
 
         protected void ApplyDamageAndEffect(Collider2D enemyCollider)
         {
+            Debug.Log($"[SkillBase] ApplyDamageAndEffect called. IsServer: {IsServer}");
             if (!IsServer) return;
 
-            if (enemyCollider.TryGetComponent<ProjectJS.Controller.BossController>(out var boss))
+            var boss = enemyCollider.GetComponentInParent<ProjectJS.Controller.BossController>();
+            if (boss != null)
             {
+                Debug.Log($"[SkillBase] BossController found! Requesting {FinalDamage} damage.");
                 boss.RequestTakeDamageServerRpc(FinalDamage);
                 
                 if (TryGetComponent<NetworkObject>(out var netObj) && netObj.IsSpawned)
                 {
                     netObj.Despawn();
                 }
+            }
+            else
+            {
+                Debug.LogWarning("[SkillBase] BossController NOT found on the hit collider or its parents.");
             }
         }
     }     

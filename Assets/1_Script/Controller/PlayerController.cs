@@ -92,7 +92,7 @@ namespace ProjectJS.Controller
             if (movement != Vector2.zero)
             {
 
-                if (movement.x != 0)
+                if (movement.x != 0 && !player.IsGuarding)
                 {
                     player.FacingDirection = movement.x > 0 ? Vector2.right : Vector2.left;
                     transform.localScale = new Vector3(movement.x > 0 ? 1f : -1f, 1f, 1f);

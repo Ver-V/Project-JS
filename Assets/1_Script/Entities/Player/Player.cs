@@ -64,7 +64,6 @@ public class Player : NetworkBehaviour
         rb = GetComponent<Rigidbody2D>();
         currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
 
-        //[jh] NetworkVariable의 OnValueChanged 이벤트에 구독
         curHealth.OnValueChanged += OnCurHealthChanged;
         curGuardGauge.OnValueChanged += OnCurGuardGaugeChanged;
 
@@ -82,8 +81,28 @@ public class Player : NetworkBehaviour
             UpdateWeaponVisual(-1, currentWeaponIndex.Value);
         }
 
-        //[jh] 게임 씬 로드될 때 플레이어 스폰 시 UI 연결
         ProjectJS.UI.GameScene.GameSceneUI.Instance?.RegisterPlayer(this);
+
+        if (IsServer)
+        {
+            StartCoroutine(GuardGaugeRegenRoutine());
+        }
+    }
+
+    private IEnumerator GuardGaugeRegenRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            
+            if (!IsDead && !IsGuarding)
+            {
+                if (curGuardGauge.Value < BaseStats.MaxGuardGauge)
+                {
+                    curGuardGauge.Value = Mathf.Min(curGuardGauge.Value + 1f, BaseStats.MaxGuardGauge);
+                }
+            }
+        }
     }
 
     //[jh] 테스트용 플레이어 UI 연결
@@ -95,6 +114,7 @@ public class Player : NetworkBehaviour
 
     public void OnAttackHit()
     {
+        Debug.Log("[Player] OnAttackHit called!");
         if (currentWeapon == null || IsDead) return;
 
         Vector2 hitCenter = (Vector2)transform.position + (FacingDirection * attackOffset);
@@ -105,6 +125,7 @@ public class Player : NetworkBehaviour
         Debug.DrawLine((Vector2)transform.position, hitCenter, Color.red, 0.5f);
 
         Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(hitCenter, effectiveSize, 0f, Constants.LAYER_BOSS);
+        Debug.Log($"[Player] OverlapBoxAll found {hitEnemies.Length} enemies in LAYER_BOSS");
 
         if (hitEnemies.Length > 0)
         {
@@ -130,6 +151,7 @@ public class Player : NetworkBehaviour
             var boss = enemy.GetComponentInParent<ProjectJS.Controller.BossController>();
             if (boss != null && hitBosses.Add(boss))
             {
+                Debug.Log($"[Player] Requesting {currentWeapon.Damage} damage to Boss!");
                 boss.RequestTakeDamageServerRpc(currentWeapon.Damage);
             }
         }
@@ -340,6 +362,7 @@ public class Player : NetworkBehaviour
             curHealth.Value = BaseStats.MaxHealth;
             curGuardGauge.Value = BaseStats.MaxGuardGauge;
             lastHitTime = -1.0f;
+            StartCoroutine(GuardGaugeRegenRoutine());
         }
 
         if (anim != null)
