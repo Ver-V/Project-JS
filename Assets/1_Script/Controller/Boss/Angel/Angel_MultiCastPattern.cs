@@ -28,8 +28,6 @@ namespace ProjectJS.Controller
 		private float angleOffset = 0f;
 		private void MultiCast()
 		{
-			if (!NetworkManager.Singleton.IsHost) return;
-
 			BossController bossController = GetComponent<BossController>();
 			for (int i = 0; i < 8; i++)
 			{

@@ -70,7 +70,7 @@ namespace ProjectJS.Entities
 
 				if (TryGetComponent<Poolable>(out var poolable))
 				{
-					Managers.Pool.Return(poolable.PoolingType, gameObject);
+					NetworkTransmission.instance.RemoveProjectileServerRPC(id);
 				}
 			}
 		}

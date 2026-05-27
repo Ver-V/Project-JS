@@ -15,11 +15,6 @@ namespace ProjectJS.zTest
                 var obj = Instantiate(bossPrefab, new Vector3(0, 0, 0), Quaternion.identity);
                 obj.GetComponent<NetworkObject>().Spawn();
             }
-
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                NetworkTransmission.instance.RemoveProjectileServerRPC(1007);
-			}
         }
     }
 }
