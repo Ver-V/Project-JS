@@ -21,31 +21,31 @@ namespace ProjectJS.Controller
         public event System.Action<float, float, float> OnHealthChangedEvent;
 
         private void Awake()
-		{
-			spriteMaterial = GetComponent<SpriteRenderer>().material;
+        {
+        	spriteMaterial = GetComponent<SpriteRenderer>().material;
+        	gameObject.layer = 13;
 
-			if (!NetworkManager.IsHost) return;
-			OnAwake();
-		}
+        	if (!NetworkManager.Singleton.IsHost) return;
+        	OnAwake();
+        }
 
-		private void Start()
-		{
-			if (!NetworkManager.IsHost) return;
-			OnStart();
-		}
+        private void Start()
+        {
+        	if (!NetworkManager.Singleton.IsHost) return;
+        	OnStart();
+        }
 
-		protected void Update()
-		{
-			if (!NetworkManager.IsHost) return;
+        protected void Update()
+        {
+        	if (!NetworkManager.Singleton.IsHost) return;
 
-			if (remainedFlashTime > 0f)
-				remainedFlashTime -= Time.deltaTime;
+        	if (remainedFlashTime > 0f)
+        		remainedFlashTime -= Time.deltaTime;
 
 			isFlashing.Value = remainedFlashTime > 0f;
 
 			OnUpdate();
-		}
-
+        }
 		protected override void OnNetworkPostSpawn()
 		{
 			base.OnNetworkPostSpawn();
@@ -71,8 +71,6 @@ namespace ProjectJS.Controller
 		{
 			animator = GetComponent<Animator>();
 			bossAttack = GetComponent<BossAttack>();
-
-			gameObject.layer = 13;
 
 			statContainer = new();
 

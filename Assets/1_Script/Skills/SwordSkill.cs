@@ -6,15 +6,18 @@ namespace ProjectJS.Skills
     {
         protected override void Execute()
         {
+            Debug.Log("[SwordSkill] Execute called!");
             Vector2 skillDir = SkillDirection; 
-            Vector2 boxCenter = (Vector2)transform.position + (skillDir * (FinalRange * 1.0f));
+            Vector2 boxCenter = (Vector2)transform.position + (skillDir * (FinalRange * 0.5f));
             Vector2 boxSize = new Vector2(FinalRange, 1.5f);
             float angle = Mathf.Atan2(skillDir.y, skillDir.x) * Mathf.Rad2Deg;
 
             Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(boxCenter, boxSize, angle, ProjectJS.Utils.Constants.LAYER_BOSS);
+            Debug.Log($"[SwordSkill] OverlapBoxAll found {hitEnemies.Length} enemies in LAYER_BOSS");
 
             foreach (var enemy in hitEnemies)
             {
+                Debug.Log($"[SwordSkill] Applying damage to {enemy.name}");
                 ApplyDamageAndEffect(enemy);
             }
             Destroy(gameObject, 0.1f);

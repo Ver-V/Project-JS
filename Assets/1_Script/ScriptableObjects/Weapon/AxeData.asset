@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.PStats.WeaponData
   weaponName: Axe
   damage: 20
-  attackRange: 0.8
-  attackSpeed: 0.9
-  weaponPrefab: {fileID: 0}
+  attackRange: 0.75
+  attackSpeed: 0.75
+  weaponSprite: {fileID: 21300000, guid: a288c368272614274875336867e941aa, type: 3}
   weaponSkill: {fileID: 11400000, guid: f6eea7baffbf3754499f26c230320377, type: 2}
+  weaponAnimatorController: {fileID: 22100000, guid: 672c05e830d8c2b4ba3545622dff108b, type: 2}
+  attackVfxPrefab: {fileID: 0}
+  attackSfxClip: {fileID: 0}

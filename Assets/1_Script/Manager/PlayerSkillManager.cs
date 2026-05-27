@@ -28,6 +28,7 @@ namespace ProjectJS.Skills
         
         public void TrySkill()
         {
+            Debug.Log("[PlayerSkillManager] TrySkill called!");
             WeaponData currentWeapon = player.CurrentWeapon;
             if (currentWeapon == null)
             {
@@ -72,6 +73,10 @@ namespace ProjectJS.Skills
 
                 // using skill syscall
                 UseSkillServerRpc(direction, shIdx);
+            }
+            else
+            {
+                Debug.Log($"[PlayerSkillManager] Skill on cooldown. Remaining: {(lastSkillTime + finalCooldown) - Time.time}s");
             }
         }
 
