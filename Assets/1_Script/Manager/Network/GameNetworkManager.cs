@@ -192,7 +192,7 @@ namespace ProjectJS.Manager
 			Debug.Log("Start Game in lobby...");
 			LockLobby();
 
-			NetworkManager.Singleton.SceneManager.LoadScene("testScene", LoadSceneMode.Single);
+			NetworkManager.Singleton.SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
 		}
 		private void OnSceneLoadedInNetwork(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
 		{
