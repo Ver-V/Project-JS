@@ -1,9 +1,7 @@
-using ProjectJS.Structs;
 using ProjectJS.UI.GameScene;
 using ProjectJS.Utils;
 using System.Collections;
 using Unity.Netcode;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 namespace ProjectJS.Controller
@@ -23,34 +21,31 @@ namespace ProjectJS.Controller
         public event System.Action<float, float, float> OnHealthChangedEvent;
 
         private void Awake()
-		{
-			spriteMaterial = GetComponent<SpriteRenderer>().material;
+        {
+        	spriteMaterial = GetComponent<SpriteRenderer>().material;
+        	gameObject.layer = 13;
 
-			if (!NetworkManager.IsHost) return;
-			OnAwake();
-		}
+        	if (!NetworkManager.Singleton.IsHost) return;
+        	OnAwake();
+        }
 
-		private void Start()
-		{
-			if (!NetworkManager.IsHost) return;
-			OnStart();
-		}
+        private void Start()
+        {
+        	if (!NetworkManager.Singleton.IsHost) return;
+        	OnStart();
+        }
 
-		protected void Update()
-		{
-			if (!NetworkManager.IsHost) return;
+        protected void Update()
+        {
+        	if (!NetworkManager.Singleton.IsHost) return;
 
-			if (remainedFlashTime > 0f)
-				remainedFlashTime -= Time.deltaTime;
+        	if (remainedFlashTime > 0f)
+        		remainedFlashTime -= Time.deltaTime;
 
 			isFlashing.Value = remainedFlashTime > 0f;
 
-			if (Input.GetKeyDown(KeyCode.R))
-			{
-				RequestResetFlashTimeServerRPC();
-			}
-		}
-
+			OnUpdate();
+        }
 		protected override void OnNetworkPostSpawn()
 		{
 			base.OnNetworkPostSpawn();
@@ -77,8 +72,6 @@ namespace ProjectJS.Controller
 			animator = GetComponent<Animator>();
 			bossAttack = GetComponent<BossAttack>();
 
-			gameObject.layer = 13;
-
 			statContainer = new();
 
 			// TODO - HP/UI 연결
@@ -96,6 +89,8 @@ namespace ProjectJS.Controller
 			healthStat.OnCurrentHPChanged.Invoke(healthStat.CurrentHP);
             GameSceneUI.Instance.RegisterBoss(this);
         }
+		protected virtual void OnUpdate() { }
+
 
 		public void RequestAnimParam(string param, bool isOn)
 		{

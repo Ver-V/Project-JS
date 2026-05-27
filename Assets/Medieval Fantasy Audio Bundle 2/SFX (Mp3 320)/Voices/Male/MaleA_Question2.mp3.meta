@@ -1,0 +1,28 @@
+fileFormatVersion: 2
+guid: 5b1870953c4db744bb0f29df298d6186
+timeCreated: 1456766854
+licenseType: Store
+AudioImporter:
+  serializedVersion: 6
+  defaultSettings:
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
+    quality: 1
+    conversionMode: 0
+  platformSettingOverrides: {}
+  forceToMono: 0
+  preloadAudioData: 1
+  loadInBackground: 0
+  3D: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 57168
+  packageName: Medieval Fantasy Audio Bundle 2
+  packageVersion: 1.0
+  assetPath: Assets/Medieval Fantasy Audio Bundle 2/SFX (Mp3 320)/Voices/Male/MaleA_Question2.mp3
+  uploadId: 105481

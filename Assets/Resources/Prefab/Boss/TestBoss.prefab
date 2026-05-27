@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2200437023
+  GlobalObjectIdHash: 3099588260
   InScenePlacedSourceGlobalObjectIdHash: 2200437023
   DeferredDespawnTick: 0
   Ownership: 1
@@ -399,7 +399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e33b1c2aaad865145aaf9b405432531a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.BossAttack
-  enablePatternCount: 1
+  enablePatternCount: 4
 --- !u!114 &4978823064194465635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,7 +407,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3338869448384287981}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 28e0fd8b3c0f0b0488c8b6148d0f7cc3, type: 3}
   m_Name: 
@@ -421,7 +421,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3338869448384287981}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 39c230e49b605954a9bc629ef87cd4ce, type: 3}
   m_Name: 
@@ -437,7 +437,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3338869448384287981}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3bf2cae35a417324b94cb75e04fbfd99, type: 3}
   m_Name: 
@@ -456,7 +456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 296105bf827c6224c8073eea3937bc05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.Angel_RushPattern
-  phaseType: 1
+  phaseType: 2
   swingSize: {x: 10, y: 2}
   rushDuration: 0.1
   damageMult: 1

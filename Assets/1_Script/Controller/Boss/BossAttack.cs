@@ -51,10 +51,17 @@ namespace ProjectJS.Controller
 			}
 		}
 
-		public IEnumerator GetRandomPattern()
+		public IEnumerator GetRandomPattern(BossPhaseType currentPhase)
 		{
-			enablePattern.Shuffle();
-			return enablePattern.First().DoPattern(this, 0f);
+			var validPatterns = enablePattern
+				.Where(pattern => (pattern.EnablePhase() & currentPhase) != 0)
+				.OrderBy(_ => UnityEngine.Random.value)
+				.ToList();
+
+			if (validPatterns.Count == 0)
+				return null;
+
+			return validPatterns.First().DoPattern(this, 0f);
 		}
 
 		public void OnReset()

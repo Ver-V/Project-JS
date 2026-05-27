@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: SpearData
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.PStats.WeaponData
   weaponName: 
-  damage: 10
-  attackRange: 1
-  attackSpeed: 1
-  weaponPrefab: {fileID: 0}
+  damage: 15
+  attackRange: 1.5
+  attackSpeed: 0.75
+  weaponSprite: {fileID: 21300000, guid: 0ecc82123a61a41019fc8385ea3b58ca, type: 3}
   weaponSkill: {fileID: 11400000, guid: 1527650ff4cef24468a20f6576c4213c, type: 2}
+  weaponAnimatorController: {fileID: 22100000, guid: ea008a37d5be06e4cb83ac7c14f607f8, type: 2}
+  attackVfxPrefab: {fileID: 0}
+  attackSfxClip: {fileID: 0}
