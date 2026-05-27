@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f55f9932d71a648488a32f2128e8b5cd, type: 3}
   m_Name: SpearData
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.PStats.WeaponData
-  weaponName: 
+  weaponName: Spear
   damage: 15
   attackRange: 1.5
   attackSpeed: 0.75
