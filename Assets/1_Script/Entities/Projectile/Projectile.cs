@@ -21,7 +21,7 @@ namespace ProjectJS.Entities
 			movement = GetComponent<IProjectileMovement>();
 		}
 
-		public void Init(int id, Vector2 pos, Vector2 dir, float damage = 10f)
+		public void Init(int id, Vector2 pos, Vector2 dir, float damage = 1f)
 		{
 			Managers.Pool.RegisterProjectileSync(id, this.gameObject);
 			

@@ -19,7 +19,8 @@ namespace ProjectJS.Controller
 		[SerializeField] private float rushDuration = .3f;
 		[SerializeField] private float damageMult = 1f;
 		
-		private Vector3 cachedSocketPosiiton = Vector3.zero;
+		private Vector3 cachedSocketPosition = Vector3.zero;
+		private Vector3 cachedBossPosition = Vector3.zero;
         private float cachedRotation = 0f;
 
         private void Awake()
@@ -76,7 +77,8 @@ namespace ProjectJS.Controller
 
 			float offset = Mathf.Max(swingSize.x, swingSize.y) * 0.5f;
 
-            cachedSocketPosiiton = (Vector2)transform.position + dirToTarget * offset;
+            cachedSocketPosition = (Vector2)transform.position + dirToTarget * offset;
+            cachedBossPosition = (Vector2)transform.position;
 
             StartCoroutine(RushCoroutine());
         }
@@ -86,7 +88,7 @@ namespace ProjectJS.Controller
             if (!NetworkManager.Singleton.IsHost) return;
 
 			playerCount = Physics2D.OverlapBox(
-                cachedSocketPosiiton,
+                cachedSocketPosition,
                 swingSize,
                 cachedRotation,
                 filter,
@@ -105,8 +107,8 @@ namespace ProjectJS.Controller
                 {
                     player.TakeDamage(
                         GetComponent<BossController>().GetAttackPower() * damageMult,
-                        transform.position.ToVector2()
-                    );
+						cachedBossPosition
+					);
                 }
             }
         }

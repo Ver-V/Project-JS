@@ -189,6 +189,7 @@ namespace ProjectJS.Controller
 
         public override float GetAttackPower()
 		{
+			return 1;
 			return statContainer.Get<AttackStat>().CurrentAttack.Value;
 		}
 	}
