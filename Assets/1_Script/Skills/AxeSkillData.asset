@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: AxeSkillData
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Skills.SkillData
   skillName: 
-  baseDamage: 10
-  baseCooldown: 15
-  baseRange: 2
+  baseDamage: 40
+  baseCooldown: 20
+  baseRange: 0.35
   vfxPrefab: {fileID: 0}
   sfxClip: {fileID: 0}
   skillLogicPrefab: {fileID: 4831059731690963994, guid: cced3c8f552a71b4a9eb3f57f122a275, type: 3}

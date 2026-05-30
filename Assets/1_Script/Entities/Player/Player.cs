@@ -181,6 +181,15 @@ public class Player : NetworkBehaviour
 
         if (anim != null)
         {
+            SetGuardingRpc(state);
+        }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SetGuardingRpc(bool state)
+    {
+        if (anim != null)
+        {
             anim.SetBool("IsGuarding", state);
         }
     }
@@ -200,12 +209,21 @@ public class Player : NetworkBehaviour
     {
         if (anim != null)
         {
-            anim.SetTrigger("Attack");
+            AttackRpc();
         }
 
         if (currentWeapon != null && currentWeapon.AttackSfxClip != null)
         {
             AudioSource.PlayClipAtPoint(currentWeapon.AttackSfxClip, transform.position);
+        }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void AttackRpc()
+    {
+        if (anim != null)
+        {
+            anim.SetTrigger("Attack");
         }
     }
 
