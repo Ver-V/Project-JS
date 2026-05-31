@@ -1,3 +1,4 @@
+using ProjectJS.Manager;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -37,6 +38,9 @@ namespace ProjectJS.Controller
 			{
 				currentHP.Value = 0;
 				OnDead();
+
+				float clearTime = Time.time - combatStartTime;
+				GameManagerEx.Instance.OnBossDefeated(gameObject.name, clearTime);
 			}
 		}
 

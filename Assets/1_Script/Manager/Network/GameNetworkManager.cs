@@ -339,7 +339,8 @@ namespace ProjectJS.Manager
 		{
 			Debug.Log("Load Complete! Curscene: " + Managers.Scene.CurrentScene);
 		}
-	}
+	
+
         public void ReturnToLobbyFromGame()
         {
             if (NetworkManager.Singleton == null) return;
@@ -350,7 +351,7 @@ namespace ProjectJS.Manager
 
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnSceneLoadedInNetwork;
 
-            NetworkTransmission.instance.ClearPlayerDict();
+            // NetworkTransmission.instance.ClearPlayerDict();
 
             if (currentLobby.HasValue)
                 UnlockLobby();
