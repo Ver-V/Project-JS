@@ -86,7 +86,9 @@ namespace ProjectJS.Controller
 				return;
 			}
 
-			healthStat.OnCurrentHPChanged += ((value) => { currentHP.Value = value; });
+            maxHP.Value = healthStat.MaxHP;
+
+            healthStat.OnCurrentHPChanged += ((value) => { currentHP.Value = value; });
 			healthStat.OnCurrentHPChanged.Invoke(healthStat.CurrentHP);
         }
 		protected virtual void OnUpdate() { }
@@ -103,7 +105,29 @@ namespace ProjectJS.Controller
 
         private void OnCurHealthChanged(float previousValue, float newValue)
         {
-            OnHealthChangedEvent?.Invoke(previousValue, newValue, statContainer.Get<HealthStat>().MaxHP);
+            OnHealthChangedEvent?.Invoke(previousValue, newValue, maxHP.Value);
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+
+            currentHP.OnValueChanged += OnCurHealthChanged;
+
+            if (GameSceneUI.Instance != null)
+                GameSceneUI.Instance.RegisterBoss(this);
+
+            OnCurHealthChanged(currentHP.Value, currentHP.Value);
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            currentHP.OnValueChanged -= OnCurHealthChanged;
+
+            if (GameSceneUI.Instance != null)
+                GameSceneUI.Instance.UnregisterBoss(this);
+
+            base.OnNetworkDespawn();
         }
 
     }

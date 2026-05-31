@@ -72,6 +72,7 @@ namespace ProjectJS.Controller
 		private IEnumerator OnStartCombat()
 		{
 			// Game Start UI (async)
+			//ProjectJS.UI.GameScene.GameSceneUI.Instance.RegisterBoss(bossController);
 			// Unlock players' input
 
 			yield return StartCoroutine(bossController.OnStartCombat());
