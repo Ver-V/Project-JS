@@ -15,6 +15,11 @@ namespace ProjectJS.UI.GameScene
 
         protected virtual void UpdateGaugeBar(float prev, float current, float max)
         {
+            if (max <= 0f)
+            {
+                gaugeSlider.value = 0f;
+                return;
+            }
             gaugeSlider.value = current / max;
         }
 
