@@ -1,9 +1,5 @@
 using ProjectJS.Controller;
-using ProjectJS.Manager;
-using ProjectJS.UI.Settings;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace ProjectJS.UI.GameScene
 {
@@ -12,24 +8,7 @@ namespace ProjectJS.UI.GameScene
         [SerializeField] private PlayerStatusUI playerStatusUI;
         [SerializeField] private BossHPUI bossHPUI;
         [SerializeField] private PartyListUI partyListUI;
-        [SerializeField] private Button settingsButton;
-        [SerializeField] private SettingsUI settingsUI;
-        [SerializeField] private bool isOpened;
-
-        private void Start()
-        {
-            settingsUI.Init(CloseSettings);
-            settingsButton.onClick.AddListener(ToggleSettings);
-            Managers.PlayerInput.Player.OpenSettings.performed += OnOpenSettingsInput;
-
-            isOpened = settingsUI.gameObject.activeSelf;
-        }
-
-        private void OnDestroy()
-        {
-            settingsButton.onClick.RemoveListener(ToggleSettings);
-            Managers.PlayerInput.Player.OpenSettings.performed -= OnOpenSettingsInput;
-        }
+        
 
         public void BindLocalPlayer(Player player)
         {
@@ -61,41 +40,6 @@ namespace ProjectJS.UI.GameScene
             bossHPUI.Bind(null);
         }
 
-        private void OnOpenSettingsInput(InputAction.CallbackContext context)
-        {
-            ToggleSettings();
-        }
-
-        private void ToggleSettings()
-        {
-            if (isOpened)
-            {
-                CloseSettings();
-                return;
-            }
-
-            OpenSettings();
-        }
-
-        private void OpenSettings()
-        {
-            if (isOpened) return;
-
-            Debug.Log("[GameHUD] SettingsUI Opened");
-
-            isOpened = true;
-            settingsUI.gameObject.SetActive(isOpened);
-            settingsUI.Refresh();
-        }
-
-        private void CloseSettings()
-        {
-            if (!isOpened) return;
-
-            Debug.Log("[GameHUD] SettingsUI Closed");
-
-            isOpened = false;
-            settingsUI.gameObject.SetActive(isOpened);
-        }
+        
     }
 }

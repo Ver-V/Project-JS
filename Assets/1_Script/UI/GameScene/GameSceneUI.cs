@@ -1,5 +1,10 @@
 using ProjectJS.Controller;
+using ProjectJS.Manager;
+using ProjectJS.UI.Settings;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace ProjectJS.UI.GameScene
 {
@@ -9,9 +14,31 @@ namespace ProjectJS.UI.GameScene
 
         [SerializeField] private GameHUD gameHUD;
 
+        [SerializeField] private Button settingsButton;
+        [SerializeField] private SettingsUI settingsUI;
+        [SerializeField] private bool isOpened;
+
+        [SerializeField] private Button returnToLobbyButton;
+
         private void Awake()
         {
             Instance = this;
+        }
+
+        private void Start()
+        {
+            settingsUI.Init(CloseSettings);
+            settingsButton.onClick.AddListener(ToggleSettings);
+            returnToLobbyButton.onClick.AddListener(ReturnToLobby);
+            Managers.PlayerInput.Player.OpenSettings.performed += OnOpenSettingsInput;
+
+            isOpened = settingsUI.gameObject.activeSelf;
+        }
+
+        private void OnDestroy()
+        {
+            settingsButton.onClick.RemoveListener(ToggleSettings);
+            Managers.PlayerInput.Player.OpenSettings.performed -= OnOpenSettingsInput;
         }
 
         public void RegisterPlayer(Player player)
@@ -52,6 +79,52 @@ namespace ProjectJS.UI.GameScene
             if (boss == null) return;
         
             gameHUD.UnbindBoss(null);
+        }
+
+        private void OnOpenSettingsInput(InputAction.CallbackContext context)
+        {
+            ToggleSettings();
+        }
+
+        private void ToggleSettings()
+        {
+            if (isOpened)
+            {
+                CloseSettings();
+                return;
+            }
+
+            OpenSettings();
+        }
+
+        private void OpenSettings()
+        {
+            if (isOpened) return;
+
+            Debug.Log("[GameHUD] SettingsUI Opened");
+
+            isOpened = true;
+            settingsUI.gameObject.SetActive(isOpened);
+            settingsUI.Refresh();
+        }
+
+        private void CloseSettings()
+        {
+            if (!isOpened) return;
+
+            Debug.Log("[GameHUD] SettingsUI Closed");
+
+            isOpened = false;
+            settingsUI.gameObject.SetActive(isOpened);
+        }
+
+        private void ReturnToLobby()
+        {
+            if (NetworkManager.Singleton == null) return;
+            if (!NetworkManager.Singleton.IsHost) return;
+            if (GameNetworkManager.Instance == null) return;
+
+            GameNetworkManager.Instance.ReturnToLobbyFromGame();
         }
     }
 }
