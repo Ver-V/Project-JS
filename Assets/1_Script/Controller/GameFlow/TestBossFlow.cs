@@ -2,6 +2,7 @@ using ProjectJS.Manager;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.XR;
 
 namespace ProjectJS.Controller
 {
@@ -17,7 +18,7 @@ namespace ProjectJS.Controller
 
 		private BossController bossController;
 
-		private enum State { Init, Intro, Combat, PhaseTransition, Outro, Exit }
+		private enum State { Init, Intro, Combat, Outro, Exit }
 		private StateMachine<State> stateMachine;
 
 		protected void Awake()
@@ -28,7 +29,6 @@ namespace ProjectJS.Controller
 			stateMachine.AddState(State.Init, OnStartInit);
 			stateMachine.AddState(State.Intro, OnStartIntro, OnEndIntro);
 			stateMachine.AddState(State.Combat, OnStartCombat, OnEndCombat);
-			stateMachine.AddState(State.PhaseTransition, OnStartPhaseTransition);
 			stateMachine.AddState(State.Outro, OnStartOutro);
 			stateMachine.AddState(State.Exit, OnStartExit);
 		}
@@ -76,7 +76,9 @@ namespace ProjectJS.Controller
 			// Unlock players' input
 
 			yield return StartCoroutine(bossController.OnStartCombat());
-			yield return null;
+			yield return new WaitUntil(() => bossController.CurrentPhase == BossPhaseType.None);
+
+			stateMachine.ChangeState(State.Outro);
 		}
 
 		private IEnumerator OnEndCombat()
@@ -84,14 +86,11 @@ namespace ProjectJS.Controller
 			yield return null;
 		}
 
-		private IEnumerator OnStartPhaseTransition()
-		{
-			yield return null;
-		}
-
 		private IEnumerator OnStartOutro()
 		{
+			Debug.LogWarning("OUTRO!!!");
 			yield return null;
+			// TOOD - UI 띄워야함 
 		}
 
 		private IEnumerator OnStartExit()

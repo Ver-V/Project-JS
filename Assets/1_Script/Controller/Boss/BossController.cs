@@ -16,9 +16,13 @@ namespace ProjectJS.Controller
 
 		private int bossID = 1;
 		private int projectileIdx = 0;
+
 		public int GetNewProjectileID() => IdUtil.GetProjectileID(bossID, projectileIdx++);
 
-        public event System.Action<float, float, float> OnHealthChangedEvent;
+		protected BossPhaseType currentPhase = BossPhaseType.Phase1;
+		public BossPhaseType CurrentPhase => currentPhase;
+
+		public event System.Action<float, float, float> OnHealthChangedEvent;
 
         private void Awake()
         {

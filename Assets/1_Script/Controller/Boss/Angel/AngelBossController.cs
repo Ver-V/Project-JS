@@ -1,16 +1,10 @@
 using ProjectJS.Manager;
 using ProjectJS.ScriptableObjects;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectJS.Controller
 {
-	/// <summary>
-	/// Test 및 시연용. 수정 필요
-	/// 
-	/// - Roaming -> 물리 연산으로 처리 필요
-	/// </summary>
 	public class AngelBossController : BossController
 	{
 		[Header("Move")]
@@ -21,18 +15,8 @@ namespace ProjectJS.Controller
 		private Rigidbody2D rigidbody;
 
         private enum State { Init, Detect, Roam, Pattern, Dead, Phasing }
-		private BossPhaseType currentPhase = BossPhaseType.Phase1;
 		private StateMachine<State> stateMachine;
 		private BossStat bossStat = null;
-
-		protected override void OnUpdate()
-		{
-			// TEST
-			if (Input.GetKeyDown(KeyCode.R))
-			{
-				currentHP.Value -= bossStat.MaxHP * .7f;
-			}
-		}
 
 		protected override void OnAwake()
 		{
@@ -139,7 +123,15 @@ namespace ProjectJS.Controller
 
 		private IEnumerator OnStartDead()
 		{
-			yield return null;
+			animator.SetTrigger("isStartDead");
+
+			bool isDone = false;
+			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToBoss);
+			yield return new WaitUntil(() => isDone);
+
+			animator.SetTrigger("isEndDead");
+			yield return new WaitForSeconds(1.5f);
+			currentPhase = BossPhaseType.None;
 		}
 
 		private IEnumerator OnEndDead()
