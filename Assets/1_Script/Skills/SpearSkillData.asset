@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: SpearSkillData
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Skills.SkillData
   skillName: 
-  baseDamage: 10
-  baseCooldown: 15
-  baseRange: 2
+  baseDamage: 35
+  baseCooldown: 14
+  baseRange: 0.5
   vfxPrefab: {fileID: 0}
   sfxClip: {fileID: 0}
   skillLogicPrefab: {fileID: 7611304119068483906, guid: 0ef017f6351e5b64a8d40dd0ca804e3a, type: 3}
