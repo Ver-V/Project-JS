@@ -1,4 +1,5 @@
 using Netcode.Transports.Facepunch;
+using ProjectJS.Controller;
 using ProjectJS.Utils;
 using Steamworks;
 using Steamworks.Data;
@@ -209,6 +210,9 @@ namespace ProjectJS.Manager
 				}
 
 				NetworkTransmission.instance.StartGameServerRPC();
+
+				// HACK
+				FindAnyObjectByType<TestBossFlow>().Init();
 			}
 		}
 
@@ -336,5 +340,23 @@ namespace ProjectJS.Manager
 			Debug.Log("Load Complete! Curscene: " + Managers.Scene.CurrentScene);
 		}
 	}
+        public void ReturnToLobbyFromGame()
+        {
+            if (NetworkManager.Singleton == null) return;
+            if (!NetworkManager.Singleton.IsHost) return;
+            if (!NetworkManager.Singleton.IsListening) return;
+
+            Time.timeScale = 1f;
+
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnSceneLoadedInNetwork;
+
+            NetworkTransmission.instance.ClearPlayerDict();
+
+            if (currentLobby.HasValue)
+                UnlockLobby();
+
+            NetworkManager.Singleton.SceneManager.LoadScene("LobbyScene", LoadSceneMode.Single);
+        }
+    }
 
 }

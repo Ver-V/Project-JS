@@ -68,8 +68,6 @@ namespace ProjectJS.Controller
 
         private void OnStartRush()
         {
-            if (!NetworkManager.Singleton.IsHost) return;
-
 			Transform target = GetComponent<BossAttack>().GetTarget();
 			Vector2 dirToTarget = (target.position - transform.position).normalized;
 			cachedRotation = Mathf.Atan2(dirToTarget.y, dirToTarget.x) * Mathf.Rad2Deg;
@@ -85,8 +83,6 @@ namespace ProjectJS.Controller
 
         private void OnRushSickle()
         {
-            if (!NetworkManager.Singleton.IsHost) return;
-
 			playerCount = Physics2D.OverlapBox(
                 cachedSocketPosition,
                 swingSize,

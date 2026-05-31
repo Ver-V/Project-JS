@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
-using UnityEngine;
 
 namespace ProjectJS.Manager
 {
@@ -74,7 +73,6 @@ namespace ProjectJS.Manager
 				}
 			}
 		}
-
 
 	}
 }

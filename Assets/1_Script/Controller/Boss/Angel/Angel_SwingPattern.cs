@@ -41,8 +41,6 @@ namespace ProjectJS.Controller
 
 		private void OnSwingSickle()
 		{
-			if (!NetworkManager.Singleton.IsHost) return;
-
 			playerCount = Physics2D.OverlapBox(swingPatternSocket.position, swingSize, 0f, filter, colliders);
 			
 			for (int i = 0; i < playerCount; i++)

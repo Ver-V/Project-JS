@@ -23,8 +23,6 @@ namespace ProjectJS.Controller
 
 		private void OnCast()
 		{
-			if (!NetworkManager.Singleton.IsHost) return;
-
 			BossController bossController = GetComponent<BossController>();
 			for (int i = 0; i < 8; i++)
 			{

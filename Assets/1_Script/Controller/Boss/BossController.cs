@@ -56,7 +56,8 @@ namespace ProjectJS.Controller
 				if (prev != cur)
 					spriteMaterial.SetFloat("_EdgeStrength", cur ? 2f : 0f);
 				});
-		}
+
+        }
 
 		public abstract float GetAttackPower();
 
@@ -87,7 +88,6 @@ namespace ProjectJS.Controller
 
 			healthStat.OnCurrentHPChanged += ((value) => { currentHP.Value = value; });
 			healthStat.OnCurrentHPChanged.Invoke(healthStat.CurrentHP);
-            GameSceneUI.Instance.RegisterBoss(this);
         }
 		protected virtual void OnUpdate() { }
 

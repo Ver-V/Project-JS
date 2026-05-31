@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: SwordSkilllData
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Skills.SkillData
   skillName: 
-  baseDamage: 10
-  baseCooldown: 15
-  baseRange: 2
+  baseDamage: 25
+  baseCooldown: 9
+  baseRange: 0.4
   vfxPrefab: {fileID: 0}
   sfxClip: {fileID: 0}
   skillLogicPrefab: {fileID: 8402140583965138066, guid: 487975bcfa3497c4eb9bad23c2067886, type: 3}
