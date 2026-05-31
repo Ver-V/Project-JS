@@ -15,18 +15,14 @@ namespace ProjectJS.Controller
 		public override IEnumerator DoPattern(BossAttack boss, float attack)
 		{
 			boss.GetComponent<BossController>().RequestAnimParam("isAttack3", true);
-			for (int i = 0; i < 8; i++)
-			{
-				yield return new WaitForSeconds(.3f);
-				MultiCast();
-			}
+			yield return new WaitForSeconds(2f);
 			boss.GetComponent<BossController>().RequestAnimParam("isAttack3", false);
 		}
 
 		public override bool Predict() => true;
 
 		private float angleOffset = 0f;
-		private void MultiCast()
+		private void OnMultiCast()
 		{
 			BossController bossController = GetComponent<BossController>();
 			for (int i = 0; i < 8; i++)
