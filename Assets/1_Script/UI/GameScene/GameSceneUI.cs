@@ -22,6 +22,12 @@ namespace ProjectJS.UI.GameScene
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             Instance = this;
         }
 
@@ -33,12 +39,16 @@ namespace ProjectJS.UI.GameScene
             Managers.PlayerInput.Player.OpenSettings.performed += OnOpenSettingsInput;
 
             isOpened = settingsUI.gameObject.activeSelf;
+
         }
 
         private void OnDestroy()
         {
             settingsButton.onClick.RemoveListener(ToggleSettings);
             Managers.PlayerInput.Player.OpenSettings.performed -= OnOpenSettingsInput;
+
+            if (Instance == this)
+                Instance = null;
         }
 
         public void RegisterPlayer(Player player)
