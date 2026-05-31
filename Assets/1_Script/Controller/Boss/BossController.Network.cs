@@ -15,7 +15,8 @@ namespace ProjectJS.Controller
 		}
 
 		[Header("DEBUG")]
-		[SerializeField] protected NetworkVariable<float> currentHP = new();
+        [SerializeField] private NetworkVariable<float> maxHP = new();
+        [SerializeField] protected NetworkVariable<float> currentHP = new();
 		[SerializeField] protected NetworkVariable<bool> isFlashing = new();
 
 		protected float remainedFlashTime = 0f;
