@@ -16,9 +16,13 @@ namespace ProjectJS.Controller
 
 		private int bossID = 1;
 		private int projectileIdx = 0;
+
 		public int GetNewProjectileID() => IdUtil.GetProjectileID(bossID, projectileIdx++);
 
-        public event System.Action<float, float, float> OnHealthChangedEvent;
+		protected BossPhaseType currentPhase = BossPhaseType.Phase1;
+		public BossPhaseType CurrentPhase => currentPhase;
+
+		public event System.Action<float, float, float> OnHealthChangedEvent;
 
         private void Awake()
         {
@@ -78,8 +82,11 @@ namespace ProjectJS.Controller
 			// TODO - HP/UI 연결
 			currentHP.OnValueChanged += OnCurHealthChanged;
         }
+		protected float combatStartTime;
+
 		protected virtual void OnStart()
 		{
+			combatStartTime = Time.time;
 			if (!statContainer.TryGet(out HealthStat healthStat))
 			{
 				Debug.LogError("No Health Stat");

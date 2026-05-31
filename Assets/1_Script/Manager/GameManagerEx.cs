@@ -174,5 +174,26 @@ namespace ProjectJS.Manager
 		{
 			Application.Quit();
 		}
+
+		public void OnBossDefeated(string bossName, float clearTime)
+		{
+			var currentData = SteamCloudSave.LoadGame();
+			currentData.bossRecords.Add(new SteamCloudSave.BossClearRecord
+			{
+				bossName = bossName,
+				clearTime = clearTime,
+				clearDate = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+			});
+
+			if (bossName.Contains("Angel") && !currentData.ownedShards.Contains(ProjectJS.Skills.ShardSpecies.Angel))
+			{
+				currentData.ownedShards.Add(ProjectJS.Skills.ShardSpecies.Angel);
+				Debug.Log("[GameManager] Angel Shard acquired!");
+
+                SteamworksAchievements.UnlockAchievement("ACH_ANGEL_DEFEATED");
+			}
+
+			SteamCloudSave.SaveGame(currentData);
+		}
 	}
 }
