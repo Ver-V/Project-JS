@@ -48,6 +48,7 @@ public StatusEffect FinalStatusEffect => finalStatusEffect;
             float cooldownMultiplier = (equippedShard != null) ? equippedShard.CooldownMultiplier : 1.0f;
             finalDamage = baseSkillData.BaseDamage* damageMultiplier;
             finalRange = baseSkillData.BaseRange* rangeMultiplier;
+            finalCooldown = baseSkillData.BaseCooldown * cooldownMultiplier;
             finalStatusEffect = (equippedShard != null) ? equippedShard.GrantedEffect : StatusEffect.None;
         }
 

@@ -17,5 +17,5 @@ MonoBehaviour:
   grantedEffect: 0
   damageMultiplier: 1.25
   rangeMultiplier: 0.75
-  cooldownMultiplier: 0.8
+  cooldownMultiplier: 1.15
   speciesEffectprefab: {fileID: 0}

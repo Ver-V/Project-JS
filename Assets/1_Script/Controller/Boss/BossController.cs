@@ -82,8 +82,11 @@ namespace ProjectJS.Controller
 			// TODO - HP/UI 연결
 			currentHP.OnValueChanged += OnCurHealthChanged;
         }
+		protected float combatStartTime;
+
 		protected virtual void OnStart()
 		{
+			combatStartTime = Time.time;
 			if (!statContainer.TryGet(out HealthStat healthStat))
 			{
 				Debug.LogError("No Health Stat");

@@ -6,7 +6,7 @@ namespace ProjectJS.Manager
 {
     public class SteamManager : MonoBehaviour
     {
-        public uint appId = 480; // spacewar AppId
+        public uint appId = 4801070; // Our AppID
 
         #region Singleton
         public static SteamManager Instance { get; private set; }
