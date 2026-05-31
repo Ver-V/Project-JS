@@ -45,6 +45,7 @@ namespace ProjectJS.Controller
             if (player.IsDead) return;
 
             HandleInput();
+            UpdateVisual();
         }
 
         void FixedUpdate()
@@ -52,6 +53,18 @@ namespace ProjectJS.Controller
             if (!IsOwner || player.IsDead) return;
             if (player.IsHitStopping) return;
             Move();
+        }
+
+        private void UpdateVisual()
+        {
+            if (movement.x != 0 && !player.IsGuarding)
+            {
+                player.FacingDirection = movement.x > 0 ? Vector2.right : Vector2.left;
+                if (anim != null)
+                {
+                    anim.transform.localRotation = Quaternion.Euler(0, movement.x > 0 ? 0 : 180, 0);
+                }
+            }
         }
 
         private void HandleInput()
@@ -89,16 +102,6 @@ namespace ProjectJS.Controller
 
         private void Move()
         {
-            if (movement != Vector2.zero)
-            {
-
-                if (movement.x != 0 && !player.IsGuarding)
-                {
-                    player.FacingDirection = movement.x > 0 ? Vector2.right : Vector2.left;
-                    transform.localScale = new Vector3(movement.x > 0 ? 1f : -1f, 1f, 1f);
-                }
-            }
-
             anim.SetFloat("Speed", movement.sqrMagnitude);
             
             if (player.Stats == null) return;
