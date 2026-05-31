@@ -1,4 +1,5 @@
 using ProjectJS.Manager;
+using ProjectJS.PStats;
 using ProjectJS.Structs;
 using ProjectJS.UI.LobbyScene.Items;
 using ProjectJS.UI.Settings;
@@ -38,6 +39,9 @@ namespace ProjectJS.UI.LobbyScene
         [SerializeField] private Transform playerFieldBox;
         [SerializeField] private GameObject playerCardPrefab;
 
+        [Space(20)]
+        [Header("Player Weapon")]
+		[SerializeField] private WeaponSelectionUI weaponSelectionUI;
 
 		private List<Message> messageList = new List<Message>();
 		private List<PlayerCard> cardList = new List<PlayerCard>();
@@ -71,7 +75,9 @@ namespace ProjectJS.UI.LobbyScene
             disconnectButton.onClick.AddListener(GameNetworkManager.Instance.Disconnected);
 			readyButton.onClick.AddListener(() => {
 				NetworkTransmission.instance.IsTheClientReadyServerRPC(true, GameManagerEx.Instance.MyClientId);
-			}); 
+				PlayerWeaponSelection.SelectedWeaponIndex = weaponSelectionUI.GetCurrentSelectedWeaponIndex();
+
+            }); 
 
 			notreadyButton.onClick.AddListener(() => {
 				NetworkTransmission.instance.IsTheClientReadyServerRPC(false, GameManagerEx.Instance.MyClientId);
