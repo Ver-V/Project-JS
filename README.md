@@ -4,7 +4,7 @@
 **2. 기술 스택 및 담당 역할**
   * Engine : Unity Engine
   * Version control : Git
-  * Role : 메인 기획, Player, Skill, Shard, Network Programming
+  * Role : 팀장 및 메인 기획, Player, Skill, Shard, Network Programming
 
 **3. 클래스 및 컴포넌트 아키텍처 다이어그램**
 <div align="center">
