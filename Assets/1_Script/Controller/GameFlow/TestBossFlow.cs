@@ -18,7 +18,7 @@ namespace ProjectJS.Controller
 
 		private BossController bossController;
 
-		private enum State { Init, Intro, Combat, Outro, Exit }
+		private enum State { Init, Intro, Combat, Outro, Exit, GameOver }
 		private StateMachine<State> stateMachine;
 
 		protected void Awake()
@@ -31,6 +31,7 @@ namespace ProjectJS.Controller
 			stateMachine.AddState(State.Combat, OnStartCombat, OnEndCombat);
 			stateMachine.AddState(State.Outro, OnStartOutro);
 			stateMachine.AddState(State.Exit, OnStartExit);
+			stateMachine.AddState(State.GameOver, OnStartGameOver);
 		}
 
 		public void Init()
@@ -41,6 +42,8 @@ namespace ProjectJS.Controller
 		private IEnumerator OnStartInit()
 		{
 			// TODO - Lock players' input
+			if (ProjectJS.UI.GameScene.GameSceneUI.Instance != null)
+				ProjectJS.UI.GameScene.GameSceneUI.Instance.ShowGameOverUI(false);
 
 			bossController = Instantiate(bossPrefab, /*HACK*/ Vector3.up * 5f, Quaternion.identity, null)
 				.GetComponent<BossController>();
@@ -76,9 +79,88 @@ namespace ProjectJS.Controller
 			// Unlock players' input
 
 			yield return StartCoroutine(bossController.OnStartCombat());
-			yield return new WaitUntil(() => bossController.CurrentPhase == BossPhaseType.None);
+			
+			// Wait until boss is dead or all players are dead
+			while (bossController.CurrentPhase != BossPhaseType.None)
+			{
+				if (AreAllPlayersDead())
+				{
+					stateMachine.ChangeState(State.GameOver);
+					yield break;
+				}
+				yield return null;
+			}
 
 			stateMachine.ChangeState(State.Outro);
+		}
+
+		private bool AreAllPlayersDead()
+		{
+			var players = Object.FindObjectsByType<Player>(FindObjectsSortMode.None);
+			if (players.Length == 0) return false;
+
+			foreach (var player in players)
+			{
+				if (!player.IsDead) return false;
+			}
+			return true;
+		}
+
+		private IEnumerator OnStartGameOver()
+		{
+			Debug.LogWarning("GAME OVER!!!");
+			if (ProjectJS.UI.GameScene.GameSceneUI.Instance != null)
+				ProjectJS.UI.GameScene.GameSceneUI.Instance.ShowGameOverUI(true);
+
+			while (true)
+			{
+				if (Input.GetKeyDown(KeyCode.F5))
+				{
+					RestartBoss();
+					yield break;
+				}
+				if (Input.GetKeyDown(KeyCode.F6))
+				{
+					ReturnToLobby();
+					yield break;
+				}
+				yield return null;
+			}
+		}
+
+		private void RestartBoss()
+		{
+			if (bossController != null)
+			{
+				bossController.GetComponent<NetworkObject>().Despawn(true);
+			}
+
+			var players = Object.FindObjectsByType<Player>(FindObjectsSortMode.None);
+			foreach (var player in players)
+			{
+				player.RequestRetryServerRpc();
+			}
+
+			stateMachine.ChangeState(State.Init);
+		}
+
+		private void ReturnToLobby()
+		{
+			if (ProjectJS.UI.GameScene.GameSceneUI.Instance != null)
+				ProjectJS.UI.GameScene.GameSceneUI.Instance.ShowGameOverUI(false);
+			
+			GameNetworkManager.Instance.ReturnToLobbyFromGame();
+		}
+
+		private void OnGUI()
+		{
+			if (stateMachine == null || stateMachine.CurrentState != State.GameOver) return;
+			if (ProjectJS.UI.GameScene.GameSceneUI.Instance != null && ProjectJS.UI.GameScene.GameSceneUI.Instance.HasGameOverPanel) return;
+
+			GUI.Box(new Rect(Screen.width / 2 - 125, Screen.height / 2 - 60, 250, 120), "GAME OVER (HOST ONLY)");
+			GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 25), "F5: Restart Boss Fight");
+			GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2, 200, 25), "F6: Return to Lobby");
+			GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 + 30, 200, 25), "(Assign GameOverPanel in GameSceneUI)");
 		}
 
 		private IEnumerator OnEndCombat()

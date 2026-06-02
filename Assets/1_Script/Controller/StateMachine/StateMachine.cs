@@ -32,6 +32,9 @@ namespace ProjectJS.Controller
 		private StateCoroutine currentStateCoroutine = null;
 		private MonoBehaviour runner = null;
 
+		private T currentState;
+		public T CurrentState => currentState;
+
 		private Coroutine currentCoroutine = null;
 
 		public StateMachine(MonoBehaviour runner)
@@ -57,6 +60,8 @@ namespace ProjectJS.Controller
 				Debug.LogError($"StateMachine - State not found : {state.ToString()}");
 				return;
 			}
+
+			currentState = state;
 
 			if (currentCoroutine != null)
 				runner.StopCoroutine(currentCoroutine);
