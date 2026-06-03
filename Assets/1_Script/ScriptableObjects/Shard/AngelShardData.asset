@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: AngelShardData
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Skills.ShardData
   shardName: Angel's shard
-  species: 2
+  species: 1
+  shardSprite: {fileID: 21300000, guid: 5775eb104576fc846bfd1fabeb819e74, type: 3}
   grantedEffect: 0
   damageMultiplier: 1.25
   rangeMultiplier: 0.75

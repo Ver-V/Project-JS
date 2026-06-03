@@ -10,6 +10,7 @@ namespace ProjectJS.Skills
     {
         [SerializeField] private string shardName;
         [SerializeField] private ShardSpecies species = ShardSpecies.None;
+        [SerializeField] private Sprite shardSprite;
 
         [Header("Status Effect")]
         [SerializeField] private StatusEffect grantedEffect = StatusEffect.None;
@@ -22,6 +23,7 @@ namespace ProjectJS.Skills
 
         public string ShardName => shardName;
         public ShardSpecies Species => species;
+        public Sprite ShardSprite => shardSprite;
         public int SpeciesIndex => (int)species;
         public StatusEffect GrantedEffect => grantedEffect;
         public float DamageMultiplier => damageMultiplier;
