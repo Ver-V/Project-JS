@@ -60,9 +60,9 @@ namespace ProjectJS.UI.LobbyScene
 
             //currentShardImage.sprite = tempData;
             currentShardNameText.text = tempData.ShardName;
-            currentDamageMulText.text = $"추가 데미지 +{tempData.DamageMultiplier}%";
-            currentRangeMulText.text = $"공격 사거리 +{tempData.RangeMultiplier}%";
-            currentCooldownMulText.text = $"쿨타임 감소 +{tempData.CooldownMultiplier}%";
+            currentDamageMulText.text = $"추가 데미지 +{tempData.DamageMultiplier*100}%";
+            currentRangeMulText.text = $"공격 사거리 +{tempData.RangeMultiplier * 100}%";
+            currentCooldownMulText.text = $"쿨타임 감소 +{tempData.CooldownMultiplier * 100}%";
         }
 
         private void ShowNextShard()
