@@ -11,6 +11,28 @@ namespace ProjectJS.Skills
         [SerializeField] private List<ShardData> availableShards = new List<ShardData>();
         private NetworkVariable<int> equippedShardIndex = new NetworkVariable<int>(-1);
 
+        public IReadOnlyList<ShardData> AvailableShards => availableShards;
+        public int EquippedShardIndex => equippedShardIndex.Value;
+
+        public ShardData GetEquippedShard()
+        {
+            int idx = equippedShardIndex.Value;
+            if (availableShards != null && idx >= 0 && idx < availableShards.Count)
+            {
+                return availableShards[idx];
+            }
+            return null;
+        }
+
+        public ShardData GetShardByIndex(int index)
+        {
+            if (availableShards != null && index >= 0 && index < availableShards.Count)
+            {
+                return availableShards[index];
+            }
+            return null;
+        }
+
         private float lastSkillTime = -100f; // last skill usetime
         private Player player;
         private Animator anim;

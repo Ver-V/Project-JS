@@ -3,7 +3,7 @@ using UnityEngine;
 namespace ProjectJS.Skills
 
 {
-    public enum ShardSpecies {None, DarkMatter, Angel}
+    public enum ShardSpecies {None, Angel}
 
     [CreateAssetMenu(fileName = "NewShardData", menuName = "ProjectJS/Skills/ShardData")]
     public class ShardData : ScriptableObject
@@ -22,10 +22,13 @@ namespace ProjectJS.Skills
 
         public string ShardName => shardName;
         public ShardSpecies Species => species;
+        public int SpeciesIndex => (int)species;
         public StatusEffect GrantedEffect => grantedEffect;
         public float DamageMultiplier => damageMultiplier;
         public float RangeMultiplier => rangeMultiplier;
         public float CooldownMultiplier => cooldownMultiplier;
         public GameObject SpeciesEffectprefab => speciesEffectprefab;
+
+        public static ShardSpecies GetSpecies(int index) => (ShardSpecies)index;
     }
 }

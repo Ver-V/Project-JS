@@ -19,6 +19,8 @@ private StatusEffect finalStatusEffect;
 public Player Caster => caster;
 public SkillData BaseSkillData => baseSkillData;
 public ShardData EquippedShard => equippedShard;
+public ShardSpecies EquippedSpecies => (equippedShard != null) ? equippedShard.Species : ShardSpecies.None;
+public int EquippedSpeciesIndex => (equippedShard != null) ? equippedShard.SpeciesIndex : (int)ShardSpecies.None;
 public Vector2 SkillDirection => skillDirection;
 
 public float FinalDamage => finalDamage;
