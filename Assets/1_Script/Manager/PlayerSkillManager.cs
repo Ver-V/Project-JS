@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Collections.Generic;
 using ProjectJS.PStats;
+using System;
 
 namespace ProjectJS.Skills
 {
@@ -13,6 +14,8 @@ namespace ProjectJS.Skills
 
         public IReadOnlyList<ShardData> AvailableShards => availableShards;
         public ShardSpecies EquippedShardSpecies => equippedShardSpecies.Value;
+
+        public event Action<float> OnSkillCastedAction;
 
         public IReadOnlyList<ShardData> GetAvailableShards()
         {
@@ -97,7 +100,9 @@ namespace ProjectJS.Skills
 
                 // cooldown update
                 lastSkillTime = Time.time;
-                
+
+                OnSkillCastedAction?.Invoke(finalCooldown);
+
                 PlayLocalSkillEffects(currentSkill, direction);
 
                 // using skill syscall
