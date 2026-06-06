@@ -22,6 +22,7 @@ namespace ProjectJS.UI.GameScene
 
         [SerializeField] private GameObject gameOverPanel;
         public bool HasGameOverPanel => gameOverPanel != null;
+        [SerializeField] private GameResultUI gameResultUI;
 
         private void Awake()
         {
@@ -56,6 +57,7 @@ namespace ProjectJS.UI.GameScene
             {
                 Debug.LogWarning("[GameSceneUI] GameOverPanel is not assigned!");
             }
+            gameResultUI.gameObject.SetActive(false);
         }
 
         private void OnDestroy()
@@ -144,13 +146,19 @@ namespace ProjectJS.UI.GameScene
             settingsUI.gameObject.SetActive(isOpened);
         }
 
-        private void ReturnToLobby()
+        public void ReturnToLobby()
         {
             if (NetworkManager.Singleton == null) return;
             if (!NetworkManager.Singleton.IsHost) return;
             if (GameNetworkManager.Instance == null) return;
 
             GameNetworkManager.Instance.ReturnToLobbyFromGame();
+        }
+
+        public void ShowGameResult(bool isClear, bool isHost)
+        {
+            gameResultUI.gameObject.SetActive(true);
+            gameResultUI.ShowGameResult(isClear, isHost);
         }
     }
 }

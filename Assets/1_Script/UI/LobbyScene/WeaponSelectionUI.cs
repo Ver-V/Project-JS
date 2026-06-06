@@ -11,13 +11,14 @@ namespace ProjectJS.UI.LobbyScene
 
         [SerializeField] private Image currentWeaponImage;
         [SerializeField] private TMP_Text currentWeaponText;
+
         private int _currentSelectedWeaponIndex;
-        public int GetCurrentSelectedWeaponIndex() => _currentSelectedWeaponIndex;
+        private int _weaponCount;
+        public int CurrentSelectedWeaponIndex => _currentSelectedWeaponIndex;
 
-        private int weaponCount;
 
-        [SerializeField] private Button nextWeapon;
-        [SerializeField] private Button prevWeapon;
+        [SerializeField] private Button nextWeaponButton;
+        [SerializeField] private Button prevWeaponButton;
 
         private void Awake()
         {
@@ -25,26 +26,26 @@ namespace ProjectJS.UI.LobbyScene
             {
                 Debug.LogWarning("[WeaponSelectionUI] : WeaponSprites is null or length zero");
             }
-            weaponCount = weaponDatas.Length;
+            _weaponCount = weaponDatas.Length;
             _currentSelectedWeaponIndex = 0;
-            SetWeaponSelectionUI();
+            SetWeaponInfo();
 
-            nextWeapon.onClick.AddListener(ShowNextWeapon);
-            prevWeapon.onClick.AddListener(ShowPrevWeapon);
+            nextWeaponButton.onClick.AddListener(ShowNextWeapon);
+            prevWeaponButton.onClick.AddListener(ShowPrevWeapon);
         }
 
         private void ShowNextWeapon()
         {
-            _currentSelectedWeaponIndex = _currentSelectedWeaponIndex + 1 >= weaponCount ? 0 : _currentSelectedWeaponIndex + 1;
-            SetWeaponSelectionUI();
+            _currentSelectedWeaponIndex = _currentSelectedWeaponIndex + 1 >= _weaponCount ? 0 : _currentSelectedWeaponIndex + 1;
+            SetWeaponInfo();
         }
         private void ShowPrevWeapon()
         {
-            _currentSelectedWeaponIndex = _currentSelectedWeaponIndex - 1 < 0 ? weaponCount-1 : _currentSelectedWeaponIndex - 1;
-            SetWeaponSelectionUI();
+            _currentSelectedWeaponIndex = _currentSelectedWeaponIndex - 1 < 0 ? _weaponCount-1 : _currentSelectedWeaponIndex - 1;
+            SetWeaponInfo();
         }
         
-        private void SetWeaponSelectionUI()
+        private void SetWeaponInfo()
         {
             currentWeaponImage.sprite = weaponDatas[_currentSelectedWeaponIndex].WeaponSprite;
             currentWeaponText.text = weaponDatas[_currentSelectedWeaponIndex].WeaponName;
@@ -52,8 +53,8 @@ namespace ProjectJS.UI.LobbyScene
 
         private void OnDestroy()
         {
-            nextWeapon.onClick.RemoveAllListeners();
-            prevWeapon.onClick.RemoveAllListeners();
+            nextWeaponButton.onClick.RemoveAllListeners();
+            prevWeaponButton.onClick.RemoveAllListeners();
         }
     }
 }
