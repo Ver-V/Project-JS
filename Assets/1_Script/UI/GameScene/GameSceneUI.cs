@@ -152,10 +152,10 @@ namespace ProjectJS.UI.GameScene
             GameNetworkManager.Instance.ReturnToLobbyFromGame();
         }
 
-        public void ShowGameResult(bool isClear, bool isHost)
+        public void ShowGameResult(GameResultInfo gameResultInfo, bool isHost)
         {
             gameResultUI.gameObject.SetActive(true);
-            gameResultUI.ShowGameResult(isClear, isHost);
+            gameResultUI.ShowGameResult(gameResultInfo, isHost);
         }
     }
 }

@@ -109,7 +109,7 @@ namespace ProjectJS.Controller
 		{
 			Debug.LogWarning("GAME OVER!!!");
             bossController.GetComponent<NetworkObject>().Despawn(true);
-            GameSceneUI.Instance.ShowGameResult(!AreAllPlayersDead(), NetworkManager.Singleton.IsHost);
+            GameSceneUI.Instance.ShowGameResult(GetGameResultInfo(), NetworkManager.Singleton.IsHost);
             while (true)
 			{
 				if (Input.GetKeyDown(KeyCode.F5))
@@ -157,7 +157,7 @@ namespace ProjectJS.Controller
 			Debug.LogWarning("OUTRO!!!");
 			yield return null;
 			// TOOD - UI 띄워야함 
-			GameSceneUI.Instance.ShowGameResult(!AreAllPlayersDead(), NetworkManager.Singleton.IsHost);
+			GameSceneUI.Instance.ShowGameResult(GetGameResultInfo(), NetworkManager.Singleton.IsHost);
 		}
 
 		private IEnumerator OnStartExit()
@@ -165,5 +165,25 @@ namespace ProjectJS.Controller
 			bossController.GetComponent<NetworkObject>().Despawn(true);
 			yield return null;
 		}
-	}
+
+		private GameResultInfo GetGameResultInfo()
+		{
+            var players = Object.FindObjectsByType<Player>(FindObjectsSortMode.None);
+			int aliveCount = 0;
+            foreach (var player in players)
+            {
+				if (!player.IsDead) aliveCount++;
+            }
+
+			return new GameResultInfo
+			{
+				isCleared = !AreAllPlayersDead(),
+				bossName = "Angel",
+				combatPlayerCount = players.Length,
+				alivePlayerCount = aliveCount,
+				combatTime = Time.time - bossController.CombatStartTime,
+			};
+		}
+
+    }
 }

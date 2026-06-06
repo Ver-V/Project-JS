@@ -83,7 +83,7 @@ namespace ProjectJS.Controller
 			currentHP.OnValueChanged += OnCurHealthChanged;
         }
 		protected float combatStartTime;
-
+		public float CombatStartTime => combatStartTime;
 		protected virtual void OnStart()
 		{
 			combatStartTime = Time.time;
