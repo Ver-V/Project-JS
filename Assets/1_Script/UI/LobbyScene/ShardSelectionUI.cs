@@ -1,5 +1,4 @@
 using ProjectJS.Manager;
-using ProjectJS.PStats;
 using ProjectJS.Skills;
 using System.Collections.Generic;
 using TMPro;
@@ -11,10 +10,11 @@ namespace ProjectJS.UI.LobbyScene
     public class ShardSelectionUI : MonoBehaviour
     {
         [SerializeField] private ShardData[] shardDatas;
+        private Dictionary<ShardSpecies, ShardData> _shardDataDict = new();
         [SerializeField] private List<ShardData> ownedShardDatas;
 
         private int _currentSelectedShardIndex;
-        public int CurrentSelectedShardIndex => _currentSelectedShardIndex;
+        public ShardSpecies CurrentSelectedShardSpecies => ownedShardDatas[_currentSelectedShardIndex].Species;
         private int _ownedShardCount;
 
         [SerializeField] private Image currentShardImage;
@@ -28,11 +28,18 @@ namespace ProjectJS.UI.LobbyScene
 
         private void Awake()
         {
+
+            for (int i = 0; i < shardDatas.Length; i++)
+            {
+                _shardDataDict.Add(shardDatas[i].Species, shardDatas[i]);
+            }
+
             Init();
 
             if (ownedShardDatas == null || ownedShardDatas.Count == 0)
             {
                 Debug.LogWarning("[WeaponSelectionUI] : WeaponSprites is null or length zero");
+                gameObject.SetActive(false);
                 return;
             }
 
@@ -47,6 +54,11 @@ namespace ProjectJS.UI.LobbyScene
         {
             List<ShardSpecies> ownedShardSpecies = new (SteamCloudSave.LoadGame().ownedShards);
             _ownedShardCount = ownedShardSpecies.Count;
+
+            for (int i = 0; i < ownedShardSpecies.Count; i++)
+            {
+                ownedShardDatas.Add(_shardDataDict[ownedShardSpecies[i]]);
+            }
         }
 
         private void SetShardInfo() 
@@ -58,7 +70,7 @@ namespace ProjectJS.UI.LobbyScene
                 return;
             }
 
-            //currentShardImage.sprite = tempData;
+            currentShardImage.sprite = tempData.ShardSprite;
             currentShardNameText.text = tempData.ShardName;
             currentDamageMulText.text = $"추가 데미지 +{tempData.DamageMultiplier*100}%";
             currentRangeMulText.text = $"공격 사거리 +{tempData.RangeMultiplier * 100}%";

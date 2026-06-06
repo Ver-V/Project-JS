@@ -50,6 +50,9 @@ namespace ProjectJS.Skills
         {
             player = GetComponent<Player>();
             anim = GetComponentInChildren<Animator>();
+
+            //[jh]
+            EquipShard(PlayerWeaponSelection.SelectedShardSpecies);
         }
 
         public void TrySkill()
