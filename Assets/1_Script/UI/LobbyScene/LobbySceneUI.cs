@@ -42,6 +42,7 @@ namespace ProjectJS.UI.LobbyScene
         [Space(20)]
         [Header("Player Weapon")]
 		[SerializeField] private WeaponSelectionUI weaponSelectionUI;
+		[SerializeField] private ShardSelectionUI shardSelectionUI;
 
 		private List<Message> messageList = new List<Message>();
 		private List<PlayerCard> cardList = new List<PlayerCard>();
@@ -75,8 +76,9 @@ namespace ProjectJS.UI.LobbyScene
             disconnectButton.onClick.AddListener(GameNetworkManager.Instance.Disconnected);
 			readyButton.onClick.AddListener(() => {
 				NetworkTransmission.instance.IsTheClientReadyServerRPC(true, GameManagerEx.Instance.MyClientId);
-				PlayerWeaponSelection.SelectedWeaponIndex = weaponSelectionUI.GetCurrentSelectedWeaponIndex();
-
+				PlayerWeaponSelection.SelectedWeaponIndex = weaponSelectionUI.CurrentSelectedWeaponIndex;
+				//샤드 선택 연결
+				//shardSelectionUI.CurrentSelectedShardIndex;
             }); 
 
 			notreadyButton.onClick.AddListener(() => {
