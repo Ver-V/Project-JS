@@ -20,6 +20,8 @@ namespace ProjectJS.UI.GameScene
 
         [SerializeField] private Button returnToLobbyButton;
 
+        [SerializeField] private GameObject gameOverPanel;
+        public bool HasGameOverPanel => gameOverPanel != null;
         [SerializeField] private GameResultUI gameResultUI;
 
         private void Awake()
@@ -41,7 +43,20 @@ namespace ProjectJS.UI.GameScene
             Managers.PlayerInput.Player.OpenSettings.performed += OnOpenSettingsInput;
 
             isOpened = settingsUI.gameObject.activeSelf;
+            if (gameOverPanel != null) gameOverPanel.SetActive(false);
 
+        }
+
+        public void ShowGameOverUI(bool show)
+        {
+            if (gameOverPanel != null)
+            {
+                gameOverPanel.SetActive(show);
+            }
+            else
+            {
+                Debug.LogWarning("[GameSceneUI] GameOverPanel is not assigned!");
+            }
             gameResultUI.gameObject.SetActive(false);
         }
 

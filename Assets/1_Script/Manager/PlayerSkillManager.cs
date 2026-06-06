@@ -9,7 +9,38 @@ namespace ProjectJS.Skills
     {
         [Header("Available Data")]
         [SerializeField] private List<ShardData> availableShards = new List<ShardData>();
-        private NetworkVariable<int> equippedShardIndex = new NetworkVariable<int>(-1);
+        private NetworkVariable<ShardSpecies> equippedShardSpecies = new NetworkVariable<ShardSpecies>(ShardSpecies.None);
+
+        public IReadOnlyList<ShardData> AvailableShards => availableShards;
+        public ShardSpecies EquippedShardSpecies => equippedShardSpecies.Value;
+
+        public IReadOnlyList<ShardData> GetAvailableShards()
+        {
+            return availableShards;
+        }
+
+        public ShardData GetEquippedShard()
+        {
+            return GetShardBySpecies(equippedShardSpecies.Value);
+        }
+
+        public ShardData GetShardBySpecies(ShardSpecies species)
+        {
+            if (availableShards == null)
+            {
+                return null;
+            }
+
+            foreach (ShardData shard in availableShards)
+            {
+                if (shard != null && shard.Species == species)
+                {
+                    return shard;
+                }
+            }
+
+            return null;
+        }
 
         private float lastSkillTime = -100f; // last skill usetime
         private Player player;
@@ -21,11 +52,6 @@ namespace ProjectJS.Skills
             anim = GetComponentInChildren<Animator>();
         }
 
-        void Update()
-        {
-            // Input is handled via PlayerController
-        }
-        
         public void TrySkill()
         {
             Debug.Log("[PlayerSkillManager] TrySkill called!");
@@ -43,8 +69,8 @@ namespace ProjectJS.Skills
 
             SkillData currentSkill = currentWeapon.WeaponSkill;
 
-            int shIdx = equippedShardIndex.Value;
-            ShardData equippedShard = (availableShards != null && shIdx >= 0 && shIdx < availableShards.Count) ? availableShards[shIdx] : null;
+            ShardSpecies equippedSpecies = equippedShardSpecies.Value;
+            ShardData equippedShard = GetShardBySpecies(equippedSpecies);
 
             if (currentSkill.SkillLogicPrefab == null)
             {
@@ -72,7 +98,7 @@ namespace ProjectJS.Skills
                 PlayLocalSkillEffects(currentSkill, direction);
 
                 // using skill syscall
-                UseSkillServerRpc(direction, shIdx);
+                UseSkillServerRpc(direction, equippedSpecies);
             }
             else
             {
@@ -97,13 +123,13 @@ namespace ProjectJS.Skills
 
         // NetworkObject with Skillbase
         [Rpc(SendTo.Server)]
-        private void UseSkillServerRpc(Vector2 direction, int shardIdx, RpcParams rpcParams = default)
+        private void UseSkillServerRpc(Vector2 direction, ShardSpecies shardSpecies, RpcParams rpcParams = default)
         {
             WeaponData currentWeapon = player.CurrentWeapon;
             if (currentWeapon == null || currentWeapon.WeaponSkill == null) return;
             SkillData currentSkill = currentWeapon.WeaponSkill;
 
-            ShardData equippedShard = (availableShards != null && shardIdx >= 0 && shardIdx < availableShards.Count) ? availableShards[shardIdx] : null;
+            ShardData equippedShard = GetShardBySpecies(shardSpecies);
 
             SkillBase skillInstance = Instantiate(currentSkill.SkillLogicPrefab, transform.position, Quaternion.identity);
 
@@ -113,12 +139,12 @@ namespace ProjectJS.Skills
                 networkObj.Spawn();
                 skillInstance.Initialize(player, currentSkill, equippedShard, direction);
 
-                InitializeSkillClientRpc(networkObj.NetworkObjectId, direction, shardIdx);
+                InitializeSkillClientRpc(networkObj.NetworkObjectId, direction, shardSpecies);
             }
         }
 
         [Rpc(SendTo.ClientsAndHost)]
-        private void InitializeSkillClientRpc(ulong skillNetworkObjectId, Vector2 direction, int shardIdx)
+        private void InitializeSkillClientRpc(ulong skillNetworkObjectId, Vector2 direction, ShardSpecies shardSpecies)
         {
             if (IsServer) return;
 
@@ -129,7 +155,7 @@ namespace ProjectJS.Skills
                 {
                     WeaponData currentWeapon = player.CurrentWeapon;
                     SkillData currentSkill = (currentWeapon != null) ? currentWeapon.WeaponSkill : null;
-                    ShardData equippedShard = (availableShards != null && shardIdx >= 0 && shardIdx < availableShards.Count) ? availableShards[shardIdx] : null;
+                    ShardData equippedShard = GetShardBySpecies(shardSpecies);
                     
                     if (currentSkill != null)
                     {
@@ -139,15 +165,20 @@ namespace ProjectJS.Skills
             }
         }
 
-        public void EquipShard(int index)
+        public void EquipShard(ShardSpecies species)
         {
-            if (IsOwner) EquipShardServerRpc(index);
+            if (IsOwner) EquipShardServerRpc(species);
         }
 
         [Rpc(SendTo.Server)]
-        private void EquipShardServerRpc(int index)
+        private void EquipShardServerRpc(ShardSpecies species)
         {
-            equippedShardIndex.Value = index;
+            if (species != ShardSpecies.None && GetShardBySpecies(species) == null)
+            {
+                return;
+            }
+
+            equippedShardSpecies.Value = species;
         }
     }
 }
