@@ -95,5 +95,10 @@ namespace ProjectJS.UI.LobbyScene
             nextShardButton.onClick.RemoveAllListeners();
             prevShardButton.onClick.RemoveAllListeners();
         }
+        public void SetButtonsInteractive(bool isInteractive)
+        {
+            nextShardButton.interactable = isInteractive;
+            prevShardButton.interactable = isInteractive;
+        }
     }
 }

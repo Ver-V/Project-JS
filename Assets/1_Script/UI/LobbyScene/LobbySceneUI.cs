@@ -79,11 +79,17 @@ namespace ProjectJS.UI.LobbyScene
 				PlayerWeaponSelection.SelectedWeaponIndex = weaponSelectionUI.CurrentSelectedWeaponIndex;
                 //샤드 선택 연결
                 PlayerWeaponSelection.SelectedShardSpecies =  shardSelectionUI.CurrentSelectedShardSpecies;
+				
+				weaponSelectionUI.SetButtonsInteractive(false);
+				shardSelectionUI.SetButtonsInteractive(false);
             }); 
 
 			notreadyButton.onClick.AddListener(() => {
 				NetworkTransmission.instance.IsTheClientReadyServerRPC(false, GameManagerEx.Instance.MyClientId);
-			});
+
+                weaponSelectionUI.SetButtonsInteractive(true);
+                shardSelectionUI.SetButtonsInteractive(true);
+            });
 
 			startButton.onClick.AddListener(() =>
 			{

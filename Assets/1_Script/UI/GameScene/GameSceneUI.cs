@@ -37,7 +37,18 @@ namespace ProjectJS.UI.GameScene
         {
             settingsUI.Init(CloseSettings);
             settingsButton.onClick.AddListener(ToggleSettings);
-            returnToLobbyButton.onClick.AddListener(ReturnToLobby);
+
+            if (NetworkManager.Singleton.IsHost)
+            {
+                returnToLobbyButton.gameObject.SetActive(true);
+                returnToLobbyButton.onClick.AddListener(ReturnToLobby);
+            }
+            else
+            {
+                settingsButton.gameObject.SetActive(false);
+            }
+
+
             Managers.PlayerInput.Player.OpenSettings.performed += OnOpenSettingsInput;
 
             isOpened = settingsUI.gameObject.activeSelf;
