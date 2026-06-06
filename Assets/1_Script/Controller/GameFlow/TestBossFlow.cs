@@ -1,4 +1,5 @@
 using ProjectJS.Manager;
+using ProjectJS.UI.GameScene;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -42,8 +43,6 @@ namespace ProjectJS.Controller
 		private IEnumerator OnStartInit()
 		{
 			// TODO - Lock players' input
-			if (ProjectJS.UI.GameScene.GameSceneUI.Instance != null)
-				ProjectJS.UI.GameScene.GameSceneUI.Instance.ShowGameOverUI(false);
 
 			bossController = Instantiate(bossPrefab, /*HACK*/ Vector3.up * 5f, Quaternion.identity, null)
 				.GetComponent<BossController>();
@@ -109,10 +108,9 @@ namespace ProjectJS.Controller
 		private IEnumerator OnStartGameOver()
 		{
 			Debug.LogWarning("GAME OVER!!!");
-			if (ProjectJS.UI.GameScene.GameSceneUI.Instance != null)
-				ProjectJS.UI.GameScene.GameSceneUI.Instance.ShowGameOverUI(true);
-
-			while (true)
+            bossController.GetComponent<NetworkObject>().Despawn(true);
+            GameSceneUI.Instance.ShowGameResult(!AreAllPlayersDead(), NetworkManager.Singleton.IsHost);
+            while (true)
 			{
 				if (Input.GetKeyDown(KeyCode.F5))
 				{
@@ -146,21 +144,7 @@ namespace ProjectJS.Controller
 
 		private void ReturnToLobby()
 		{
-			if (ProjectJS.UI.GameScene.GameSceneUI.Instance != null)
-				ProjectJS.UI.GameScene.GameSceneUI.Instance.ShowGameOverUI(false);
-			
-			GameNetworkManager.Instance.ReturnToLobbyFromGame();
-		}
-
-		private void OnGUI()
-		{
-			if (stateMachine == null || stateMachine.CurrentState != State.GameOver) return;
-			if (ProjectJS.UI.GameScene.GameSceneUI.Instance != null && ProjectJS.UI.GameScene.GameSceneUI.Instance.HasGameOverPanel) return;
-
-			GUI.Box(new Rect(Screen.width / 2 - 125, Screen.height / 2 - 60, 250, 120), "GAME OVER (HOST ONLY)");
-			GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 30, 200, 25), "F5: Restart Boss Fight");
-			GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2, 200, 25), "F6: Return to Lobby");
-			GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 + 30, 200, 25), "(Assign GameOverPanel in GameSceneUI)");
+			GameSceneUI.Instance?.ReturnToLobby();
 		}
 
 		private IEnumerator OnEndCombat()
@@ -173,6 +157,7 @@ namespace ProjectJS.Controller
 			Debug.LogWarning("OUTRO!!!");
 			yield return null;
 			// TOOD - UI 띄워야함 
+			GameSceneUI.Instance.ShowGameResult(!AreAllPlayersDead(), NetworkManager.Singleton.IsHost);
 		}
 
 		private IEnumerator OnStartExit()
