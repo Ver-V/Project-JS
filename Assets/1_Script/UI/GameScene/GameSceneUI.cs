@@ -20,6 +20,8 @@ namespace ProjectJS.UI.GameScene
 
         [SerializeField] private Button returnToLobbyButton;
 
+        [SerializeField] private GameResultUI gameResultUI;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -40,6 +42,7 @@ namespace ProjectJS.UI.GameScene
 
             isOpened = settingsUI.gameObject.activeSelf;
 
+            gameResultUI.gameObject.SetActive(false);
         }
 
         private void OnDestroy()
@@ -128,13 +131,19 @@ namespace ProjectJS.UI.GameScene
             settingsUI.gameObject.SetActive(isOpened);
         }
 
-        private void ReturnToLobby()
+        public void ReturnToLobby()
         {
             if (NetworkManager.Singleton == null) return;
             if (!NetworkManager.Singleton.IsHost) return;
             if (GameNetworkManager.Instance == null) return;
 
             GameNetworkManager.Instance.ReturnToLobbyFromGame();
+        }
+
+        public void ShowGameResult(bool isClear, bool isHost)
+        {
+            gameResultUI.gameObject.SetActive(true);
+            gameResultUI.ShowGameResult(isClear, isHost);
         }
     }
 }
