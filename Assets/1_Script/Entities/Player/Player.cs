@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ProjectJS.PStats;
 using ProjectJS.Utils;
 using ProjectJS.Controller;
+using ProjectJS.Manager;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -53,6 +54,22 @@ public class Player : NetworkBehaviour
     public float CurGuardGauge => curGuardGauge.Value;
     public float CurHealthGauge => curHealth.Value; //[jh] 체력 바를 위한 게이지 프로퍼티
     public Vector2 FacingDirection { get; set; } = Vector2.right;
+
+    public string GetPlayerNickname()
+    {
+        string nickname = GameManagerEx.Instance?.GetPlayerNickname(OwnerClientId);
+        if (!string.IsNullOrEmpty(nickname))
+        {
+            return nickname;
+        }
+
+        if (IsOwner)
+        {
+            return SteamManager.Instance?.GetSteamNickname() ?? string.Empty;
+        }
+
+        return string.Empty;
+    }
 
     //[jh] 게이지 UI에서 연결하기 위한 이벤트
     public event System.Action<float, float, float> OnHealthChangedEvent;

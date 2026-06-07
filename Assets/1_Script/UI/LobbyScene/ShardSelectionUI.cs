@@ -46,7 +46,32 @@ namespace ProjectJS.UI.LobbyScene
         private void Init()
         {
             List<ShardSpecies> ownedShardSpecies = new (SteamCloudSave.LoadGame().ownedShards);
-            _ownedShardCount = ownedShardSpecies.Count;
+            if (ownedShardDatas == null)
+            {
+                ownedShardDatas = new List<ShardData>();
+            }
+
+            ownedShardDatas.Clear();
+
+            if (shardDatas == null)
+            {
+                _ownedShardCount = 0;
+                return;
+            }
+
+            foreach (ShardSpecies ownedSpecies in ownedShardSpecies)
+            {
+                foreach (ShardData shardData in shardDatas)
+                {
+                    if (shardData != null && shardData.Species == ownedSpecies)
+                    {
+                        ownedShardDatas.Add(shardData);
+                        break;
+                    }
+                }
+            }
+
+            _ownedShardCount = ownedShardDatas.Count;
         }
 
         private void SetShardInfo() 
@@ -63,6 +88,19 @@ namespace ProjectJS.UI.LobbyScene
             currentDamageMulText.text = $"추가 데미지 +{tempData.DamageMultiplier*100}%";
             currentRangeMulText.text = $"공격 사거리 +{tempData.RangeMultiplier * 100}%";
             currentCooldownMulText.text = $"쿨타임 감소 +{tempData.CooldownMultiplier * 100}%";
+        }
+
+        public ShardSpecies GetSelectedShardSpecies()
+        {
+            if (ownedShardDatas == null ||
+                _currentSelectedShardIndex < 0 ||
+                _currentSelectedShardIndex >= ownedShardDatas.Count)
+            {
+                return ShardSpecies.None;
+            }
+
+            ShardData selectedShard = ownedShardDatas[_currentSelectedShardIndex];
+            return selectedShard != null ? selectedShard.Species : ShardSpecies.None;
         }
 
         private void ShowNextShard()
