@@ -44,7 +44,7 @@ namespace ProjectJS.Controller
 		{
 			// TODO - Lock players' input
 
-			bossController = Instantiate(bossPrefab, /*HACK*/ Vector3.up * 5f, Quaternion.identity, null)
+			bossController = Instantiate(bossPrefab, /*HACK*/ Vector3.up * 3f, Quaternion.identity, null)
 				.GetComponent<BossController>();
 			bossController.GetComponent<NetworkObject>().Spawn();
 
