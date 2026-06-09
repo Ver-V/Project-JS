@@ -12,9 +12,9 @@ namespace ProjectJS.UI.Settings
         private const string BGMVolumeKey = "Setting_BGMVolume";
         private const string SFXVolumeKey = "Setting_SFXVolume";
 
-        private const string MasterVolumeParam = "MasterVolume";
-        private const string BGMVolumeParam = "BGMVolume";
-        private const string SFXVolumeParam = "SFXVolume";
+        private const string MasterVolumeParam = "Master";
+        private const string BGMVolumeParam = "Music";
+        private const string SFXVolumeParam = "SFX";
 
         [SerializeField] private AudioMixer audioMixer;
         [SerializeField] private Slider masterVolumeSlider;
@@ -115,7 +115,7 @@ namespace ProjectJS.UI.Settings
         {
             if (volumeValueText == null)
             {
-                Debug.LogWarning($"[SoundSettingsUI] : Volume Value Text({volumeValueText.name})is null");
+                Debug.LogWarning("[SoundSettingsUI] Volume value text is null.");
                 return;
             }
 

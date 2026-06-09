@@ -32,8 +32,33 @@ public class Player : NetworkBehaviour
 
     [Header("Invincibility Settings")]
     [SerializeField] private float invincibilityDuration = 1.0f;
+
+    [Header("Player Effects")]
+    [SerializeField] private GameObject damagedVfxPrefab;
+    [SerializeField] private GameObject guardVfxPrefab;
+    [SerializeField] private GameObject justGuardVfxPrefab;
+    [SerializeField] private GameObject deathVfxPrefab;
+    [SerializeField] private AudioClip damagedSfxClip;
+    [SerializeField] private AudioClip guardSfxClip;
+    [SerializeField] private AudioClip justGuardSfxClip;
+    [SerializeField] private AudioClip deathSfxClip;
+
+    [Header("Shader Effects")]
+    [SerializeField] private Shader playerEffectShader;
+    [SerializeField] private float damagedEffectDuration = 0.25f;
+    [SerializeField] private float guardEffectDuration = 0.5f;
+    [SerializeField] private float deathEffectDuration = 1.5f;
     private float lastHitTime = -1.0f;
     private Coroutine invincibilityCoroutine;
+    private Coroutine shaderEffectCoroutine;
+    private SpriteRenderer[] effectRenderers;
+    private Material playerEffectMaterial;
+
+    private static readonly int FlashColorId = Shader.PropertyToID("_FlashColor");
+    private static readonly int FlashAmountId = Shader.PropertyToID("_FlashAmount");
+    private static readonly int DirectionalId = Shader.PropertyToID("_Directional");
+    private static readonly int HitDirectionId = Shader.PropertyToID("_HitDirection");
+    private static readonly int NoiseAmountId = Shader.PropertyToID("_NoiseAmount");
 
     private NetworkVariable<float> curHealth = new NetworkVariable<float>();
     private NetworkVariable<float> curGuardGauge = new NetworkVariable<float>();
@@ -79,6 +104,7 @@ public class Player : NetworkBehaviour
     {
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        InitializeShaderEffects();
         currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
 
         curHealth.OnValueChanged += OnCurHealthChanged;
@@ -131,8 +157,7 @@ public class Player : NetworkBehaviour
 
     public void OnAttackHit()
     {
-        Debug.Log("[Player] OnAttackHit called!");
-        if (currentWeapon == null || IsDead) return;
+        if (!IsOwner || currentWeapon == null || IsDead) return;
 
         Vector2 hitCenter = (Vector2)transform.position + (FacingDirection * attackOffset);
         if (attackPoint != null) hitCenter.y = attackPoint.position.y;
@@ -142,22 +167,14 @@ public class Player : NetworkBehaviour
         Debug.DrawLine((Vector2)transform.position, hitCenter, Color.red, 0.5f);
 
         Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(hitCenter, effectiveSize, 0f, Constants.LAYER_BOSS);
-        Debug.Log($"[Player] OverlapBoxAll found {hitEnemies.Length} enemies in LAYER_BOSS");
-
         if (hitEnemies.Length > 0)
         {
-            if (currentWeapon.AttackVfxPrefab != null)
-            {
-                Instantiate(currentWeapon.AttackVfxPrefab, hitCenter, Quaternion.identity);
-            }
+            PlayAttackHitEffectRpc(hitCenter, FacingDirection.x);
 
-            if (IsOwner)
+            StartCoroutine(TriggerHitStop(0.07f));
+            if (CameraShake.Instance != null)
             {
-                StartCoroutine(TriggerHitStop(0.07f));
-                if (CameraShake.Instance != null)
-                {
-                    CameraShake.Instance.Shake(0.1f, 0.2f);
-                }
+                CameraShake.Instance.Shake(0.1f, 0.2f);
             }
         }
 
@@ -168,10 +185,23 @@ public class Player : NetworkBehaviour
             var boss = enemy.GetComponentInParent<ProjectJS.Controller.BossController>();
             if (boss != null && hitBosses.Add(boss))
             {
-                Debug.Log($"[Player] Requesting {currentWeapon.Damage} damage to Boss!");
                 boss.RequestTakeDamageServerRpc(currentWeapon.Damage);
             }
         }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayAttackHitEffectRpc(Vector2 position, float facingX)
+    {
+        if (currentWeapon == null) return;
+
+        if (currentWeapon.AttackVfxPrefab != null)
+        {
+            Quaternion rotation = facingX < 0f ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.identity;
+            Managers.Pool.SpawnVfx(currentWeapon.AttackVfxPrefab, position, rotation);
+        }
+
+        PlaySfx(currentWeapon.HitSfxClip);
     }
     
  
@@ -205,6 +235,13 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void SetGuardingRpc(bool state)
     {
+        if (state && !IsGuarding)
+        {
+            guardStartTime = Time.time;
+        }
+
+        IsGuarding = state;
+
         if (anim != null)
         {
             anim.SetBool("IsGuarding", state);
@@ -229,10 +266,6 @@ public class Player : NetworkBehaviour
             AttackRpc();
         }
 
-        if (currentWeapon != null && currentWeapon.AttackSfxClip != null)
-        {
-            AudioSource.PlayClipAtPoint(currentWeapon.AttackSfxClip, transform.position);
-        }
     }
 
     [Rpc(SendTo.ClientsAndHost)]
@@ -242,6 +275,8 @@ public class Player : NetworkBehaviour
         {
             anim.SetTrigger("Attack");
         }
+
+        PlaySfx(currentWeapon?.AttackSfxClip);
     }
 
     [Rpc(SendTo.Server)]
@@ -292,23 +327,26 @@ public class Player : NetworkBehaviour
             if (Time.time - guardStartTime <= 0.2f)
             {
                 curGuardGauge.Value -= (EnemyDamage * 0.5f);
-                PlayJustGuardEffectRpc();
+                PlayDamageEffectRpc(PlayerEffectType.JustGuard, GetHitDirection(attackerPos));
             }
             else
             {
                 float blockedDamage = EnemyDamage * 0.5f;
                 curGuardGauge.Value -= blockedDamage;
+                PlayDamageEffectRpc(PlayerEffectType.Guard, GetHitDirection(attackerPos));
             }
         }
         else
         {
             curHealth.Value -= EnemyDamage;
             lastHitTime = Time.time;
+            PlayDamageEffectRpc(PlayerEffectType.Damaged, GetHitDirection(attackerPos));
             StartInvincibilityClientRpc();
         }
 
         if (curHealth.Value <= 0)
         {
+            PlayDamageEffectRpc(PlayerEffectType.Death, 0f);
             DieClientRpc();
         }
     }
@@ -355,9 +393,28 @@ public class Player : NetworkBehaviour
         Die();
     }
 
-    [Rpc(SendTo.NotMe)]
-    private void PlayJustGuardEffectRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayDamageEffectRpc(PlayerEffectType effectType, float hitDirection)
     {
+        switch (effectType)
+        {
+            case PlayerEffectType.Damaged:
+                PlayEffect(damagedVfxPrefab, damagedSfxClip);
+                PlayShaderEffect(Color.red, damagedEffectDuration, hitDirection, false, true);
+                break;
+            case PlayerEffectType.Guard:
+                PlayEffect(guardVfxPrefab, guardSfxClip);
+                PlayShaderEffect(Color.white, guardEffectDuration, hitDirection, true, false);
+                break;
+            case PlayerEffectType.JustGuard:
+                PlayEffect(justGuardVfxPrefab, justGuardSfxClip);
+                PlayShaderEffect(new Color(1f, 0.75f, 0.05f), guardEffectDuration, hitDirection, true, false);
+                break;
+            case PlayerEffectType.Death:
+                PlayEffect(deathVfxPrefab, deathSfxClip);
+                PlayShaderEffect(new Color(1f, 0.02f, 0.02f), deathEffectDuration, 0f, false, false);
+                break;
+        }
     }
 
     private void Die()
@@ -374,6 +431,139 @@ public class Player : NetworkBehaviour
         {
             rb.linearVelocity = Vector2.zero;
         }
+
+    }
+
+    private void PlayEffect(GameObject vfxPrefab, AudioClip sfxClip)
+    {
+        if (vfxPrefab != null)
+        {
+            Managers.Pool.SpawnVfx(vfxPrefab, transform.position, Quaternion.identity);
+        }
+
+        PlaySfx(sfxClip);
+    }
+
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            Managers.Pool.PlaySfx(clip, transform.position);
+        }
+    }
+
+    private void InitializeShaderEffects()
+    {
+        if (playerEffectShader == null)
+        {
+            Debug.LogWarning("[Player] Player effect shader is not assigned.");
+            return;
+        }
+
+        effectRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        playerEffectMaterial = new Material(playerEffectShader)
+        {
+            name = $"{name}_PlayerImpact_Runtime"
+        };
+
+        foreach (SpriteRenderer renderer in effectRenderers)
+        {
+            renderer.sharedMaterial = playerEffectMaterial;
+        }
+
+        ResetShaderEffect();
+    }
+
+    private float GetHitDirection(Vector2 attackerPosition)
+    {
+        float deltaX = attackerPosition.x - transform.position.x;
+        if (Mathf.Abs(deltaX) < 0.01f)
+        {
+            return FacingDirection.x >= 0f ? 1f : -1f;
+        }
+
+        return Mathf.Sign(deltaX);
+    }
+
+    private void PlayShaderEffect(
+        Color color,
+        float duration,
+        float hitDirection,
+        bool directional,
+        bool noisy)
+    {
+        if (playerEffectMaterial == null) return;
+
+        if (shaderEffectCoroutine != null)
+        {
+            StopCoroutine(shaderEffectCoroutine);
+        }
+
+        shaderEffectCoroutine = StartCoroutine(ShaderEffectRoutine(
+            color,
+            duration,
+            ConvertToShaderDirection(hitDirection),
+            directional,
+            noisy));
+    }
+
+    private float ConvertToShaderDirection(float worldDirection)
+    {
+        if (anim == null || Mathf.Approximately(worldDirection, 0f))
+        {
+            return worldDirection;
+        }
+
+        float visualRight = Mathf.Sign(Vector3.Dot(anim.transform.right, Vector3.right));
+        return worldDirection * visualRight;
+    }
+
+    private IEnumerator ShaderEffectRoutine(
+        Color color,
+        float duration,
+        float hitDirection,
+        bool directional,
+        bool noisy)
+    {
+        playerEffectMaterial.SetColor(FlashColorId, color);
+        playerEffectMaterial.SetFloat(DirectionalId, directional ? 1f : 0f);
+        playerEffectMaterial.SetFloat(HitDirectionId, hitDirection);
+        playerEffectMaterial.SetFloat(NoiseAmountId, noisy ? 0.8f : 0f);
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float normalizedTime = Mathf.Clamp01(elapsed / Mathf.Max(0.01f, duration));
+            float intensity = directional
+                ? 1f - normalizedTime
+                : Mathf.SmoothStep(1f, 0f, normalizedTime);
+
+            playerEffectMaterial.SetFloat(FlashAmountId, intensity);
+            yield return null;
+        }
+
+        ResetShaderEffect();
+        shaderEffectCoroutine = null;
+    }
+
+    private void ResetShaderEffect()
+    {
+        if (playerEffectMaterial == null) return;
+
+        playerEffectMaterial.SetFloat(FlashAmountId, 0f);
+        playerEffectMaterial.SetFloat(DirectionalId, 0f);
+        playerEffectMaterial.SetFloat(NoiseAmountId, 0f);
+    }
+
+    public override void OnDestroy()
+    {
+        if (playerEffectMaterial != null)
+        {
+            Destroy(playerEffectMaterial);
+        }
+
+        base.OnDestroy();
     }
 
     [Rpc(SendTo.Server)]
@@ -391,6 +581,7 @@ public class Player : NetworkBehaviour
     private void Respawn()
     {
         IsDead = false;
+        ResetShaderEffect();
         
         if (IsServer)
         {
@@ -440,4 +631,11 @@ public class Player : NetworkBehaviour
         OnGuardGaugeChangedEvent?.Invoke(previousValue, newValue, Stats.MaxGuardGauge);
     }
 
+    private enum PlayerEffectType : byte
+    {
+        Damaged,
+        Guard,
+        JustGuard,
+        Death
+    }
 }

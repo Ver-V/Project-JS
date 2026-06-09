@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Collections.Generic;
 using ProjectJS.PStats;
+using ProjectJS.Manager;
 
 namespace ProjectJS.Skills
 {
@@ -100,7 +101,7 @@ namespace ProjectJS.Skills
                 // cooldown update
                 lastSkillTime = Time.time;
                 
-                PlayLocalSkillEffects(currentSkill, direction);
+                PlaySkillEffectsRpc();
 
                 // using skill syscall
                 UseSkillServerRpc(direction, equippedSpecies);
@@ -111,18 +112,23 @@ namespace ProjectJS.Skills
             }
         }
 
-        private void PlayLocalSkillEffects(SkillData skillData, Vector2 direction)
+        [Rpc(SendTo.ClientsAndHost)]
+        private void PlaySkillEffectsRpc()
         {
+            SkillData skillData = player.CurrentWeapon?.WeaponSkill;
+            if (skillData == null) return;
+
             if (skillData.VfxPrefab != null)
             {
-                // TODO: Run VFX locally
-                Instantiate(skillData.VfxPrefab, transform.position, Quaternion.identity);
+                Quaternion rotation = player.FacingDirection.x < 0f
+                    ? Quaternion.Euler(0f, 180f, 0f)
+                    : Quaternion.identity;
+                Managers.Pool.SpawnVfx(skillData.VfxPrefab, transform.position, rotation);
             }
 
             if (skillData.SfxClip != null)
             {
-                // TODO: Run SFXs locally
-                AudioSource.PlayClipAtPoint(skillData.SfxClip, transform.position);
+                Managers.Pool.PlaySfx(skillData.SfxClip, transform.position);
             }
         }
 

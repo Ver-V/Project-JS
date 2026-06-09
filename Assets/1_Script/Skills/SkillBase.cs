@@ -36,7 +36,6 @@ public StatusEffect FinalStatusEffect => finalStatusEffect;
             this.skillDirection = direction.normalized;
 
             CalculateFinalStats();
-            PlayEffects();
             if (IsOwner)
             {
                 Execute();
@@ -54,18 +53,6 @@ public StatusEffect FinalStatusEffect => finalStatusEffect;
             finalStatusEffect = (equippedShard != null) ? equippedShard.GrantedEffect : StatusEffect.None;
         }
 
-        protected void PlayEffects()
-        {
-            if (BaseSkillData.VfxPrefab != null)
-            {
-                Instantiate(BaseSkillData.VfxPrefab, transform.position, Quaternion.identity);
-            }
-
-            if (BaseSkillData.SfxClip != null)
-            {
-                AudioSource.PlayClipAtPoint(BaseSkillData.SfxClip, transform.position);
-            }
-        }
 protected abstract void Execute();
 
         protected void ApplyDamageAndEffect(Collider2D enemyCollider)

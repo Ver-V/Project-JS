@@ -16,6 +16,6 @@ MonoBehaviour:
   baseDamage: 25
   baseCooldown: 9
   baseRange: 0.4
-  vfxPrefab: {fileID: 0}
+  vfxPrefab: {fileID: 4946970685170493054, guid: 4a9d87d52a3531a4fa27d603d012877e, type: 3}
   sfxClip: {fileID: 0}
   skillLogicPrefab: {fileID: 8402140583965138066, guid: 487975bcfa3497c4eb9bad23c2067886, type: 3}

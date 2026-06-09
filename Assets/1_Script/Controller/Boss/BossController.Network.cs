@@ -31,6 +31,8 @@ namespace ProjectJS.Controller
 			}
 
 			healthStat.TakeTrueDamage(damage);
+			PlayDamagedSfxRpc();
+
 			if (!healthStat.IsDead)
 			{
 				OnDamaged();
@@ -42,6 +44,15 @@ namespace ProjectJS.Controller
 
 				float clearTime = Time.time - combatStartTime;
 				GameManagerEx.Instance.OnBossDefeated(gameObject.name, clearTime);
+			}
+		}
+
+		[Rpc(SendTo.ClientsAndHost)]
+		private void PlayDamagedSfxRpc()
+		{
+			if (damagedSfxClip != null)
+			{
+				Managers.Pool.PlaySfx(damagedSfxClip, transform.position);
 			}
 		}
 

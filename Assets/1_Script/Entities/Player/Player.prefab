@@ -444,6 +444,18 @@ MonoBehaviour:
   guardSize: {x: 0.35, y: 0.35}
   guardOffset: 0.16
   invincibilityDuration: 1
+  damagedVfxPrefab: {fileID: 0}
+  guardVfxPrefab: {fileID: 0}
+  justGuardVfxPrefab: {fileID: 0}
+  deathVfxPrefab: {fileID: 0}
+  damagedSfxClip: {fileID: 8300000, guid: af858f32f6d5290429422cd86a2a36d1, type: 3}
+  guardSfxClip: {fileID: 0}
+  justGuardSfxClip: {fileID: 0}
+  deathSfxClip: {fileID: 8300000, guid: 3b57d724195e4e54cbe14f4a6fe05e97, type: 3}
+  playerEffectShader: {fileID: 4800000, guid: 61c26247455a4a20977a66315b1241c5, type: 3}
+  damagedEffectDuration: 0.25
+  guardEffectDuration: 0.5
+  deathEffectDuration: 1.5
 --- !u!114 &-5385126495476415868
 MonoBehaviour:
   m_ObjectHideFlags: 0
