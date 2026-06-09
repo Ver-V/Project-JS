@@ -396,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2361543480
+  GlobalObjectIdHash: 4261299305
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -449,8 +449,8 @@ MonoBehaviour:
   justGuardVfxPrefab: {fileID: 0}
   deathVfxPrefab: {fileID: 0}
   damagedSfxClip: {fileID: 8300000, guid: af858f32f6d5290429422cd86a2a36d1, type: 3}
-  guardSfxClip: {fileID: 0}
-  justGuardSfxClip: {fileID: 0}
+  guardSfxClip: {fileID: 8300000, guid: c34e94c1d39413b44988835ec71d4c60, type: 3}
+  justGuardSfxClip: {fileID: 8300000, guid: c34e94c1d39413b44988835ec71d4c60, type: 3}
   deathSfxClip: {fileID: 8300000, guid: 3b57d724195e4e54cbe14f4a6fe05e97, type: 3}
   playerEffectShader: {fileID: 4800000, guid: 61c26247455a4a20977a66315b1241c5, type: 3}
   damagedEffectDuration: 0.25
