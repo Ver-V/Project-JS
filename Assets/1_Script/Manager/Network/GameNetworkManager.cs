@@ -315,7 +315,10 @@ namespace ProjectJS.Manager
 			GameManagerEx.Instance.ConnectedAsClient();
 			Managers.Scene.UnloadCurrentScene();
 
-			NetworkTransmission.instance.AddMeToDictionayServerRPC(SteamClient.SteamId, SteamClient.Name, clientId);
+			NetworkTransmission.instance.AddMeToDictionayServerRPC(
+				SteamClient.SteamId,
+				SteamManager.Instance?.GetSteamNickname() ?? SteamClient.Name,
+				clientId);
 			GameManagerEx.Instance.MyClientId = clientId;
 
 			NetworkTransmission.instance.IsTheClientReadyServerRPC(false, clientId);
@@ -328,7 +331,10 @@ namespace ProjectJS.Manager
 			Debug.Log("OnServerStarted Callback...");
 			GameManagerEx.Instance.HostCreated();
 
-			NetworkTransmission.instance.AddMeToDictionayServerRPC(SteamClient.SteamId, SteamClient.Name, NetworkManager.Singleton.LocalClientId);
+			NetworkTransmission.instance.AddMeToDictionayServerRPC(
+				SteamClient.SteamId,
+				SteamManager.Instance?.GetSteamNickname() ?? SteamClient.Name,
+				NetworkManager.Singleton.LocalClientId);
 		}
 
 		private void OnSceneUnloaded(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)

@@ -401,6 +401,7 @@ MonoBehaviour:
     m_InternalValue: 0
   isFlashing:
     m_InternalValue: 0
+  damagedSfxClip: {fileID: 8300000, guid: 8a072739919123d45bb9eb22d7782ef5, type: 3}
   moveDistance: 1
   moveSpeed: 0.5
   roamDuration: 1

@@ -77,6 +77,8 @@ namespace ProjectJS.UI.LobbyScene
 			readyButton.onClick.AddListener(() => {
 				NetworkTransmission.instance.IsTheClientReadyServerRPC(true, GameManagerEx.Instance.MyClientId);
 				PlayerWeaponSelection.SelectedWeaponIndex = weaponSelectionUI.CurrentSelectedWeaponIndex;
+        
+				// PlayerShardSelection.SetSelectedShardSpecies(shardSelectionUI.GetSelectedShardSpecies());
                 //샤드 선택 연결
                 PlayerWeaponSelection.SelectedShardSpecies =  shardSelectionUI.CurrentSelectedShardSpecies;
 				

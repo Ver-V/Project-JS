@@ -10,6 +10,7 @@ namespace ProjectJS.Manager
 		private Transform poolRoot = null;
 		private Dictionary<PoolingType, PoolingEntry> entryDict = new();
 		private Dictionary<PoolingType, Stack<GameObject>> poolDict = new();
+		private Dictionary<GameObject, Stack<GameObject>> vfxPoolDict = new();
 
 		private Dictionary<int, GameObject> projectileDict = new();
 
@@ -80,6 +81,59 @@ namespace ProjectJS.Manager
 			return obj;
 		}
 
+		public void PlaySfx(AudioClip clip, Vector3 position, float volume = 1f, float pitch = 1f)
+		{
+			if (clip == null) return;
+
+			GameObject obj = Get(PoolingType.SFX, position);
+			if (obj == null) return;
+
+			SFXPoolable sfx = obj.GetComponent<SFXPoolable>();
+			if (sfx == null)
+			{
+				Debug.LogError("[PoolingManager] SFX pool prefab requires SFXPoolable.");
+				Return(PoolingType.SFX, obj);
+				return;
+			}
+
+			sfx.Play(clip, volume, pitch);
+		}
+
+		public GameObject SpawnVfx(GameObject prefab, Vector3 position, Quaternion rotation)
+		{
+			if (prefab == null) return null;
+
+			if (!vfxPoolDict.TryGetValue(prefab, out Stack<GameObject> pool))
+			{
+				pool = new Stack<GameObject>();
+				vfxPoolDict.Add(prefab, pool);
+			}
+
+			GameObject obj = pool.Count > 0 ? pool.Pop() : CreateVfxObject(prefab);
+			obj.transform.SetPositionAndRotation(position, rotation);
+			obj.GetComponent<DynamicVFXPoolable>().Play();
+			return obj;
+		}
+
+		public void ReturnVfx(GameObject prefab, GameObject obj)
+		{
+			if (prefab == null || obj == null)
+			{
+				if (obj != null) GameObject.Destroy(obj);
+				return;
+			}
+
+			if (!vfxPoolDict.TryGetValue(prefab, out Stack<GameObject> pool))
+			{
+				pool = new Stack<GameObject>();
+				vfxPoolDict.Add(prefab, pool);
+			}
+
+			obj.SetActive(false);
+			obj.transform.SetParent(poolRoot);
+			pool.Push(obj);
+		}
+
 		public void Return(PoolingType type, GameObject obj)
 		{
 			if (!poolDict.ContainsKey(type))
@@ -132,6 +186,22 @@ namespace ProjectJS.Manager
 			obj.name = $"{entry.Type}_Pooled";
 			obj.gameObject.SetActive(false);
 			obj.GetComponent<Poolable>().PoolingType = entry.Type;
+			return obj;
+		}
+
+		private GameObject CreateVfxObject(GameObject prefab)
+		{
+			GameObject obj = GameObject.Instantiate(prefab, poolRoot);
+			obj.name = $"{prefab.name}_Pooled";
+
+			DynamicVFXPoolable poolable = obj.GetComponent<DynamicVFXPoolable>();
+			if (poolable == null)
+			{
+				poolable = obj.AddComponent<DynamicVFXPoolable>();
+			}
+
+			poolable.Configure(prefab);
+			obj.SetActive(false);
 			return obj;
 		}
 	}
