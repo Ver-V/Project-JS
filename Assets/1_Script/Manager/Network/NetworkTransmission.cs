@@ -231,5 +231,9 @@ namespace ProjectJS.Manager
 			return NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().GetComponent<PlayerController>();
 			//return playerDict[GameManagerEx.Instance.MyClientId];
 		}
-	}
+        public void ClearPlayerDict()
+        {
+            playerDict.Clear();
+        }
+    }
 }

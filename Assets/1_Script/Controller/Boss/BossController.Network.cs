@@ -43,7 +43,7 @@ namespace ProjectJS.Controller
 				OnDead();
 
 				float clearTime = Time.time - combatStartTime;
-				GameManagerEx.Instance.OnBossDefeated(gameObject.name, clearTime);
+				GameManagerEx.Instance.OnBossDefeated("Angel", clearTime);
 			}
 		}
 

@@ -20,8 +20,6 @@ namespace ProjectJS.UI.GameScene
 
         [SerializeField] private Button returnToLobbyButton;
 
-        [SerializeField] private GameObject gameOverPanel;
-        public bool HasGameOverPanel => gameOverPanel != null;
         [SerializeField] private GameResultUI gameResultUI;
 
         private void Awake()
@@ -39,26 +37,25 @@ namespace ProjectJS.UI.GameScene
         {
             settingsUI.Init(CloseSettings);
             settingsButton.onClick.AddListener(ToggleSettings);
-            returnToLobbyButton.onClick.AddListener(ReturnToLobby);
-            Managers.PlayerInput.Player.OpenSettings.performed += OnOpenSettingsInput;
 
-            isOpened = settingsUI.gameObject.activeSelf;
-            if (gameOverPanel != null) gameOverPanel.SetActive(false);
-
-        }
-
-        public void ShowGameOverUI(bool show)
-        {
-            if (gameOverPanel != null)
+            if (NetworkManager.Singleton.IsHost)
             {
-                gameOverPanel.SetActive(show);
+                returnToLobbyButton.gameObject.SetActive(true);
+                returnToLobbyButton.onClick.AddListener(ReturnToLobby);
             }
             else
             {
-                Debug.LogWarning("[GameSceneUI] GameOverPanel is not assigned!");
+                settingsButton.gameObject.SetActive(false);
             }
+
+
+            Managers.PlayerInput.Player.OpenSettings.performed += OnOpenSettingsInput;
+
+            isOpened = settingsUI.gameObject.activeSelf;
+
             gameResultUI.gameObject.SetActive(false);
         }
+
 
         private void OnDestroy()
         {
@@ -155,10 +152,10 @@ namespace ProjectJS.UI.GameScene
             GameNetworkManager.Instance.ReturnToLobbyFromGame();
         }
 
-        public void ShowGameResult(bool isClear, bool isHost)
+        public void ShowGameResult(GameResultInfo gameResultInfo, bool isHost)
         {
             gameResultUI.gameObject.SetActive(true);
-            gameResultUI.ShowGameResult(isClear, isHost);
+            gameResultUI.ShowGameResult(gameResultInfo, isHost);
         }
     }
 }

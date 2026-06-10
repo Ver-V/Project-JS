@@ -197,9 +197,12 @@ namespace ProjectJS.Manager
 
 			if (bossName.Contains("Angel") && !currentData.ownedShards.Contains(ProjectJS.Skills.ShardSpecies.Angel))
 			{
-				currentData.ownedShards.Add(ProjectJS.Skills.ShardSpecies.Angel);
-				Debug.Log("[GameManager] Angel Shard acquired!");
-
+				if(!currentData.ownedShards.Contains(Skills.ShardSpecies.Angel))
+				{
+                    currentData.ownedShards.Add(ProjectJS.Skills.ShardSpecies.Angel);
+                    Debug.Log("[GameManager] Angel Shard acquired!");
+                }
+				
                 SteamworksAchievements.UnlockAchievement("ACH_ANGEL_DEFEATED");
 			}
 

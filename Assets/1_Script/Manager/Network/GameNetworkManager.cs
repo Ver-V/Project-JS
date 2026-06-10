@@ -357,7 +357,7 @@ namespace ProjectJS.Manager
 
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnSceneLoadedInNetwork;
 
-            // NetworkTransmission.instance.ClearPlayerDict();
+            NetworkTransmission.instance.ClearPlayerDict();
 
             if (currentLobby.HasValue)
                 UnlockLobby();

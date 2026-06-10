@@ -77,13 +77,21 @@ namespace ProjectJS.UI.LobbyScene
 			readyButton.onClick.AddListener(() => {
 				NetworkTransmission.instance.IsTheClientReadyServerRPC(true, GameManagerEx.Instance.MyClientId);
 				PlayerWeaponSelection.SelectedWeaponIndex = weaponSelectionUI.CurrentSelectedWeaponIndex;
-				//샤드 선택 연결
-				PlayerShardSelection.SetSelectedShardSpecies(shardSelectionUI.GetSelectedShardSpecies());
+        
+				// PlayerShardSelection.SetSelectedShardSpecies(shardSelectionUI.GetSelectedShardSpecies());
+                //샤드 선택 연결
+                PlayerWeaponSelection.SelectedShardSpecies =  shardSelectionUI.CurrentSelectedShardSpecies;
+				
+				weaponSelectionUI.SetButtonsInteractive(false);
+				shardSelectionUI.SetButtonsInteractive(false);
             }); 
 
 			notreadyButton.onClick.AddListener(() => {
 				NetworkTransmission.instance.IsTheClientReadyServerRPC(false, GameManagerEx.Instance.MyClientId);
-			});
+
+                weaponSelectionUI.SetButtonsInteractive(true);
+                shardSelectionUI.SetButtonsInteractive(true);
+            });
 
 			startButton.onClick.AddListener(() =>
 			{

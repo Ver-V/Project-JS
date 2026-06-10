@@ -35,7 +35,8 @@ namespace ProjectJS.UI.GameScene
         protected override void UpdateGaugeBar(float prev, float current, float max)
         {
             base.UpdateGaugeBar(prev, current, max);
-            bossNameText.text = $"{bossController.name} {current}/{max}";
+            //bossNameText.text = $"{bossController.name} {current}/{max}";
+            bossNameText.text = $"[Angel] {current}/{max}";
         }
         protected override void OnDestroy()
         {

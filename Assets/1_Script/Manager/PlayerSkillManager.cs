@@ -3,6 +3,7 @@ using Unity.Netcode;
 using System.Collections.Generic;
 using ProjectJS.PStats;
 using ProjectJS.Manager;
+using System;
 
 namespace ProjectJS.Skills
 {
@@ -14,6 +15,8 @@ namespace ProjectJS.Skills
 
         public IReadOnlyList<ShardData> AvailableShards => availableShards;
         public ShardSpecies EquippedShardSpecies => equippedShardSpecies.Value;
+
+        public event Action<float> OnSkillCastedAction;
 
         public IReadOnlyList<ShardData> GetAvailableShards()
         {
@@ -102,6 +105,8 @@ namespace ProjectJS.Skills
                 lastSkillTime = Time.time;
                 
                 PlaySkillEffectsRpc();
+                //OnSkillCastedAction?.Invoke(finalCooldown);
+                //PlayLocalSkillEffects(currentSkill, direction);
 
                 // using skill syscall
                 UseSkillServerRpc(direction, equippedSpecies);

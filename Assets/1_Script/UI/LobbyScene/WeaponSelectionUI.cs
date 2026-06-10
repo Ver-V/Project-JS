@@ -51,6 +51,12 @@ namespace ProjectJS.UI.LobbyScene
             currentWeaponText.text = weaponDatas[_currentSelectedWeaponIndex].WeaponName;
         }
 
+        public void SetButtonsInteractive(bool isInteractive)
+        {
+            nextWeaponButton.interactable = isInteractive;
+            prevWeaponButton.interactable = isInteractive;
+        }
+
         private void OnDestroy()
         {
             nextWeaponButton.onClick.RemoveAllListeners();

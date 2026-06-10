@@ -4731,7 +4731,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 388152fc1f31bd442813a47b265108c2, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4772,9 +4772,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea92fc8298a38f347a8ebbfd96b83f73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.UI.LobbyScene.ShardSelectionUI
-  shardDatas: []
-  ownedShardDatas:
+  shardDatas:
   - {fileID: 11400000, guid: a43dbc77106d79a498cc284a16c3d7c1, type: 2}
+  ownedShardDatas: []
   currentShardImage: {fileID: 5311111941057369313}
   currentShardNameText: {fileID: 2943187149338595386}
   currentDamageMulText: {fileID: 808474366}
