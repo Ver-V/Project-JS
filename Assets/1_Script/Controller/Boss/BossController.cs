@@ -14,6 +14,9 @@ namespace ProjectJS.Controller
 		protected Material spriteMaterial;
 		protected StatContainer statContainer;
 
+		[Header("Boss Audio")]
+		[SerializeField] private AudioClip damagedSfxClip;
+
 		private int bossID = 1;
 		private int projectileIdx = 0;
 

@@ -20,4 +20,5 @@ MonoBehaviour:
   weaponSkill: {fileID: 11400000, guid: 1527650ff4cef24468a20f6576c4213c, type: 2}
   weaponAnimatorController: {fileID: 22100000, guid: ea008a37d5be06e4cb83ac7c14f607f8, type: 2}
   attackVfxPrefab: {fileID: 0}
-  attackSfxClip: {fileID: 0}
+  attackSfxClip: {fileID: 8300000, guid: 1c8ba62b5bf75054a8311db70b1d2138, type: 3}
+  hitSfxClip: {fileID: 8300000, guid: e842dbb2ad2acda4c9003f5fabaae367, type: 3}

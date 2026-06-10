@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3099588260
+  GlobalObjectIdHash: 2200437023
   InScenePlacedSourceGlobalObjectIdHash: 2200437023
   DeferredDespawnTick: 0
   Ownership: 1
@@ -224,7 +224,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -265,7 +265,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!95 &38752718065871988
 Animator:
@@ -334,6 +334,13 @@ MonoBehaviour:
     TransitionDuration: 0
     TriggerNameHash: -902627107
     TransitionIndex: 5
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -1639444350
+    DestinationState: -1560837609
+    TransitionDuration: 0
+    TriggerNameHash: 272263517
+    TransitionIndex: 0
   AnimatorParameterEntries:
     ParameterEntries:
     - name: isWalk
@@ -364,6 +371,14 @@ MonoBehaviour:
       NameHash: -902627107
       Synchronize: 1
       ParameterType: 9
+    - name: isStartDead
+      NameHash: 898584961
+      Synchronize: 1
+      ParameterType: 9
+    - name: isEndDead
+      NameHash: 272263517
+      Synchronize: 1
+      ParameterType: 9
   AnimatorParametersExpanded: 0
 --- !u!114 &4792818828789318457
 MonoBehaviour:
@@ -380,10 +395,13 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   spawnedCount:
     m_InternalValue: 0
+  maxHP:
+    m_InternalValue: 0
   currentHP:
     m_InternalValue: 0
   isFlashing:
     m_InternalValue: 0
+  damagedSfxClip: {fileID: 8300000, guid: 8a072739919123d45bb9eb22d7782ef5, type: 3}
   moveDistance: 1
   moveSpeed: 0.5
   roamDuration: 1

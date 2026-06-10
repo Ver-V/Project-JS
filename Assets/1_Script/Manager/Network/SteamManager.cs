@@ -42,6 +42,11 @@ namespace ProjectJS.Manager
             }
         }
 
+        public string GetSteamNickname()
+        {
+            return SteamClient.IsValid ? SteamClient.Name : string.Empty;
+        }
+
         private void Update()
         { // Call RunCallbacks per frame > Events operate successfully
             if (SteamClient.IsValid)

@@ -739,7 +739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b873eea696a904ab79dd61d3952663, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundSettingsUI
-  audioMixer: {fileID: 0}
+  audioMixer: {fileID: 24100000, guid: fd2e95e311c5b5e4da32b572f6628427, type: 2}
   masterVolumeSlider: {fileID: 8914672177648514052}
   bgmVolumeSlider: {fileID: 7827510642110062894}
   sfxVolumeSlider: {fileID: 3584735976770208117}

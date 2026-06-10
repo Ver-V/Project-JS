@@ -114,6 +114,16 @@ namespace ProjectJS.Manager
 			return clientId;
 		}
 
+		public string GetPlayerNickname(ulong clientId)
+		{
+			if (playerInfo.TryGetValue(clientId, out PlayerInfo info))
+			{
+				return info.steamName;
+			}
+
+			return string.Empty;
+		}
+
 		public bool IsAllPlayerReady()
 		{
 			foreach (KeyValuePair<ulong, PlayerInfo> player in playerInfo)
