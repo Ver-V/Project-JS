@@ -363,7 +363,6 @@ public class Player : NetworkBehaviour
         {
             if (Time.time - guardStartTime <= 0.2f)
             {
-                curGuardGauge.Value -= (EnemyDamage * 0.5f);
                 PlayDamageEffectRpc(PlayerEffectType.JustGuard, GetHitDirection(attackerPos));
             }
             else
