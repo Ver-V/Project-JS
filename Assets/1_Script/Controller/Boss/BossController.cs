@@ -14,6 +14,9 @@ namespace ProjectJS.Controller
 		protected Material spriteMaterial;
 		protected StatContainer statContainer;
 
+		protected bool isNoDamage = false;
+		public bool IsNoDamage { get => isNoDamage; set => isNoDamage = value; }
+
 		[Header("Boss Audio")]
 		[SerializeField] private AudioClip damagedSfxClip;
 
