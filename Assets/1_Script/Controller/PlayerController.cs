@@ -59,11 +59,7 @@ namespace ProjectJS.Controller
         {
             if (movement.x != 0 && !player.IsGuarding)
             {
-                player.FacingDirection = movement.x > 0 ? Vector2.right : Vector2.left;
-                if (anim != null)
-                {
-                    anim.transform.localRotation = Quaternion.Euler(0, movement.x > 0 ? 0 : 180, 0);
-                }
+                player.SetFacingDirection(movement);
             }
         }
 

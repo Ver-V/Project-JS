@@ -441,8 +441,8 @@ MonoBehaviour:
   - {fileID: 3781665898625333168, guid: 54edaf15f511c5f45a66fc96af20b31f, type: 3}
   - {fileID: -6070605824932911320, guid: 49cee8a0c2e1f60408ff79eaeedbc445, type: 3}
   - {fileID: 2711784336968252271, guid: 9984f6e45f197b74a829fc01bf06b8ec, type: 3}
-  guardSize: {x: 0.35, y: 0.35}
-  guardOffset: 0.16
+  guardSize: {x: 0.45, y: 0.45}
+  guardOffset: 0.14
   invincibilityDuration: 1
   damagedVfxPrefab: {fileID: 0}
   guardVfxPrefab: {fileID: 0}
