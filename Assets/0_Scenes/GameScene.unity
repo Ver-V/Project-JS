@@ -10987,7 +10987,6 @@ MonoBehaviour:
   settingsUI: {fileID: 1045224334}
   isOpened: 0
   returnToLobbyButton: {fileID: 1628315548}
-  gameOverPanel: {fileID: 0}
   gameResultUI: {fileID: 396372635}
 --- !u!224 &396372634 stripped
 RectTransform:
@@ -27860,6 +27859,7 @@ GameObject:
   - component: {fileID: 1521219860}
   - component: {fileID: 1521219862}
   - component: {fileID: 1521219863}
+  - component: {fileID: 1521219864}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -28004,6 +28004,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectJS.Controller.TestBossFlow
   bossPrefab: {fileID: 3338869448384287981, guid: 8f2b93b98eab2344c9087c9fa5bd8abf, type: 3}
+--- !u!81 &1521219864
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521219858}
+  m_Enabled: 1
 --- !u!1 &1544360697
 GameObject:
   m_ObjectHideFlags: 0
@@ -28535,6 +28543,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2161515985416177800, guid: 5322a77ea62db5742b4c1d51d9014dd8, type: 3}
+      propertyPath: testBossFlow
+      value: 
+      objectReference: {fileID: 1521219863}
     - target: {fileID: 2583208046800637781, guid: 5322a77ea62db5742b4c1d51d9014dd8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

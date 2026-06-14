@@ -63,6 +63,10 @@ public class Player : NetworkBehaviour
     private NetworkVariable<float> curHealth = new NetworkVariable<float>();
     private NetworkVariable<float> curGuardGauge = new NetworkVariable<float>();
     private NetworkVariable<int> currentWeaponIndex = new NetworkVariable<int>(0);
+    private NetworkVariable<bool> isFacingLeft = new NetworkVariable<bool>(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner);
 
     public bool IsDead { get; private set; } = false;
     public bool IsGuarding { get; private set; } = false;
@@ -106,6 +110,8 @@ public class Player : NetworkBehaviour
         rb = GetComponent<Rigidbody2D>();
         InitializeShaderEffects();
         currentWeaponIndex.OnValueChanged += UpdateWeaponVisual;
+        isFacingLeft.OnValueChanged += OnFacingDirectionChanged;
+        ApplyFacingVisual(isFacingLeft.Value);
 
         curHealth.OnValueChanged += OnCurHealthChanged;
         curGuardGauge.OnValueChanged += OnCurGuardGaugeChanged;
@@ -187,6 +193,37 @@ public class Player : NetworkBehaviour
             {
                 boss.RequestTakeDamageServerRpc(currentWeapon.Damage);
             }
+        }
+    }
+
+    public void SetFacingDirection(Vector2 direction)
+    {
+        if (Mathf.Approximately(direction.x, 0f)) return;
+
+        bool facingLeft = direction.x < 0f;
+        FacingDirection = facingLeft ? Vector2.left : Vector2.right;
+        ApplyFacingVisual(facingLeft);
+
+        if (IsSpawned && IsOwner && isFacingLeft.Value != facingLeft)
+        {
+            isFacingLeft.Value = facingLeft;
+        }
+    }
+
+    private void OnFacingDirectionChanged(bool previousValue, bool newValue)
+    {
+        FacingDirection = newValue ? Vector2.left : Vector2.right;
+        ApplyFacingVisual(newValue);
+    }
+
+    private void ApplyFacingVisual(bool facingLeft)
+    {
+        if (anim == null) return;
+
+        SpriteRenderer spriteRenderer = anim.GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.flipX = facingLeft;
         }
     }
 
@@ -326,7 +363,6 @@ public class Player : NetworkBehaviour
         {
             if (Time.time - guardStartTime <= 0.2f)
             {
-                curGuardGauge.Value -= (EnemyDamage * 0.5f);
                 PlayDamageEffectRpc(PlayerEffectType.JustGuard, GetHitDirection(attackerPos));
             }
             else

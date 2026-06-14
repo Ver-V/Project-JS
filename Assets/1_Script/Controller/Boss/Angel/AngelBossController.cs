@@ -1,6 +1,8 @@
 using ProjectJS.Manager;
 using ProjectJS.ScriptableObjects;
+using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectJS.Controller
@@ -141,6 +143,7 @@ namespace ProjectJS.Controller
 
 		private IEnumerator OnStartPhasing()
 		{
+			isNoDamage = true;
 			bool isDone = false;
 			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToBoss);
 			yield return new WaitUntil(() => isDone);
@@ -155,12 +158,13 @@ namespace ProjectJS.Controller
 			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToPlayer);
 			yield return new WaitUntil(() => isDone);
 
+			isNoDamage = false;
 			yield return StartCoroutine(OnEndIntro());
 		}
 
 		private IEnumerator Move()
         {
-            Vector2 randomDir = Random.insideUnitCircle.normalized;
+			Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
             transform.localScale = new Vector3(
                 randomDir.x < 0 ? -1f : 1f,
                 1f,

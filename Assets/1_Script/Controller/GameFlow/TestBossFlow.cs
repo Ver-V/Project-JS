@@ -46,7 +46,7 @@ namespace ProjectJS.Controller
 
 			bossController = Instantiate(bossPrefab, /*HACK*/ Vector3.up * 3f, Quaternion.identity, null)
 				.GetComponent<BossController>();
-			bossController.GetComponent<NetworkObject>().Spawn();
+			bossController.GetComponent<NetworkObject>().Spawn(true);
 
 			yield return new WaitUntil(() => bossController.spawnedCount.Value >= NetworkManager.Singleton.ConnectedClients.Count);
 			stateMachine.ChangeState(State.Intro);
@@ -55,6 +55,7 @@ namespace ProjectJS.Controller
 		private IEnumerator OnStartIntro()
 		{
 			bool isDone = false;
+			bossController.IsNoDamage = true;
 			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToBoss);
 			yield return new WaitUntil(() => isDone);
 
@@ -68,6 +69,7 @@ namespace ProjectJS.Controller
 			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToPlayer);
 			yield return new WaitUntil(() => isDone);
 
+			bossController.IsNoDamage = false;
 			yield return StartCoroutine(bossController.OnEndIntro());
 		}
 
@@ -126,7 +128,7 @@ namespace ProjectJS.Controller
 			}
 		}
 
-		private void RestartBoss()
+		public void RestartBoss()
 		{
 			if (bossController != null)
 			{
