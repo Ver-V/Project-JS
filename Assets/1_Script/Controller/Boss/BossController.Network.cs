@@ -24,6 +24,8 @@ namespace ProjectJS.Controller
 		[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
 		public void RequestTakeDamageServerRpc(float damage)
 		{
+			if (isNoDamage) return;
+
 			if (!statContainer.TryGet(out HealthStat healthStat))
 			{
 				Debug.LogError("No Health Stat");

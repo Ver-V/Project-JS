@@ -55,6 +55,7 @@ namespace ProjectJS.Controller
 		private IEnumerator OnStartIntro()
 		{
 			bool isDone = false;
+			bossController.IsNoDamage = true;
 			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToBoss);
 			yield return new WaitUntil(() => isDone);
 
@@ -68,6 +69,7 @@ namespace ProjectJS.Controller
 			NetworkTransmission.instance.StartEventSync(() => { isDone = true; }, GameEventType.Camera_ToPlayer);
 			yield return new WaitUntil(() => isDone);
 
+			bossController.IsNoDamage = false;
 			yield return StartCoroutine(bossController.OnEndIntro());
 		}
 
