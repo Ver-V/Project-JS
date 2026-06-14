@@ -46,7 +46,7 @@ namespace ProjectJS.Controller
 
 			bossController = Instantiate(bossPrefab, /*HACK*/ Vector3.up * 3f, Quaternion.identity, null)
 				.GetComponent<BossController>();
-			bossController.GetComponent<NetworkObject>().Spawn();
+			bossController.GetComponent<NetworkObject>().Spawn(true);
 
 			yield return new WaitUntil(() => bossController.spawnedCount.Value >= NetworkManager.Singleton.ConnectedClients.Count);
 			stateMachine.ChangeState(State.Intro);
