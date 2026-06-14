@@ -1,5 +1,6 @@
+using ProjectJS.Controller;
 using TMPro;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,8 @@ namespace ProjectJS.UI.GameScene
         private const string _bossFailDescMessage = "파티가 전멸했습니다.";
         private const string _clientWaitMessage = "호스트의 선택을 기다리는 중...";
 
+        [SerializeField] private TestBossFlow testBossFlow;
+
         [SerializeField] private TMP_Text bossClearMainText;
         [SerializeField] private TMP_Text bossClearSubText;
         [SerializeField] private TMP_Text bossClearDescText;
@@ -37,8 +40,11 @@ namespace ProjectJS.UI.GameScene
 
         private void Start()
         {
-            //retryButton.onClick.AddListener();
-            lobbyButton.onClick.AddListener(GameSceneUI.Instance.ReturnToLobby);
+            if (NetworkManager.Singleton.IsHost)
+            {
+                retryButton.onClick.AddListener(OnClickRestartBoss);
+                lobbyButton.onClick.AddListener(OnClickReturnToLobby);
+            }
         }
 
         public void ShowGameResult(GameResultInfo gameResultInfo, bool isHost)
@@ -67,9 +73,12 @@ namespace ProjectJS.UI.GameScene
             combatTimeText.text = $"{minute} : {second}";
             alivePlayersCountText.text = $"{gameResultInfo.alivePlayerCount} / {gameResultInfo.combatPlayerCount}";
 
-            clientWaitText.gameObject.SetActive(!isHost);
             retryButton.gameObject.SetActive(isHost);
             lobbyButton.gameObject.SetActive(isHost);
+            
+            clientWaitText.gameObject.SetActive(!isHost);
+            
+            
 
             if (!isHost)
             {
@@ -77,11 +86,29 @@ namespace ProjectJS.UI.GameScene
             }
         }
 
+        private void OnClickRestartBoss()
+        {
+            if (NetworkManager.Singleton.IsHost) 
+            { 
+                testBossFlow.RestartBoss(); 
+            }
+            this.gameObject.SetActive(false);
+        }
+        private void OnClickReturnToLobby()
+        {
+            if (NetworkManager.Singleton.IsHost)
+            {
+                GameSceneUI.Instance.ReturnToLobby();
+            }
+            this.gameObject.SetActive(false);
+        }
+
         private void OnDestroy()
         {
             lobbyButton.onClick.RemoveAllListeners();
             retryButton.onClick.RemoveAllListeners();
         }
+
     }
 
 }

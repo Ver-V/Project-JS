@@ -126,7 +126,7 @@ namespace ProjectJS.Controller
 			}
 		}
 
-		private void RestartBoss()
+		public void RestartBoss()
 		{
 			if (bossController != null)
 			{

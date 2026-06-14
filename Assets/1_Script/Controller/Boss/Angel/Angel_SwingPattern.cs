@@ -53,7 +53,6 @@ namespace ProjectJS.Controller
 
 		private void OnDrawGizmosSelected()
 		{
-			return;
 
 			Color backupColor = Gizmos.color;
 			Gizmos.color = Color.red;

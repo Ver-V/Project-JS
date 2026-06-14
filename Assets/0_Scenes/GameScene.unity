@@ -28543,6 +28543,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2161515985416177800, guid: 5322a77ea62db5742b4c1d51d9014dd8, type: 3}
+      propertyPath: testBossFlow
+      value: 
+      objectReference: {fileID: 1521219863}
     - target: {fileID: 2583208046800637781, guid: 5322a77ea62db5742b4c1d51d9014dd8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
