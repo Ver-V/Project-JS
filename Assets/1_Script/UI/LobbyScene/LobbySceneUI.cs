@@ -73,7 +73,7 @@ namespace ProjectJS.UI.LobbyScene
                 OnAddPlayerToDictionary(pair.Value);
             }
 
-            disconnectButton.onClick.AddListener(GameNetworkManager.Instance.Disconnected);
+            //disconnectButton.onClick.AddListener(GameNetworkManager.Instance.Disconnected);
 			readyButton.onClick.AddListener(() => {
 				NetworkTransmission.instance.IsTheClientReadyServerRPC(true, GameManagerEx.Instance.MyClientId);
 				PlayerWeaponSelection.SelectedWeaponIndex = weaponSelectionUI.CurrentSelectedWeaponIndex;
