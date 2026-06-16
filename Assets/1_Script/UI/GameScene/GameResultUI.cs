@@ -22,7 +22,7 @@ namespace ProjectJS.UI.GameScene
         private const string _bossFailDescMessage = "파티가 전멸했습니다.";
         private const string _clientWaitMessage = "호스트의 선택을 기다리는 중...";
 
-        [SerializeField] private TestBossFlow testBossFlow;
+        private TestBossFlow testBossFlow;
 
         [SerializeField] private TMP_Text bossClearMainText;
         [SerializeField] private TMP_Text bossClearSubText;
@@ -40,6 +40,7 @@ namespace ProjectJS.UI.GameScene
 
         private void Start()
         {
+            testBossFlow = FindObjectOfType<TestBossFlow>();
             if (NetworkManager.Singleton.IsHost)
             {
                 retryButton.onClick.AddListener(OnClickRestartBoss);
